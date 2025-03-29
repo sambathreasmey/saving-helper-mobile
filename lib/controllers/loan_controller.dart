@@ -1,0 +1,118 @@
+import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:intl/intl.dart';
+import 'package:saving_helper/models/requests/deposit_saving_request.dart';
+import 'package:saving_helper/repository/deposit_saving_repository.dart';
+import 'package:saving_helper/screen/home_screen.dart';
+import 'package:saving_helper/services/share_storage.dart';
+
+import 'package:saving_helper/constants/app_color.dart' as app_color;
+import 'package:saving_helper/constants/app_global.dart' as app_global;
+
+class LoanController extends GetxController {
+  final DepositSavingRepository depositSavingRepository;
+
+  LoanController(this.depositSavingRepository) {
+    selectedDate.value = DateFormat('yyyy-MM-dd').format(DateTime.now());
+  }
+
+  // Reactive variables
+  RxString amount = ''.obs;
+  RxString transactionDesc = ''.obs;
+  RxString selectedCurrency = 'USD'.obs;
+  RxList<String> currencyList = ['USD', 'KHR'].obs;
+  RxString selectedDate = ''.obs;
+
+  final TextEditingController amountController = TextEditingController();
+  final TextEditingController transactionDescController = TextEditingController();
+
+  @override
+  void onClose() {
+    amountController.dispose();
+    transactionDescController.dispose();
+    super.onClose();
+  }
+
+  Future<void> saveLoan() async {
+    // Validate input
+    if (selectedCurrency.value == 'KHR') {
+      Get.snackbar("ព័ត៍មានមិនត្រឹមត្រូវ", 'ប្រភេទប្រាក់រៀលមិនទាន់កំណត់នៅឡើយ សូមជ្រើសរើសដុល្លារជំនួស', colorText: app_color.background, icon: Icon(Icons.sentiment_dissatisfied_outlined, color: app_color.baseWhiteColor));
+      return;
+    }
+
+    if (amount.value.isEmpty) {
+      Get.snackbar("ព័ត៍មានមិនត្រឹមត្រូវ", 'សូមបញ្ចូលចំនួនទឹកប្រាក់', colorText: app_color.background, icon: Icon(Icons.sentiment_dissatisfied_outlined, color: app_color.baseWhiteColor));
+      return;
+    }
+    if (selectedCurrency.value.isEmpty || selectedDate.value.isEmpty) {
+      Get.snackbar('Error', 'Please fill in all fields', snackPosition: SnackPosition.TOP);
+      return;
+    }
+
+    try {
+      final shareStorage = ShareStorage();
+      final storedUserId = await shareStorage.getUserCredential();
+      var depositSavingRequest = DepositSavingRequest(
+        channelId: app_global.channelId,
+        transactionDate: selectedDate.value,
+        amount: amount.value,
+        transactionDesc: transactionDesc.value,
+        userId: storedUserId!,
+        currencyType: selectedCurrency.value,
+        transactionType: 'loan',
+      );
+      final response = await depositSavingRepository.depositSaving(depositSavingRequest);
+
+      if (response.status == 0) {
+        Get.snackbar("ទទួលបានជោគជ័យ", "ខ្ចីប្រាក់ជោគជ័យ", colorText: app_color.background, icon: Icon(Icons.sentiment_satisfied_outlined, color: app_color.baseWhiteColor));
+        Get.off(() => HomeScreen());
+      } else {
+        Get.snackbar("បរាជ័យ", response.message ?? "Login failed", colorText: app_color.background, icon: Icon(Icons.sentiment_dissatisfied_outlined, color: app_color.baseWhiteColor));
+      }
+    } catch (e) {
+      Get.snackbar("ប្រព័ន្ធមានបញ្ហា", e.toString(), colorText: app_color.background, icon: Icon(Icons.warning_amber_sharp, color: app_color.baseWhiteColor));
+    }
+  }
+
+  Future<void> saveLoanRepay() async {
+    // Validate input
+    if (selectedCurrency.value == 'KHR') {
+      Get.snackbar("ព័ត៍មានមិនត្រឹមត្រូវ", 'ប្រភេទប្រាក់រៀលមិនទាន់កំណត់នៅឡើយ សូមជ្រើសរើសដុល្លារជំនួស', colorText: app_color.background, icon: Icon(Icons.sentiment_dissatisfied_outlined, color: app_color.baseWhiteColor));
+      return;
+    }
+
+    if (amount.value.isEmpty) {
+      Get.snackbar("ព័ត៍មានមិនត្រឹមត្រូវ", 'សូមបញ្ចូលចំនួនទឹកប្រាក់', colorText: app_color.background, icon: Icon(Icons.sentiment_dissatisfied_outlined, color: app_color.baseWhiteColor));
+      return;
+    }
+    if (selectedCurrency.value.isEmpty || selectedDate.value.isEmpty) {
+      Get.snackbar('Error', 'Please fill in all fields', snackPosition: SnackPosition.TOP);
+      return;
+    }
+
+    try {
+      final shareStorage = ShareStorage();
+      final storedUserId = await shareStorage.getUserCredential();
+      var depositSavingRequest = DepositSavingRequest(
+        channelId: app_global.channelId,
+        transactionDate: selectedDate.value,
+        amount: amount.value,
+        transactionDesc: transactionDesc.value,
+        userId: storedUserId!,
+        currencyType: selectedCurrency.value,
+        transactionType: 'loan_repay',
+      );
+      final response = await depositSavingRepository.depositSaving(depositSavingRequest);
+
+      if (response.status == 0) {
+        Get.snackbar("ទទួលបានជោគជ័យ", "សងប្រាក់ជោគជ័យ", colorText: app_color.background, icon: Icon(Icons.sentiment_satisfied_outlined, color: app_color.baseWhiteColor));
+        Get.off(() => HomeScreen());
+      } else {
+        Get.snackbar("បរាជ័យ", response.message ?? "Login failed", colorText: app_color.background, icon: Icon(Icons.sentiment_dissatisfied_outlined, color: app_color.baseWhiteColor));
+      }
+    } catch (e) {
+      Get.snackbar("ប្រព័ន្ធមានបញ្ហា", e.toString(), colorText: app_color.background, icon: Icon(Icons.warning_amber_sharp, color: app_color.baseWhiteColor));
+    }
+  }
+
+}
