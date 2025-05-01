@@ -7,6 +7,7 @@ class DashboardModel {
   String? totalLoan;
   String? totalLoanRepay;
   String? totalSavingDeposit;
+  String? target;
 
   DashboardModel({
     this.balance,
@@ -17,6 +18,7 @@ class DashboardModel {
     this.totalLoan,
     this.totalLoanRepay,
     this.totalSavingDeposit,
+    this.target,
   });
 
   factory DashboardModel.fromJson(Map<String, dynamic> json) {
@@ -29,6 +31,7 @@ class DashboardModel {
       totalLoan: json['total_loan'],
       totalLoanRepay: json['total_loan_repay'],
       totalSavingDeposit: json['total_saving_deposit'],
+      target: json['target'],
     );
   }
 }

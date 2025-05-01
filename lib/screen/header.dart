@@ -7,6 +7,7 @@ import 'package:saving_helper/screen/loan_repay_screen.dart';
 import 'package:saving_helper/screen/loan_screen.dart';
 import 'package:saving_helper/screen/login_screen.dart';
 import 'package:get/get.dart';
+import 'package:saving_helper/screen/report_screen.dart';
 import 'package:saving_helper/services/api_provider.dart';
 import 'package:saving_helper/services/share_storage.dart';
 
@@ -264,12 +265,14 @@ void _showModalBottomSheet(BuildContext context, HeaderController controller, Sh
                 ),
                 // Management Section with Animated Submenu
                 ManagementSubMenu(),
+                ReportSubMenu(),
                 // Logout Section
                 ListTile(
                   leading: Icon(Icons.logout, color: app_colors.baseColor,),
                   title: Text('Logout', style: TextStyle(color: app_colors.baseColor, fontWeight: FontWeight.bold, fontFamily: 'MyBaseFont',)),
                   onTap: () {
                     shareStorage.removeUserCredential();
+                    shareStorage.removeToken();
                     Get.delete<HeaderController>();
                     Get.to(() => LoginScreen(title: 'Home Screen Title'));
                     // Perform logout action
@@ -300,7 +303,7 @@ class _ManagementSubMenuState extends State<ManagementSubMenu> {
     return Column(
       children: [
         ListTile(
-          leading: Icon(Icons.admin_panel_settings, color: app_colors.baseColor,),
+          leading: Icon(Icons.science_outlined, color: app_colors.baseColor,),
           title: Text('គ្រប់គ្រង', style: TextStyle(color: app_colors.baseColor, fontWeight: FontWeight.bold, fontFamily: 'MyBaseFont',)),
           trailing: Icon(
             _isExpanded ? Icons.arrow_drop_up : Icons.arrow_drop_down,
@@ -314,7 +317,7 @@ class _ManagementSubMenuState extends State<ManagementSubMenu> {
         ),
         AnimatedContainer(
           duration: Duration(milliseconds: 100),
-          height: _isExpanded ? 160 : 0, // Adjust height based on expansion
+          height: _isExpanded ? 110 : 0, // Adjust height based on expansion
           child: SingleChildScrollView(
             child: Padding(
               padding: const EdgeInsets.only(left: 32),
@@ -322,7 +325,7 @@ class _ManagementSubMenuState extends State<ManagementSubMenu> {
                 children: [
                   if (_isExpanded) ...[
                     ListTile(
-                      leading: Icon(Icons.group, color: app_colors.baseColor,),
+                      leading: Icon(Icons.savings_outlined, color: app_colors.baseColor,),
                       title: Text('បញ្ចូលប្រាក់សន្សំ', style: TextStyle(color: app_colors.baseColor, fontWeight: FontWeight.bold, fontFamily: 'MyBaseFont',)),
                       onTap: () {
                         Get.delete<HeaderController>();
@@ -330,19 +333,76 @@ class _ManagementSubMenuState extends State<ManagementSubMenu> {
                       },
                     ),
                     ListTile(
-                      leading: Icon(Icons.security, color: app_colors.baseColor),
+                      leading: Icon(Icons.real_estate_agent_outlined, color: app_colors.baseColor),
                       title: Text('បញ្ចូលប្រាក់កម្ចី', style: TextStyle(color: app_colors.baseColor, fontWeight: FontWeight.bold, fontFamily: 'MyBaseFont',)),
                       onTap: () {
                         Get.delete<HeaderController>();
                         Get.to(() => LoanScreen());
                       },
                     ),
+                    // ListTile(
+                    //   leading: Icon(Icons.currency_exchange_outlined, color: app_colors.baseColor,),
+                    //   title: Text('សងប្រាក់កម្ចី', style: TextStyle(color: app_colors.baseColor, fontWeight: FontWeight.bold, fontFamily: 'MyBaseFont',)),
+                    //   onTap: () {
+                    //     Get.delete<HeaderController>();
+                    //     Get.to(() => LoanRepayScreen());
+                    //   },
+                    // ),
+                  ],
+                ],
+              ),
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+//|||||||||||||||||||| report |||||||||||||||||||||
+class ReportSubMenu extends StatefulWidget {
+  const ReportSubMenu({super.key});
+
+  @override
+  // ignore: library_private_types_in_public_api
+  _ReportSubMenuState createState() => _ReportSubMenuState();
+}
+
+class _ReportSubMenuState extends State<ReportSubMenu> {
+  bool _isExpanded = false;
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        ListTile(
+          leading: Icon(Icons.account_balance_outlined, color: app_colors.baseColor,),
+          title: Text('របាយការណ៍', style: TextStyle(color: app_colors.baseColor, fontWeight: FontWeight.bold, fontFamily: 'MyBaseFont',)),
+          trailing: Icon(
+            _isExpanded ? Icons.arrow_drop_up : Icons.arrow_drop_down,
+            color: app_colors.baseColor,
+          ),
+          onTap: () {
+            setState(() {
+              _isExpanded = !_isExpanded; // Toggle the submenu
+            });
+          },
+        ),
+        AnimatedContainer(
+          duration: Duration(milliseconds: 100),
+          height: _isExpanded ? 60 : 0, // Adjust height based on expansion
+          child: SingleChildScrollView(
+            child: Padding(
+              padding: const EdgeInsets.only(left: 32),
+              child: Column(
+                children: [
+                  if (_isExpanded) ...[
                     ListTile(
-                      leading: Icon(Icons.settings, color: app_colors.baseColor,),
-                      title: Text('សងប្រាក់កម្ចី', style: TextStyle(color: app_colors.baseColor, fontWeight: FontWeight.bold, fontFamily: 'MyBaseFont',)),
+                      leading: Icon(Icons.event_repeat, color: app_colors.baseColor,),
+                      title: Text('របាយការណ៍ទូទៅ', style: TextStyle(color: app_colors.baseColor, fontWeight: FontWeight.bold, fontFamily: 'MyBaseFont',)),
                       onTap: () {
                         Get.delete<HeaderController>();
-                        Get.to(() => LoanRepayScreen());
+                        Get.to(() => ReportScreen());
                       },
                     ),
                   ],

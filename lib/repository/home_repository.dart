@@ -13,7 +13,12 @@ class HomeRepository {
   HomeRepository(this.apiProvider);
 
   Future<GetDashboardResponse> getDashboard(GetDashboardRequest getDashboardRequest) async {
-    final response = await apiProvider.post('/api/saving/dashboard', getDashboardRequest.toJson());
+    final response = await apiProvider.sendAuthenticatedRequest(
+        '/api/saving/dashboard',
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+      body: jsonEncode(getDashboardRequest.toJson()),
+    );
 
     // Log the response status code and body for debugging
     if (kDebugMode) {

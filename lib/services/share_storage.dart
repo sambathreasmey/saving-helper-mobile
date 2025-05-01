@@ -18,4 +18,19 @@ class ShareStorage {
     await prefs.remove('user_name');
   }
 
+  Future<void> removeToken() async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.remove('access_token');
+  }
+
+  Future<void> saveToken(String accessToken) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString('access_token', accessToken);
+  }
+
+  Future<String?> getToken() async {
+    final prefs = await SharedPreferences.getInstance();
+    return prefs.getString('access_token');
+  }
+
 }

@@ -12,7 +12,12 @@ class DepositSavingRepository {
   DepositSavingRepository(this.apiProvider);
 
   Future<ResultMessage> depositSaving(DepositSavingRequest depositSavingRequest) async {
-    final response = await apiProvider.post('/api/saving/deposit', depositSavingRequest.toJson());
+    final response = await apiProvider.sendAuthenticatedRequest(
+        '/api/saving/deposit',
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: jsonEncode(depositSavingRequest.toJson()),
+    );
 
     // Log the response status code and body for debugging
     if (kDebugMode) {

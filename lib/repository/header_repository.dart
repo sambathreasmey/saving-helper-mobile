@@ -22,7 +22,12 @@ class HeaderRepository {
       userName: storedUserId!,
     );
 
-    final response = await apiProvider.post('/api/partner/get_user_details', notificationRequest.toJson());
+    final response = await apiProvider.sendAuthenticatedRequest(
+        '/api/partner/get_user_details',
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: jsonEncode(notificationRequest.toJson()),
+    );
 
     // Log the response status code and body for debugging
     if (kDebugMode) {
@@ -43,7 +48,12 @@ class HeaderRepository {
       channelId: 'sambathreasmey',
     );
 
-    final response = await apiProvider.post('/api/saving/notification', notificationRequest.toJson());
+    final response = await apiProvider.sendAuthenticatedRequest(
+        '/api/saving/notification',
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: jsonEncode(notificationRequest.toJson()),
+    );
 
     // Log the response status code and body for debugging
     if (kDebugMode) {
