@@ -25,8 +25,13 @@ class ReportRepayController extends GetxController {
 
   Future<void> fetchTransactions() async {
     try {
+      final ShareStorage shareStorage = ShareStorage();
+      final userId = await shareStorage.getUserCredential();
+      final groupId = await shareStorage.getGroupId();
       var request = GetReportRequest(
         channelId: app_global.channelId,
+        userId: userId!,
+        groupId: groupId!,
         reportType: selectedTransactionType.value,
       );
       final response = await reportRepository.getReport(request);

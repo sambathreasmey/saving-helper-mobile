@@ -1,20 +1,20 @@
 class GetUserInfoRequest {
   final String channelId;
-  final String userName;
+  final String par;
 
-  GetUserInfoRequest({required this.channelId, required this.userName});
+  GetUserInfoRequest({required this.channelId, required this.par});
 
   factory GetUserInfoRequest.fromJson(Map<String, dynamic> json) {
     return GetUserInfoRequest(
       channelId: json['channel_id'],
-      userName: json['user_name'],
+      par: json['par'],
     );
   }
 
   Map<String, dynamic> toJson() {
     return {
       'channel_id': channelId,
-      'user_name': userName,
+      'par': par,
     };
   }
 }

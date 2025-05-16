@@ -6,6 +6,7 @@ import 'package:saving_helper/screen/header.dart';
 import 'package:saving_helper/screen/home_screen.dart';
 import 'package:saving_helper/services/api_provider.dart';
 import 'package:get/get.dart';
+import 'package:saving_helper/theme_screen.dart';
 
 import '../constants/app_color.dart' as app_colors;
 
@@ -35,18 +36,9 @@ class _ReportRepayScreenState extends State<ReportRepayScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: Stack(
+    return ThemedScaffold(
+      child: Stack(
         children: [
-          // Background Image
-          Container(
-            decoration: BoxDecoration(
-              image: DecorationImage(
-                image: AssetImage('assets/images/background.jpg'),
-                fit: BoxFit.cover,
-              ),
-            ),
-          ),
           SafeArea(
             child: Padding(
               padding: const EdgeInsets.all(16.0),

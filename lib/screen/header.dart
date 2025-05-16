@@ -1,17 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:saving_helper/controllers/header_controller.dart';
+import 'package:saving_helper/controllers/home_screen_controller.dart';
+import 'package:saving_helper/controllers/theme_controller.dart';
 import 'package:saving_helper/repository/header_repository.dart';
 import 'package:saving_helper/screen/deposit_saving_screen.dart';
 import 'package:saving_helper/screen/home_screen.dart';
-import 'package:saving_helper/screen/loan_repay_screen.dart';
 import 'package:saving_helper/screen/loan_screen.dart';
 import 'package:saving_helper/screen/login_screen.dart';
 import 'package:get/get.dart';
 import 'package:saving_helper/screen/report_screen.dart';
 import 'package:saving_helper/services/api_provider.dart';
 import 'package:saving_helper/services/share_storage.dart';
+import 'package:saving_helper/splash_screen.dart';
 
 import '../constants/app_color.dart' as app_colors;
+import 'animated_Invite_banner.dart';
 
 class CustomHeader extends StatefulWidget {
   const CustomHeader({super.key});
@@ -24,6 +27,7 @@ class CustomHeader extends StatefulWidget {
 class _CustomHeaderState extends State<CustomHeader> {
 
   final HeaderController controller = Get.put(HeaderController(HeaderRepository(ApiProvider())));
+  final ThemeController themeController = Get.put(ThemeController());
   final ShareStorage shareStorage = ShareStorage();
 
   @override
@@ -77,17 +81,19 @@ class _CustomHeaderState extends State<CustomHeader> {
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 0),
                     child: Obx(() {
+                      final userInfo = controller.userInfo.value;
+                      final role = userInfo?.roles?.isNotEmpty == true ? userInfo!.roles!.first : '';
+
                       return Text(
-                        controller.userInfo.value?.role ?? '',
-                        style: TextStyle(
+                        role,
+                        style: const TextStyle(
                           color: Colors.white,
                           fontSize: 9,
                           fontWeight: FontWeight.w500,
-                          fontFamily: 'MyBaseFont',
+                          fontFamily: 'MyBaseEnFont',
                         ),
                       );
-                    }
-                    ),
+                    }),
                   ),
                 ],
               ),
@@ -96,6 +102,10 @@ class _CustomHeaderState extends State<CustomHeader> {
           Row(
             spacing: 2,
             children: [
+              _buildMoneyBox(Icons.mode_night_outlined, Colors.lightBlueAccent, Colors.blue, height: 30,
+                onTap: () {
+                  themeController.changeBackground();
+              },),
               Container(
                 height: 32,
                 width: 32,
@@ -190,13 +200,6 @@ void _showNotificationDialog(BuildContext context, HeaderController controller) 
 }
 
 void _showModalBottomSheet(BuildContext context, HeaderController controller, ShareStorage shareStorage) {
-  final user = controller.userInfo.value;
-  final displayName = (user?.fullName?.isNotEmpty == true)
-      ? user?.fullName
-      : (user?.userName?.isNotEmpty == true)
-      ? user?.userName
-      : "N/A";
-
   showModalBottomSheet(
     context: context,
     shape: RoundedRectangleBorder(
@@ -204,88 +207,259 @@ void _showModalBottomSheet(BuildContext context, HeaderController controller, Sh
     ),
     backgroundColor: Colors.transparent,
     builder: (BuildContext context) {
-      return Container(
-        padding: EdgeInsets.only(left: 16.0,  right: 16.0,top: 16.0, bottom: 0.0),
-        decoration: BoxDecoration(
-          color: Colors.blueGrey[50], // Light background color
-          borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
-        ),
-        child: ListView(
-          children: [
-            // User Info Section
-            Container(
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.all(Radius.circular(16)),
-                color: app_colors.baseColor,
-              ),
-              child: Padding(
+      return Obx(() {
+        if (controller.isLoadingUserInfo.value) {
+          return Container(
+            height: 200,
+            alignment: Alignment.center,
+            child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white),
+          );
+        }
+
+        final user = controller.userInfo.value;
+        final displayName = () {
+          if (user == null) return "N/A";
+          if (user.fullName?.isNotEmpty == true) return user.fullName!;
+          if (user.userName?.isNotEmpty == true) return user.userName!;
+          return "N/A";
+        }();
+
+        return Container(
+          padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 16.0),
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+          ),
+          child: ListView(
+            children: [
+              AnimatedInviteBanner(),
+
+              SizedBox(height: 8),
+
+              // Profile Section
+              Container(
+                decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                    colors: [Colors.pinkAccent, Colors.orangeAccent],
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
+                  ),
+                  borderRadius: BorderRadius.circular(16),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.orangeAccent.withOpacity(0.3),
+                      blurRadius: 6,
+                      offset: Offset(0, 4),
+                    ),
+                  ],
+                ),
                 padding: const EdgeInsets.all(16.0),
                 child: Row(
                   children: [
                     CircleAvatar(
-                      radius: 25,
-                      backgroundImage: NetworkImage(
-                          'https://img.freepik.com/premium-vector/man-avatar-profile-picture-vector-illustration_268834-538.jpg'), // Replace with your image URL
+                      radius: 28,
+                      backgroundImage: AssetImage('assets/images/profile.png'),
                     ),
-                    SizedBox(width: 8),
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          displayName!,
-                          style: TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.bold,
-                            color: app_colors.baseWhiteColor,
-                            fontFamily: 'MyBaseFont',
+                    SizedBox(width: 12),
+                    Expanded(
+                      child: Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  displayName,
+                                  style: TextStyle(
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.white,
+                                    fontFamily: 'MyBaseFont',
+                                  ),
+                                ),
+                                Text(
+                                  user?.emailAddress ?? 'N/A',
+                                  style: TextStyle(
+                                    fontSize: 13,
+                                    color: Colors.white,
+                                    fontFamily: 'MyBaseEnFont',
+                                  ),
+                                ),
+                              ],
+                            ),
                           ),
-                        ),
-                        Text(
-                          user!.emailAddress ?? 'N/A',
-                          style: TextStyle(color: app_colors.subTitleText, fontSize: 12, fontFamily: 'MyBaseFont',), // Grey color for email
-                        ),
-                      ],
+                          SizedBox(width: 8),
+                          Container(
+                            decoration: BoxDecoration(
+                              gradient: LinearGradient(
+                                colors: [Colors.greenAccent, Colors.blueAccent],
+                                begin: Alignment.topLeft,
+                                end: Alignment.bottomRight,
+                              ),
+                              borderRadius: BorderRadius.circular(20),
+                              boxShadow: [
+                                BoxShadow(
+                                  color: Colors.orangeAccent.withOpacity(0.1),
+                                  blurRadius: 6,
+                                  offset: Offset(0, 2),
+                                ),
+                              ],
+                            ),
+                            child: TextButton(
+                              onPressed: () {
+                                showDialog(
+                                  context: context,
+                                  builder: (BuildContext dialogContext) {
+                                    final groups = user?.groups ?? [];
+
+                                    return AlertDialog(
+                                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+                                      backgroundColor: Colors.white,
+                                      title: Text(
+                                        'ជ្រើសរើសក្រុម',
+                                        style: TextStyle(fontFamily: 'MyBaseFont', fontWeight: FontWeight.bold, fontSize: 18),
+                                      ),
+                                      content: groups.isEmpty
+                                          ? Text('No groups available', style: TextStyle(fontFamily: 'MyBaseFont'))
+                                          : SizedBox(
+                                        width: double.maxFinite,
+                                        child: ListView.separated(
+                                          shrinkWrap: true,
+                                          itemCount: groups.length,
+                                          separatorBuilder: (_, __) => SizedBox(height: 12),
+                                          itemBuilder: (context, index) {
+                                            final group = groups[index];
+                                            final groupName = group.groupName ?? 'Unnamed Group';
+                                            final isSelected = group.groupId == controller.currentGroupId.value;
+
+                                            return InkWell(
+                                              onTap: () {
+                                                controller.switchGroup(group.groupId!);
+                                                Get.to(() => SplashScreen());
+                                              },
+                                              borderRadius: BorderRadius.circular(16),
+                                              child: Container(
+                                                padding: EdgeInsets.all(16),
+                                                decoration: BoxDecoration(
+                                                  borderRadius: BorderRadius.circular(16),
+                                                  color: isSelected ? Colors.blueAccent.withOpacity(0.1) : Colors.grey[100],
+                                                  border: isSelected
+                                                      ? Border.all(color: Colors.blueAccent, width: 2)
+                                                      : Border.all(color: Colors.grey[300]!),
+                                                  boxShadow: [
+                                                    BoxShadow(
+                                                      color: Colors.black12,
+                                                      blurRadius: 4,
+                                                      offset: Offset(0, 2),
+                                                    ),
+                                                  ],
+                                                ),
+                                                child: Row(
+                                                  children: [
+                                                    Icon(
+                                                      Icons.group,
+                                                      color: isSelected ? Colors.blueAccent : Colors.grey[700],
+                                                    ),
+                                                    SizedBox(width: 12),
+                                                    Expanded(
+                                                      child: Text(
+                                                        groupName,
+                                                        style: TextStyle(
+                                                          fontFamily: 'MyBaseFont',
+                                                          fontSize: 14,
+                                                          fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
+                                                          color: isSelected ? Colors.blueAccent : Colors.black87,
+                                                        ),
+                                                      ),
+                                                    ),
+                                                    if (isSelected)
+                                                      Icon(Icons.check_circle, color: Colors.blueAccent, size: 20),
+                                                  ],
+                                                ),
+                                              ),
+                                            );
+                                          },
+                                        ),
+                                      ),
+                                      actions: [
+                                        TextButton(
+                                          onPressed: () => Navigator.of(dialogContext).pop(),
+                                          child: Text(
+                                            'បោះបង់',
+                                            style: TextStyle(fontFamily: 'MyBaseFont', color: Colors.grey[700], fontWeight: FontWeight.bold),
+                                          ),
+                                        ),
+                                      ],
+                                    );
+                                  },
+                                );
+                              },
+                              style: TextButton.styleFrom(
+                                padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                                tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                              ),
+                              child: Icon(
+                                Icons.autorenew,
+                                color: Colors.white,
+                                size: 26,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
                   ],
                 ),
               ),
-            ),
-            SizedBox(height: 20),
-            Column(
-              children: [
-                // Menu Section
-                ListTile(
-                  leading: Icon(Icons.dashboard_outlined, color: app_colors.baseColor,),
-                  title: Text('Dashboard', style: TextStyle(color: app_colors.baseColor, fontWeight: FontWeight.bold, fontFamily: 'MyBaseFont',)),
-                  onTap: () {
-                    Get.delete<HeaderController>();
-                    Get.to(() => HomeScreen());
-                    // Perform logout action
-                  },
+
+              SizedBox(height: 24),
+
+              // Navigation Menu
+              Text("Navigation", style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold, fontFamily: 'MyBaseEnFont')),
+              SizedBox(height: 8),
+              ListTile(
+                leading: Icon(Icons.dashboard_outlined, color: app_colors.baseColor),
+                title: Text('Dashboard', style: TextStyle(color: app_colors.baseColor, fontWeight: FontWeight.bold, fontFamily: 'MyBaseEnFont')),
+                onTap: () {
+                  Get.delete<HeaderController>();
+                  Get.to(() => HomeScreen());
+                },
+              ),
+
+              ManagementSubMenu(),
+              ReportSubMenu(),
+
+              // Logout
+              SizedBox(height: 24),
+              Divider(thickness: 1),
+              ListTile(
+                leading: Icon(Icons.logout, color: app_colors.baseColor),
+                title: Text(
+                  'Logout',
+                  style: TextStyle(
+                    color: app_colors.baseColor,
+                    fontWeight: FontWeight.bold,
+                    fontFamily: 'MyBaseEnFont',
+                  ),
                 ),
-                // Management Section with Animated Submenu
-                ManagementSubMenu(),
-                ReportSubMenu(),
-                // Logout Section
-                ListTile(
-                  leading: Icon(Icons.logout, color: app_colors.baseColor,),
-                  title: Text('Logout', style: TextStyle(color: app_colors.baseColor, fontWeight: FontWeight.bold, fontFamily: 'MyBaseFont',)),
-                  onTap: () {
-                    shareStorage.removeUserCredential();
-                    shareStorage.removeToken();
-                    Get.delete<HeaderController>();
-                    Get.to(() => LoginScreen(title: 'Home Screen Title'));
-                    // Perform logout action
-                  },
-                ),
-              ],
-            )
-          ],
-        ),
-      );
+                onTap: () {
+                  shareStorage.removeUserCredential();
+                  shareStorage.removeToken();
+                  shareStorage.removeGroupId();
+                  Get.delete<HeaderController>();
+                  Get.to(() => LoginScreen(title: 'Home Screen Title'));
+                },
+              ),
+            ],
+          ),
+        );
+      });
     },
   );
 }
+
+
 
 class ManagementSubMenu extends StatefulWidget {
   const ManagementSubMenu({super.key});
@@ -415,3 +589,45 @@ class _ReportSubMenuState extends State<ReportSubMenu> {
     );
   }
 }
+
+Widget _buildMoneyBox(
+    IconData icon,
+    Color color1,
+    Color color2, {
+      double height = 40,
+      VoidCallback? onTap, // 👈 added callback
+    }) {
+  return GestureDetector(
+    onTap: onTap, // 👈 use the callback when tapped
+    child: Container(
+      height: height,
+      width: 30,
+      padding: EdgeInsets.symmetric(horizontal: 5),
+      alignment: Alignment.center,
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(30),
+        gradient: LinearGradient(
+          colors: [
+            color1.withOpacity(0.6),
+            color2.withOpacity(0.6),
+          ],
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+        ),
+        boxShadow: [
+          BoxShadow(
+            color: color2.withOpacity(0.3),
+            blurRadius: 6,
+            offset: Offset(0, 4),
+          ),
+        ],
+      ),
+      child: Icon(
+        icon,
+        color: Colors.white,
+        size: 18,
+      ),
+    ),
+  );
+}
+

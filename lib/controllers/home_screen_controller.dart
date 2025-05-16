@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:saving_helper/models/dashboard_model.dart';
 import 'package:saving_helper/models/requests/get_dashboard_request.dart';
+import 'package:saving_helper/services/share_storage.dart';
 import '../constants/app_color.dart' as app_color;
 import '../constants/app_global.dart' as app_global;
 import '../repository/home_repository.dart';
@@ -20,8 +21,13 @@ class HomeController extends GetxController {
 
   Future<void> getDashboard() async {
     try {
+      final ShareStorage shareStorage = ShareStorage();
+      final userId = await shareStorage.getUserCredential();
+      final groupId = await shareStorage.getGroupId();
       var getDashboardRequest = GetDashboardRequest(
         channelId: app_global.channelId,
+        userId: userId!,
+        groupId: groupId!,
       );
       final response = await homeRepository.getDashboard(getDashboardRequest);
 

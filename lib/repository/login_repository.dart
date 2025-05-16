@@ -11,14 +11,14 @@ class LoginRepository {
   Future<LoginResponse> login(String username, String password) async {
 
     final response = await apiProvider.sendAuthenticatedRequest(
-      '/api/partner/user_login',
+      '/api/saving/login',
       method: 'POST',
       headers: {'Content-Type': 'application/json'},
-      body: jsonEncode({
+      body: {
         'user_name': username,
         'password': password,
         'channel_id': 'sambathreasmey',
-      }),
+      },
     );
 
     // Log the response status code and body for debugging

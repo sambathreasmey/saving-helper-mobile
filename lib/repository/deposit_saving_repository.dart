@@ -16,7 +16,7 @@ class DepositSavingRepository {
         '/api/saving/deposit',
         method: 'POST',
         headers: {'Content-Type': 'application/json'},
-        body: jsonEncode(depositSavingRequest.toJson()),
+        body: depositSavingRequest.toJson(),
     );
 
     // Log the response status code and body for debugging

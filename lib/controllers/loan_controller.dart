@@ -52,6 +52,7 @@ class LoanController extends GetxController {
     try {
       final shareStorage = ShareStorage();
       final storedUserId = await shareStorage.getUserCredential();
+      final groupId = await shareStorage.getGroupId();
       var depositSavingRequest = DepositSavingRequest(
         channelId: app_global.channelId,
         transactionDate: selectedDate.value,
@@ -60,6 +61,7 @@ class LoanController extends GetxController {
         userId: storedUserId!,
         currencyType: selectedCurrency.value,
         transactionType: 'loan',
+        groupId: groupId!,
       );
       final response = await depositSavingRepository.depositSaving(depositSavingRequest);
 
@@ -93,6 +95,7 @@ class LoanController extends GetxController {
     try {
       final shareStorage = ShareStorage();
       final storedUserId = await shareStorage.getUserCredential();
+      final groupId = await shareStorage.getGroupId();
       var depositSavingRequest = DepositSavingRequest(
         channelId: app_global.channelId,
         transactionDate: selectedDate.value,
@@ -101,6 +104,7 @@ class LoanController extends GetxController {
         userId: storedUserId!,
         currencyType: selectedCurrency.value,
         transactionType: 'loan_repay',
+        groupId: groupId!,
       );
       final response = await depositSavingRepository.depositSaving(depositSavingRequest);
 

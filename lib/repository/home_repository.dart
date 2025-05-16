@@ -17,7 +17,7 @@ class HomeRepository {
         '/api/saving/dashboard',
         method: 'POST',
         headers: {'Content-Type': 'application/json'},
-      body: jsonEncode(getDashboardRequest.toJson()),
+      body: getDashboardRequest.toJson(),
     );
 
     // Log the response status code and body for debugging

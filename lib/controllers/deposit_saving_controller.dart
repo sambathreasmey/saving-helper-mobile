@@ -54,14 +54,16 @@ class DepositSavingController extends GetxController {
     try {
       final shareStorage = ShareStorage();
       final storedUserId = await shareStorage.getUserCredential();
+      final groupId = await shareStorage.getGroupId();
       var depositSavingRequest = DepositSavingRequest(
-          channelId: app_global.channelId,
-          transactionDate: selectedDate.value,
-          amount: amount.value,
-          transactionDesc: transactionDesc.value,
-          userId: storedUserId!,
-          currencyType: selectedCurrency.value,
-          transactionType: isSavingMore.value ? 'saving_deposit_more' : 'saving_deposit',
+        channelId: app_global.channelId,
+        transactionDate: selectedDate.value,
+        amount: amount.value,
+        transactionDesc: transactionDesc.value,
+        userId: storedUserId!,
+        currencyType: selectedCurrency.value,
+        transactionType: isSavingMore.value ? 'saving_deposit_more' : 'saving_deposit',
+        groupId: groupId!,
       );
       final response = await depositSavingRepository.depositSaving(depositSavingRequest);
 

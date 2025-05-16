@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:saving_helper/repository/login_repository.dart';
@@ -30,8 +31,16 @@ class LoginController extends GetxController {
       if (response.status == 0) {
 
         // Save userId using ShareStorage
-        final String? userName = response.data?.userName;
-        await shareStorage.saveUserCredential(userName!);
+        final String? userId = response.data?.userId;
+        await shareStorage.saveUserCredential(userId!);
+        final storedGroupId = await shareStorage.getGroupId();
+        if (storedGroupId == null) {
+          final String? groupId = response.data?.groups?.first.groupId;
+          if (kDebugMode) {
+            print('🔄 Fist time Sync UserData from api 🔄 : $groupId');
+          }
+          await shareStorage.saveGroupId(groupId!);
+        }
 
         Get.snackbar("ទទួលបានជោគជ័យ", response.message ?? "Login successful", colorText: app_color.background, icon: Icon(Icons.sentiment_satisfied_outlined, color: app_color.baseWhiteColor));
         Get.off(() => HomeScreen());

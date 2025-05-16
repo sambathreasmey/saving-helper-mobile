@@ -5,6 +5,7 @@ import 'dart:async';
 
 import 'package:saving_helper/screen/login_screen.dart';
 import 'package:saving_helper/services/share_storage.dart';
+import 'package:saving_helper/theme_screen.dart';
 
 import 'constants/app_color.dart' as app_colors;
 
@@ -39,19 +40,14 @@ class _SplashScreenState extends State<SplashScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.black12,
-      body: Center(
+    return ThemedScaffold(
+      child: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
+            // Background Image
             Container(
-              decoration: BoxDecoration(
-                image: DecorationImage(
-                  image: AssetImage('assets/images/background.jpg'), // Replace with your image path
-                  fit: BoxFit.cover, // Cover the entire screen
-                ),
-              ),
+             color: Colors.white,
             ),
             Container(
               height: 56,

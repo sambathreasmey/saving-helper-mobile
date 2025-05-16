@@ -3,8 +3,12 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:saving_helper/controllers/login_controller.dart';
 import 'package:saving_helper/constants/app_color.dart' as app_colors;
+import 'package:saving_helper/controllers/register_controller.dart';
 import 'package:saving_helper/repository/login_repository.dart';
+import 'package:saving_helper/repository/register_repository.dart';
+import 'package:saving_helper/screen/register_screen.dart';
 import 'package:saving_helper/services/api_provider.dart';
+import 'package:saving_helper/theme_screen.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key, required this.title});
@@ -26,19 +30,9 @@ class _LoginScreenState extends State<LoginScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: Stack(
+    return ThemedScaffold(
+      child: Stack(
         children: [
-          // Background Image
-          Container(
-            decoration: BoxDecoration(
-              image: DecorationImage(
-                image: AssetImage('assets/images/background.jpg'), // Replace with your image path
-                fit: BoxFit.cover, // Cover the entire screen
-              ),
-            ),
-          ),
-          // Main content
           SafeArea(
             child: Center(
               child: Container(
@@ -188,9 +182,14 @@ class _LoginScreenState extends State<LoginScreen> {
                                     print('Navigate to registration page');
                                   }
                                 },
-                                child: Text(
-                                  'បង្កើតគណនី',
-                                  style: TextStyle(color: app_colors.loveColor, fontFamily: 'MyBaseFont', fontWeight: FontWeight.bold,),
+                                child: InkWell(
+                                  onTap: () {
+                                    Get.to(() => RegisterScreen(RegisterController(RegisterRepository(ApiProvider())), title: '',));
+                                  },
+                                  child: Text(
+                                    'បង្កើតគណនី',
+                                    style: TextStyle(color: app_colors.loveColor, fontFamily: 'MyBaseFont', fontWeight: FontWeight.bold,),
+                                  ),
                                 ),
                               ),
                             ],

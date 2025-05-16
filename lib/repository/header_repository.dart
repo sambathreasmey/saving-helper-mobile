@@ -19,14 +19,14 @@ class HeaderRepository {
     final storedUserId = await shareStorage.getUserCredential();
     final notificationRequest = GetUserInfoRequest(
       channelId: 'sambathreasmey',
-      userName: storedUserId!,
+      par: storedUserId!,
     );
 
     final response = await apiProvider.sendAuthenticatedRequest(
-        '/api/partner/get_user_details',
-        method: 'POST',
+        '/api/saving/get_user_by_username_or_id',
+        method: 'GET',
         headers: {'Content-Type': 'application/json'},
-        body: jsonEncode(notificationRequest.toJson()),
+        body: notificationRequest.toJson(),
     );
 
     // Log the response status code and body for debugging
@@ -52,7 +52,7 @@ class HeaderRepository {
         '/api/saving/notification',
         method: 'POST',
         headers: {'Content-Type': 'application/json'},
-        body: jsonEncode(notificationRequest.toJson()),
+        body: notificationRequest.toJson(),
     );
 
     // Log the response status code and body for debugging

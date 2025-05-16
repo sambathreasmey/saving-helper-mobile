@@ -3,6 +3,7 @@
 import 'dart:convert';
 
 import 'package:flutter/foundation.dart';
+import 'package:saving_helper/models/requests/DeleteTransactionRequest.dart';
 import 'package:saving_helper/models/requests/delete_repay_loan_request.dart';
 import 'package:saving_helper/models/requests/get_report_request.dart';
 import 'package:saving_helper/models/requests/repay_loan_request.dart';
@@ -22,7 +23,7 @@ class ReportRepository {
         '/api/saving/transaction_detail',
         method: 'POST',
         headers: {'Content-Type': 'application/json'},
-        body: jsonEncode(getReportRequest.toJson()),
+        body: getReportRequest.toJson(),
     );
 
     // Log the response status code and body for debugging
@@ -43,7 +44,7 @@ class ReportRepository {
       '/api/saving/repay_loan',
       method: 'POST',
       headers: {'Content-Type': 'application/json'},
-      body: jsonEncode(repayLoanRequest.toJson()),
+      body: repayLoanRequest.toJson(),
     );
 
     // Log the response status code and body for debugging
@@ -65,7 +66,29 @@ class ReportRepository {
       '/api/saving/delete_repay_loan_by_id',
       method: 'DELETE',
       headers: {'Content-Type': 'application/json'},
-      body: jsonEncode(repayLoanRequest.toJson()),
+      body: repayLoanRequest.toJson(),
+    );
+
+    // Log the response status code and body for debugging
+    if (kDebugMode) {
+      print('Response status: ${response.statusCode}');
+      print('Response body: ${response.body}');
+    }
+
+    if (response.statusCode == 200) {
+      return ResultMessage.fromJson(json.decode(response.body));
+    } else {
+      // Throw an exception with the response body for better debugging
+      throw Exception('Failed to delete repay loan: ${response.statusCode} - ${response.body}');
+    }
+  }
+
+  Future<ResultMessage> deleteTransaction(DeleteTransactionRequest request) async {
+    final response = await apiProvider.sendAuthenticatedRequest(
+      '/api/saving/delete_transaction_by_id',
+      method: 'DELETE',
+      headers: {'Content-Type': 'application/json'},
+      body: request.toJson(),
     );
 
     // Log the response status code and body for debugging

@@ -84,19 +84,58 @@ class ApiProvider {
     return response;
   }
 
-  Future<http.Response> _sendRequest(String endpoint, String method, Map<String, String> headers, dynamic body) async {
-    final Uri uri = Uri.parse('$baseUrl$endpoint');
+  // Future<http.Response> _sendRequest(String endpoint, String method, Map<String, String> headers, dynamic body) async {
+  //   final Uri uri = Uri.parse('$baseUrl$endpoint');
+  //   switch (method.toUpperCase()) {
+  //     case 'POST':
+  //       return await http.post(uri, headers: headers, body: body);
+  //     case 'PUT':
+  //       return await http.put(uri, headers: headers, body: body);
+  //     case 'DELETE':
+  //       return await http.delete(uri, headers: headers, body: body);
+  //     case 'GET':
+  //     default:
+  //       return await http.get(uri, headers: headers);
+  //   }
+  // }
+  Future<http.Response> _sendRequest(
+      String endpoint,
+      String method,
+      Map<String, String> headers,
+      dynamic body,
+      ) async {
+    Uri uri;
+    if (method.toUpperCase() == 'GET' && body is Map<String, dynamic>) {
+        final queryParams = body.map(
+              (key, value) => MapEntry(key, value?.toString() ?? ''),
+        );
+      uri = Uri.parse('$baseUrl$endpoint').replace(queryParameters: queryParams);
+    } else {
+      uri = Uri.parse('$baseUrl$endpoint');
+    }
+
+    // Encode body for JSON requests if needed
+    String? encodedBody;
+    if (body != null && method.toUpperCase() != 'GET') {
+      if (headers['Content-Type']?.contains('application/json') ?? false) {
+        encodedBody = jsonEncode(body);
+      } else {
+        encodedBody = body.toString(); // fallback
+      }
+    }
+
     switch (method.toUpperCase()) {
       case 'POST':
-        return await http.post(uri, headers: headers, body: body);
+        return await http.post(uri, headers: headers, body: encodedBody);
       case 'PUT':
-        return await http.put(uri, headers: headers, body: body);
+        return await http.put(uri, headers: headers, body: encodedBody);
       case 'DELETE':
-        return await http.delete(uri, headers: headers, body: body);
+        return await http.delete(uri, headers: headers, body: encodedBody);
       case 'GET':
       default:
         return await http.get(uri, headers: headers);
     }
   }
+
 }
 

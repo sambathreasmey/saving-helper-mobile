@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "966648994061",
+    "project_id": "saving-helper",
+    "storage_bucket": "saving-helper.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:966648994061:android:7c199355774b90c6f07844",
+        "android_client_info": {
+          "package_name": "com.sambathreasmey.saving_helper"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBgOhZIOeVMxHy5xOsrXMGY6GLOFtgXviA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
