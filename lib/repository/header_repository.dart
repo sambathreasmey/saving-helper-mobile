@@ -44,8 +44,11 @@ class HeaderRepository {
   }
 
   Future<ResultMessage> notification() async {
+    final shareStorage = ShareStorage();
+    final groupId = await shareStorage.getGroupId();
     final notificationRequest = NotificationRequest(
       channelId: 'sambathreasmey',
+      groupId: groupId!,
     );
 
     final response = await apiProvider.sendAuthenticatedRequest(

@@ -1,7 +1,10 @@
 import 'dart:async';
 import 'dart:math';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:saving_helper/controllers/invite_controller.dart';
+import 'package:saving_helper/repository/invite_repository.dart';
+import 'package:saving_helper/services/api_provider.dart';
 
 class AnimatedInviteBanner extends StatefulWidget {
   const AnimatedInviteBanner({super.key});
@@ -11,6 +14,8 @@ class AnimatedInviteBanner extends StatefulWidget {
 }
 
 class _AnimatedInviteBannerState extends State<AnimatedInviteBanner> with SingleTickerProviderStateMixin {
+  final InviteController controller = Get.put(InviteController(InviteRepository(ApiProvider())));
+
   final List<List<Color>> _gradientPairs = [
     [Colors.deepPurpleAccent, Colors.purpleAccent],
     [Colors.pinkAccent, Colors.orangeAccent],
@@ -40,10 +45,8 @@ class _AnimatedInviteBannerState extends State<AnimatedInviteBanner> with Single
     super.initState();
     _currentColors = _gradientPairs.first;
 
-    // Start gradient change timer
     _timer = Timer.periodic(const Duration(seconds: 5), (_) => _changeGradient());
 
-    // Setup animation controller
     _textAnimationController = AnimationController(
       vsync: this,
       duration: const Duration(milliseconds: 700),
@@ -71,7 +74,7 @@ class _AnimatedInviteBannerState extends State<AnimatedInviteBanner> with Single
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
-        final InviteController controller = InviteController();
+        controller.getOwnerGroup();
 
         showDialog(
           context: context,
@@ -151,39 +154,42 @@ class _AnimatedInviteBannerState extends State<AnimatedInviteBanner> with Single
                               style: const TextStyle(fontFamily: 'MyBaseFont'),
                             ),
                             const SizedBox(height: 16),
-                            Container(
-                              width: double.infinity,
-                              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
-                              decoration: BoxDecoration(
-                                color: Colors.white,
-                                borderRadius: BorderRadius.circular(12),
-                                border: Border.all(color: Colors.grey.shade300),
-                              ),
-                              child: DropdownButton<String>(
-                                isExpanded: true,
-                                value: controller.selectedGroup,
-                                underline: const SizedBox(),
-                                hint: const Text('ជ្រើសរើសក្រុម', style: TextStyle(fontFamily: 'MyBaseFont')),
-                                items: controller.groups.map((group) {
-                                  return DropdownMenuItem(
-                                    value: group,
-                                    child: Text(group, style: const TextStyle(fontFamily: 'MyBaseFont')),
-                                  );
-                                }).toList(),
-                                onChanged: (value) {
-                                  setState(() {
-                                    controller.selectedGroup = value;
-                                  });
-                                },
-                              ),
-                            ),
+                            Obx(() {
+                              final groupList = controller.groups.value ?? [];
+                              return Container(
+                                width: double.infinity,
+                                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
+                                decoration: BoxDecoration(
+                                  color: Colors.white,
+                                  borderRadius: BorderRadius.circular(12),
+                                  border: Border.all(color: Colors.grey.shade300),
+                                ),
+                                child: DropdownButton<String>(
+                                  isExpanded: true,
+                                  value: controller.selectedGroup,
+                                  underline: const SizedBox(),
+                                  hint: const Text('ជ្រើសរើសក្រុម', style: TextStyle(fontFamily: 'MyBaseFont')),
+                                  items: groupList.map((group) {
+                                    return DropdownMenuItem(
+                                      value: group.groupId.toString(),
+                                      child: Text(group.groupName ?? '', style: const TextStyle(fontFamily: 'MyBaseFont')),
+                                    );
+                                  }).toList(),
+                                  onChanged: (value) {
+                                    setState(() {
+                                      controller.selectedGroup = value;
+                                    });
+                                  },
+                                ),
+                              );
+                            }),
                             const SizedBox(height: 20),
                             Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
                                 TextButton(
                                   onPressed: () {
-                                    controller.dispose();
+                                    controller.clear(); // ✅ clear input, don't dispose
                                     Navigator.of(context).pop();
                                   },
                                   child: const Text(
@@ -195,23 +201,39 @@ class _AnimatedInviteBannerState extends State<AnimatedInviteBanner> with Single
                                     ),
                                   ),
                                 ),
-                                ElevatedButton(
+                                Obx(() => ElevatedButton(
                                   style: ElevatedButton.styleFrom(
                                     backgroundColor: Colors.white,
                                     shape: RoundedRectangleBorder(
                                       borderRadius: BorderRadius.circular(10),
                                     ),
                                   ),
-                                  onPressed: () {
+                                  onPressed: () async {
                                     if (controller.validate()) {
-                                      print("Inviting ${controller.username} to ${controller.selectedGroup}");
-                                      controller.dispose();
-                                      Navigator.of(context).pop();
+                                      await controller.findUserByUsername();
                                     } else {
-                                      print("Username or group missing");
+                                      Get.snackbar(
+                                        "ការបញ្ចូលមិនពេញលេញ",
+                                        "សូមបញ្ចូលឈ្មោះអ្នកប្រើប្រាស់ និងជ្រើសរើសក្រុម",
+                                        snackPosition: SnackPosition.TOP,
+                                        backgroundColor: Colors.white,
+                                        colorText: Colors.black87,
+                                        icon: const Icon(Icons.warning_amber_outlined, color: Colors.orange),
+                                        margin: const EdgeInsets.all(12),
+                                        borderRadius: 8,
+                                      );
                                     }
                                   },
-                                  child: Text(
+                                  child: controller.isLoading.value
+                                      ? const SizedBox(
+                                    height: 18,
+                                    width: 18,
+                                    child: CircularProgressIndicator(
+                                      strokeWidth: 2,
+                                      color: Colors.deepPurple,
+                                    ),
+                                  )
+                                      : Text(
                                     'អញ្ជើញ',
                                     style: TextStyle(
                                       fontFamily: 'MyBaseFont',
@@ -219,7 +241,7 @@ class _AnimatedInviteBannerState extends State<AnimatedInviteBanner> with Single
                                       color: color2,
                                     ),
                                   ),
-                                ),
+                                )),
                               ],
                             ),
                           ],
