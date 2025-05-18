@@ -1,20 +1,20 @@
+import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
+import 'package:get/get.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:saving_helper/controllers/deposit_saving_controller.dart';
 import 'package:saving_helper/repository/deposit_saving_repository.dart';
-import 'package:saving_helper/screen/header.dart';
 import 'package:saving_helper/services/api_provider.dart';
-import 'package:get/get.dart';
+import 'package:saving_helper/screen/header.dart';
 import 'package:saving_helper/theme_screen.dart';
-
 import '../constants/app_color.dart' as app_colors;
 
 class DepositSavingScreen extends StatefulWidget {
   const DepositSavingScreen({super.key});
 
   @override
-  // ignore: library_private_types_in_public_api
   _DepositSavingScreenState createState() => _DepositSavingScreenState();
 }
 
@@ -24,224 +24,254 @@ class _DepositSavingScreenState extends State<DepositSavingScreen> {
   @override
   Widget build(BuildContext context) {
     return ThemedScaffold(
-      child: Stack(
-        children: [
-          SafeArea(
-            child: Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: Column(
-                children: [
-                  CustomHeader(),
-                  SizedBox(height: 15),
-                  Container(
-                    alignment: Alignment.centerLeft,
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          'គ្រប់គ្រង',
-                          style: TextStyle(
-                            color: app_colors.baseWhiteColor,
-                            fontSize: 16,
-                            fontWeight: FontWeight.bold,
-                            fontFamily: 'MyBaseFont',
-                          ),
-                        ),
-                        Row(
-                          children: [
-                            Text(
-                              'គ្រប់គ្រង /',
-                              style: TextStyle(
-                                color: app_colors.subTitleText,
-                                fontSize: 9,
-                                fontFamily: 'MyBaseFont',
-                              ),
-                            ),
-                            Text(
-                              'បញ្ចូលប្រាក់សន្សំ',
-                              style: TextStyle(
-                                color: app_colors.baseWhiteColor,
-                                fontSize: 9,
-                                fontFamily: 'MyBaseFont',
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ],
-                    ),
+      child: Scaffold(
+        backgroundColor: Colors.transparent,
+        body: SafeArea(
+          child: Column(
+            children: [
+              const SizedBox(height: 24),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 16),
+                child: Column(
+                  children: [
+                    CustomHeader(),
+                    const SizedBox(height: 16),
+                    _buildBreadcrumb(),
+                  ],
+                ),
+              ),
+              const SizedBox(height: 16),
+              Expanded(
+                child: SingleChildScrollView(
+                  padding: const EdgeInsets.symmetric(horizontal: 16),
+                  child: Column(
+                    children: [
+                      _buildAmountField(),
+                      const SizedBox(height: 20),
+                      _buildCurrencySelector(),
+                      const SizedBox(height: 16),
+                      _buildDatePicker(),
+                      const SizedBox(height: 16),
+                      _buildNoteField(),
+                      const SizedBox(height: 16),
+                      _buildAddToExistingCheckbox(),
+                      const SizedBox(height: 16),
+                      _buildImageUploadSection(),
+                      showDetectTextFromUpdateImage(),
+                      const SizedBox(height: 32),
+                    ],
                   ),
-                  SizedBox(height: 15),
-                  Container(
-                    padding: EdgeInsets.symmetric(vertical: 0, horizontal: 20),
-                    child: Column(
-                      children: [
-                        SizedBox(height: 15),
-                        TextField(
-                          controller: controller.amountController,
-                          onChanged: (value) {
-                            controller.amount.value = value;
-                          },
-                          keyboardType: TextInputType.numberWithOptions(decimal: true),
-                          inputFormatters: [
-                            FilteringTextInputFormatter.allow(RegExp(r'^\d*\.?\d{0,2}')), // Allow numbers and up to 2 decimal places
-                            // You can also use a custom formatter to format as currency
-                          ],
-                          decoration: InputDecoration(
-                            labelText: 'ចំនួនទឹកប្រាក់',
-                            border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(10.0),
-                              borderSide: BorderSide(color: Colors.grey),
-                            ),
-                            enabledBorder: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(10.0),
-                              borderSide: BorderSide(color: Colors.grey),
-                            ),
-                            focusedBorder: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(10.0),
-                              borderSide: BorderSide(color: Colors.blue),
-                            ),
-                            filled: true,
-                            fillColor: Colors.white,
-                            suffixIcon: Icon(Icons.account_balance_wallet_outlined),
-                          ),
-                        ),
-                        SizedBox(height: 20),
-                        InkWell(
-                          onTap: () {
-                            showModalBottomSheet(
-                              context: context,
-                              builder: (context) {
-                                return openSelectCategory();
-                              },
-                            );
-                          },
-                          child: Obx(() => TextField(
-                            enabled: false,
-                            decoration: InputDecoration(
-                              filled: true, // Enable filling
-                              fillColor: Colors.white, // Set background color to white
-                              suffixIcon: const Icon(Icons.arrow_drop_down),
-                              labelText: controller.selectedCurrency.value.isEmpty ? "សូមជ្រើសរើសប្រភេទសាច់ប្រាក់" : controller.selectedCurrency.value,
-                              labelStyle: Theme.of(context).textTheme.bodyMedium,
-                              border: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(10.0), // Set border radius
-                                borderSide: BorderSide(color: Colors.grey), // Border color
-                              ),
-                              enabledBorder: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(10.0), // Same radius for enabled state
-                                borderSide: BorderSide(color: Colors.grey), // Border color when enabled
-                              ),
-                              focusedBorder: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(10.0), // Same radius for focused state
-                                borderSide: BorderSide(color: Colors.blue), // Border color when focused
-                              ),
-                            ),
-                            style: Theme.of(context).textTheme.titleMedium?.apply(fontFamily: 'MyBaseFont', color: app_colors.baseWhiteColor),
-                          )),
-                        ),
-                        SizedBox(height: 16.0),
-                        Obx(() => GestureDetector(
-                          onTap: () async {
-                            DateTime? pickedDate = await showDatePicker(
-                              context: context,
-                              initialDate: DateTime.now(),
-                              firstDate: DateTime(2000),
-                              lastDate: DateTime(2101),
-                            );
-
-                            if (pickedDate != null) {
-                              String formattedDate = DateFormat('yyyy-MM-dd').format(pickedDate);
-                              controller.selectedDate.value = formattedDate;
-                            }
-                          },
-                          child: AbsorbPointer(
-                            child: TextField(
-                              decoration: InputDecoration(
-                                labelText: controller.selectedDate.value.isEmpty ? "ថ្ងៃខែឆ្នាំ" : controller.selectedDate.value,
-                                border: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(10.0),
-                                  borderSide: BorderSide(color: Colors.grey),
-                                ),
-                                enabledBorder: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(10.0),
-                                  borderSide: BorderSide(color: Colors.grey),
-                                ),
-                                focusedBorder: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(10.0),
-                                  borderSide: BorderSide(color: Colors.blue),
-                                ),
-                                filled: true,
-                                fillColor: Colors.white,
-                                suffixIcon: Icon(Icons.calendar_today),
-                              ),
-                            ),
-                          ),
-                        )),
-                        SizedBox(height: 16.0),
-                        TextField(
-                          controller: controller.transactionDescController,
-                          onChanged: (value) {
-                            controller.transactionDesc.value = value; // Update the reactive amount
-                          },
-                          decoration: InputDecoration(
-                            labelText: 'កំណត់ចំណាំ',
-                            border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(10.0),
-                              borderSide: BorderSide(color: Colors.grey),
-                            ),
-                            enabledBorder: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(10.0),
-                              borderSide: BorderSide(color: Colors.grey),
-                            ),
-                            focusedBorder: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(10.0),
-                              borderSide: BorderSide(color: Colors.blue),
-                            ),
-                            filled: true,
-                            fillColor: Colors.white,
-                            suffixIcon: Icon(Icons.note_alt_outlined),
-                          ),
-                        ),
-                        SizedBox(height: 16.0),
-                        Obx(() => CheckboxListTile(
-                        title: Text('បន្ថែមលើប្រតិបត្តិចាស់ក្នុងថ្ងៃ', style: TextStyle(color: app_colors.baseWhiteColor, fontFamily: 'MyBaseFont'),),
-                        value: controller.isSavingMore.value,
-                        onChanged: (value) {
-                        controller.isSavingMore.value = value ?? false; // Update the reactive variable
-                        },
-                        )),
-                        SizedBox(height: 25),
-                        SizedBox(
-                          width: double.infinity,
-                          height: 50,
-                          child: ElevatedButton(
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor: app_colors.loveColor,
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(15.0),
-                              ),
-                            ),
-                            onPressed: () {
-                              controller.saveDeposit();
-                            },
-                            child: Text('បញ្ចូល', style: TextStyle(color: Colors.white, fontSize: 16, fontFamily: 'MyBaseFont', fontWeight: FontWeight.bold,)),
-                          ),
-                        ),
-                        SizedBox(height: 10),
-                      ],
-                    ),
-                  ),
-                ],
+                ),
+              ),
+            ],
+          ),
+        ),
+        bottomNavigationBar: Padding(
+          padding: const EdgeInsets.fromLTRB(16, 0, 16, 24),
+          child: SizedBox(
+            width: double.infinity,
+            height: 50,
+            child: ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                backgroundColor: app_colors.loveColor,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(15.0),
+                ),
+              ),
+              onPressed: controller.saveDeposit,
+              child: Text(
+                'បញ្ចូល',
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 16,
+                  fontFamily: 'MyBaseFont',
+                  fontWeight: FontWeight.bold,
+                ),
               ),
             ),
+          ),
+        ),
+      ),
+    );
+  }
+
+
+  Widget _buildBreadcrumb() {
+    return Container(
+      alignment: Alignment.centerLeft,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text('គ្រប់គ្រង',
+              style: TextStyle(
+                  color: app_colors.baseWhiteColor,
+                  fontSize: 16,
+                  fontWeight: FontWeight.bold,
+                  fontFamily: 'MyBaseFont')),
+          Row(
+            children: [
+              Text('គ្រប់គ្រង /',
+                  style: TextStyle(
+                      color: app_colors.subTitleText,
+                      fontSize: 9,
+                      fontFamily: 'MyBaseFont')),
+              Text('បញ្ចូលប្រាក់សន្សំ',
+                  style: TextStyle(
+                      color: app_colors.baseWhiteColor,
+                      fontSize: 9,
+                      fontWeight: FontWeight.bold,
+                      fontFamily: 'MyBaseFont')),
+            ],
           ),
         ],
       ),
     );
   }
 
-  openSelectCategory() {
+  Widget _buildAmountField() {
+    return TextField(
+      controller: controller.amountController,
+      onChanged: (value) => controller.amount.value = value,
+      keyboardType: TextInputType.numberWithOptions(decimal: true),
+      inputFormatters: [
+        FilteringTextInputFormatter.allow(RegExp(r'^\d*\.?\d{0,2}')),
+      ],
+      decoration: _inputDecoration('ចំនួនទឹកប្រាក់', Icons.account_balance_wallet_outlined),
+    );
+  }
+
+  Widget _buildCurrencySelector() {
+    return InkWell(
+      onTap: () {
+        showModalBottomSheet(
+          context: context,
+          builder: (_) => openSelectCategory(),
+        );
+      },
+      child: Obx(() => TextField(
+        enabled: false,
+        decoration: _inputDecoration(
+          controller.selectedCurrency.value.isEmpty ? "សូមជ្រើសរើសប្រភេទសាច់ប្រាក់" : controller.selectedCurrency.value,
+          Icons.arrow_drop_down,
+        ),
+        style: Theme.of(context).textTheme.titleMedium?.apply(
+            fontFamily: 'MyBaseFont', color: app_colors.baseWhiteColor),
+      )),
+    );
+  }
+
+  Widget _buildDatePicker() {
+    return Obx(() => GestureDetector(
+      onTap: () async {
+        final pickedDate = await showDatePicker(
+          context: context,
+          initialDate: DateTime.now(),
+          firstDate: DateTime(2000),
+          lastDate: DateTime(2101),
+        );
+        if (pickedDate != null) {
+          controller.selectedDate.value = DateFormat('yyyy-MM-dd').format(pickedDate);
+        }
+      },
+      child: AbsorbPointer(
+        child: TextField(
+          decoration: _inputDecoration(
+              controller.selectedDate.value.isEmpty ? "ថ្ងៃខែឆ្នាំ" : controller.selectedDate.value,
+              Icons.calendar_today),
+        ),
+      ),
+    ));
+  }
+
+  Widget _buildNoteField() {
+    return TextField(
+      controller: controller.transactionDescController,
+      onChanged: (value) => controller.transactionDesc.value = value,
+      decoration: _inputDecoration('កំណត់ចំណាំ', Icons.note_alt_outlined),
+    );
+  }
+
+  Widget _buildAddToExistingCheckbox() {
+    return Obx(() => CheckboxListTile(
+      title: Text('បន្ថែមលើប្រតិបត្តិចាស់ក្នុងថ្ងៃ',
+          style: TextStyle(color: app_colors.baseWhiteColor, fontFamily: 'MyBaseFont')),
+      value: controller.isSavingMore.value,
+      onChanged: (value) => controller.isSavingMore.value = value ?? false,
+    ));
+  }
+
+  Widget _buildImageUploadSection() {
+    return Obx(() => GestureDetector(
+      onTap: controller.pickImage,
+      child: controller.selectedImage.value != null
+          ? ClipRRect(
+        borderRadius: BorderRadius.circular(10),
+        child: Image.file(
+          File(controller.selectedImage.value!.path),
+          height: 150,
+          width: double.infinity,
+          fit: BoxFit.cover,
+        ),
+      )
+          : Container(
+        height: 150,
+        width: double.infinity,
+        decoration: BoxDecoration(
+          color: Colors.grey.shade300,
+          borderRadius: BorderRadius.circular(10),
+          border: Border.all(color: Colors.grey),
+        ),
+        child: Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: const [
+              Icon(Icons.add_a_photo_outlined, size: 40, color: Colors.grey),
+              SizedBox(height: 8),
+              Text(
+                "ចុចដើម្បីជ្រើសរូបភាព",
+                style: TextStyle(fontSize: 12, color: Colors.grey),
+              ),
+            ],
+          ),
+        ),
+      ),
+    ));
+  }
+
+
+  Widget showDetectTextFromUpdateImage() {
+    return Obx(() => controller.extractedText.value.isNotEmpty
+        ? Padding(
+      padding: const EdgeInsets.only(top: 12.0),
+      child: Container(
+        width: double.infinity,
+        padding: const EdgeInsets.all(12),
+        decoration: BoxDecoration(
+          color: Colors.grey.shade100,
+          borderRadius: BorderRadius.circular(10),
+        ),
+        child: Text(
+          controller.extractedText.value,
+          style: const TextStyle(fontSize: 14, color: Colors.black87),
+        ),
+      ),
+    )
+        : const SizedBox.shrink());
+  }
+
+  InputDecoration _inputDecoration(String label, IconData icon) {
+    return InputDecoration(
+      labelText: label,
+      border: OutlineInputBorder(borderRadius: BorderRadius.circular(10.0), borderSide: BorderSide(color: Colors.grey)),
+      enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(10.0), borderSide: BorderSide(color: Colors.grey)),
+      focusedBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(10.0), borderSide: BorderSide(color: Colors.blue)),
+      filled: true,
+      fillColor: Colors.white,
+      suffixIcon: Icon(icon),
+    );
+  }
+
+  Widget openSelectCategory() {
     return Container(
       constraints: BoxConstraints(
         minHeight: MediaQuery.of(context).size.height * 0.3,
@@ -249,59 +279,31 @@ class _DepositSavingScreenState extends State<DepositSavingScreen> {
       ),
       decoration: BoxDecoration(
         color: app_colors.baseWhiteColor,
-        borderRadius: const BorderRadius.only(
-          topRight: Radius.circular(16),
-          topLeft: Radius.circular(16),
-        ),
+        borderRadius: const BorderRadius.only(topRight: Radius.circular(16), topLeft: Radius.circular(16)),
       ),
       child: Column(
         children: [
           Container(
-            width: MediaQuery.of(context).size.width,
             height: 55,
             decoration: BoxDecoration(
-              color: app_colors.baseWhiteColor,
-              borderRadius: const BorderRadius.only(
-                topRight: Radius.circular(16),
-                topLeft: Radius.circular(16),
-              ),
-              gradient: LinearGradient(
-                colors: [app_colors.loveColor, app_colors.baseColor],
-                begin: Alignment.topCenter,
-                end: Alignment.bottomCenter,
-              ),
+              gradient: LinearGradient(colors: [app_colors.loveColor, app_colors.baseColor]),
+              borderRadius: const BorderRadius.only(topRight: Radius.circular(16), topLeft: Radius.circular(16)),
             ),
-            child: Center(
-              child: Text(
-                "សូមជ្រើសរើសប្រភេទសាច់ប្រាក់",
-                textAlign: TextAlign.center,
-                style: Theme.of(context).textTheme.titleMedium,
-              ),
-            ),
+            child: const Center(child: Text("សូមជ្រើសរើសប្រភេទសាច់ប្រាក់")),
           ),
           Expanded(
             child: ListView.builder(
               itemCount: controller.currencyList.length,
-              itemBuilder: (context, index) {
+              itemBuilder: (_, index) {
                 final currency = controller.currencyList[index];
                 return InkWell(
                   onTap: () {
                     controller.selectedCurrency.value = currency;
                     Get.back();
-                    FocusScope.of(context).unfocus();
                   },
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Container(
-                        margin: const EdgeInsets.symmetric(vertical: 10, horizontal: 16),
-                        child: Text(
-                          currency,
-                          style: Theme.of(context).textTheme.titleMedium?.apply(fontFamily: 'MyBaseFont', color: app_colors.baseColor),
-                        ),
-                      ),
-                      Divider(color: app_colors.baseWhiteColor),
-                    ],
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 16),
+                    child: Text(currency, style: Theme.of(context).textTheme.titleMedium),
                   ),
                 );
               },

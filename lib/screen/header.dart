@@ -8,6 +8,7 @@ import 'package:saving_helper/screen/home_screen.dart';
 import 'package:saving_helper/screen/loan_screen.dart';
 import 'package:saving_helper/screen/login_screen.dart';
 import 'package:get/get.dart';
+import 'package:saving_helper/screen/member_screen.dart';
 import 'package:saving_helper/screen/report_screen.dart';
 import 'package:saving_helper/services/api_provider.dart';
 import 'package:saving_helper/services/share_storage.dart';
@@ -459,13 +460,10 @@ void _showModalBottomSheet(BuildContext context, HeaderController controller, Sh
   );
 }
 
-
-
 class ManagementSubMenu extends StatefulWidget {
   const ManagementSubMenu({super.key});
 
   @override
-  // ignore: library_private_types_in_public_api
   _ManagementSubMenuState createState() => _ManagementSubMenuState();
 }
 
@@ -477,21 +475,28 @@ class _ManagementSubMenuState extends State<ManagementSubMenu> {
     return Column(
       children: [
         ListTile(
-          leading: Icon(Icons.science_outlined, color: app_colors.baseColor,),
-          title: Text('គ្រប់គ្រង', style: TextStyle(color: app_colors.baseColor, fontWeight: FontWeight.bold, fontFamily: 'MyBaseFont',)),
+          leading: Icon(Icons.science_outlined, color: app_colors.baseColor),
+          title: Text(
+            'គ្រប់គ្រង',
+            style: TextStyle(
+              color: app_colors.baseColor,
+              fontWeight: FontWeight.bold,
+              fontFamily: 'MyBaseFont',
+            ),
+          ),
           trailing: Icon(
             _isExpanded ? Icons.arrow_drop_up : Icons.arrow_drop_down,
             color: app_colors.baseColor,
           ),
           onTap: () {
             setState(() {
-              _isExpanded = !_isExpanded; // Toggle the submenu
+              _isExpanded = !_isExpanded;
             });
           },
         ),
         AnimatedContainer(
           duration: Duration(milliseconds: 100),
-          height: _isExpanded ? 110 : 0, // Adjust height based on expansion
+          height: _isExpanded ? 165 : 0, // Adjust height for 3 menu items
           child: SingleChildScrollView(
             child: Padding(
               padding: const EdgeInsets.only(left: 32),
@@ -499,8 +504,15 @@ class _ManagementSubMenuState extends State<ManagementSubMenu> {
                 children: [
                   if (_isExpanded) ...[
                     ListTile(
-                      leading: Icon(Icons.savings_outlined, color: app_colors.baseColor,),
-                      title: Text('បញ្ចូលប្រាក់សន្សំ', style: TextStyle(color: app_colors.baseColor, fontWeight: FontWeight.bold, fontFamily: 'MyBaseFont',)),
+                      leading: Icon(Icons.savings_outlined, color: app_colors.baseColor),
+                      title: Text(
+                        'បញ្ចូលប្រាក់សន្សំ',
+                        style: TextStyle(
+                          color: app_colors.baseColor,
+                          fontWeight: FontWeight.bold,
+                          fontFamily: 'MyBaseFont',
+                        ),
+                      ),
                       onTap: () {
                         Get.delete<HeaderController>();
                         Get.to(() => DepositSavingScreen());
@@ -508,21 +520,35 @@ class _ManagementSubMenuState extends State<ManagementSubMenu> {
                     ),
                     ListTile(
                       leading: Icon(Icons.real_estate_agent_outlined, color: app_colors.baseColor),
-                      title: Text('បញ្ចូលប្រាក់កម្ចី', style: TextStyle(color: app_colors.baseColor, fontWeight: FontWeight.bold, fontFamily: 'MyBaseFont',)),
+                      title: Text(
+                        'បញ្ចូលប្រាក់កម្ចី',
+                        style: TextStyle(
+                          color: app_colors.baseColor,
+                          fontWeight: FontWeight.bold,
+                          fontFamily: 'MyBaseFont',
+                        ),
+                      ),
                       onTap: () {
                         Get.delete<HeaderController>();
                         Get.to(() => LoanScreen());
                       },
                     ),
-                    // ListTile(
-                    //   leading: Icon(Icons.currency_exchange_outlined, color: app_colors.baseColor,),
-                    //   title: Text('សងប្រាក់កម្ចី', style: TextStyle(color: app_colors.baseColor, fontWeight: FontWeight.bold, fontFamily: 'MyBaseFont',)),
-                    //   onTap: () {
-                    //     Get.delete<HeaderController>();
-                    //     Get.to(() => LoanRepayScreen());
-                    //   },
-                    // ),
-                  ],
+                    ListTile(
+                      leading: Icon(Icons.group_outlined, color: app_colors.baseColor),
+                      title: Text(
+                        'សមាជិក',
+                        style: TextStyle(
+                          color: app_colors.baseColor,
+                          fontWeight: FontWeight.bold,
+                          fontFamily: 'MyBaseFont',
+                        ),
+                      ),
+                      onTap: () {
+                        Get.delete<HeaderController>();
+                        Get.to(() => MemberScreen());
+                      },
+                    ),
+                  ]
                 ],
               ),
             ),

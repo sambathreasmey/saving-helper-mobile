@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
 import 'package:saving_helper/models/requests/deposit_saving_request.dart';
 import 'package:saving_helper/repository/deposit_saving_repository.dart';
@@ -26,6 +27,18 @@ class DepositSavingController extends GetxController {
 
   final TextEditingController amountController = TextEditingController();
   final TextEditingController transactionDescController = TextEditingController();
+
+  // Image Picker
+  final ImagePicker _picker = ImagePicker();
+  Rxn<XFile> selectedImage = Rxn<XFile>();
+  RxString extractedText = ''.obs;
+
+  Future<void> pickImage() async {
+    final picked = await _picker.pickImage(source: ImageSource.gallery);
+    if (picked != null) {
+      selectedImage.value = picked;
+    }
+  }
 
   @override
   void onClose() {
