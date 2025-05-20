@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
@@ -19,11 +21,12 @@ class DepositSavingController extends GetxController {
 
   // Reactive variables
   RxString amount = ''.obs;
-  RxString transactionDesc = ''.obs;
+  RxString transactionDesc = 'សន្សំប្រាក់'.obs;
   RxString selectedCurrency = 'USD'.obs;
   RxList<String> currencyList = ['USD', 'KHR'].obs;
   RxString selectedDate = ''.obs;
   RxBool isSavingMore = false.obs;
+  RxBool isUploading = false.obs;
 
   final TextEditingController amountController = TextEditingController();
   final TextEditingController transactionDescController = TextEditingController();
@@ -37,8 +40,31 @@ class DepositSavingController extends GetxController {
     final picked = await _picker.pickImage(source: ImageSource.gallery);
     if (picked != null) {
       selectedImage.value = picked;
+
+      // Call upload immediately
+      await uploadSelectedImage();
     }
   }
+
+  Future<void> uploadSelectedImage() async {
+    if (selectedImage.value == null) return;
+
+    try {
+      isUploading.value = true;
+
+      final file = File(selectedImage.value!.path);
+      print("call to upload image >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
+      final result = await depositSavingRepository.uploadDocumentImage(file);
+
+      Get.snackbar("Upload Success", result.message ?? "Document uploaded");
+    } catch (e) {
+      print("Upload error: $e");
+      Get.snackbar("Upload Failed", e.toString());
+    } finally {
+      isUploading.value = false;
+    }
+  }
+
 
   @override
   void onClose() {

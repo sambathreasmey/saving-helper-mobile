@@ -1,5 +1,6 @@
 
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:flutter/foundation.dart';
 import 'package:saving_helper/models/requests/deposit_saving_request.dart';
@@ -32,4 +33,28 @@ class DepositSavingRepository {
       throw Exception('Failed to login: ${response.statusCode} - ${response.body}');
     }
   }
+
+  Future<ResultMessage> uploadDocumentImage(File imageFile, {String fieldName = 'file'}) async {
+    final response = await apiProvider.uploadImageWithAuth(
+      endpoint: '/api/saving/upload',
+      imageFile: imageFile,
+      fieldName: fieldName,
+      fields: {
+        'documentType': 'identity',
+      },
+    );
+
+    // Debug logging
+    if (kDebugMode) {
+      print('Upload status: ${response.statusCode}');
+      print('Upload response: ${response.body}');
+    }
+
+    if (response.statusCode == 200) {
+      return ResultMessage.fromJson(json.decode(response.body));
+    } else {
+      throw Exception('Failed to upload document: ${response.statusCode} - ${response.body}');
+    }
+  }
+
 }

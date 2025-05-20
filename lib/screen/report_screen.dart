@@ -79,7 +79,6 @@ class _ReportScreenState extends State<ReportScreen> {
               ),
               SizedBox(height: 15),
 
-              // Filter Section
               Row(
                 children: [
                   Expanded(
@@ -103,17 +102,8 @@ class _ReportScreenState extends State<ReportScreen> {
                       child: Obx(
                             () => DropdownButtonHideUnderline(
                           child: DropdownButton2<String>(
-                            isExpanded: true, // ✅ Important for full-width dropdown
-                            value: controller.selectedTransactionType.value.isEmpty
-                                ? null
-                                : controller.selectedTransactionType.value,
-                            hint: Text(
-                              'សូមជ្រើសរើសប្រតិបត្តិការ',
-                              style: TextStyle(
-                                fontFamily: 'MyBaseFont',
-                                color: Colors.white,
-                              ),
-                            ),
+                            isExpanded: true,
+                            value: controller.selectedTransactionType.value,
                             items: [
                               DropdownMenuItem(
                                 value: "",

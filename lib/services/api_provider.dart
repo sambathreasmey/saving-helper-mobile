@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:io';
 import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
 import 'package:saving_helper/services/share_storage.dart';
@@ -84,20 +85,6 @@ class ApiProvider {
     return response;
   }
 
-  // Future<http.Response> _sendRequest(String endpoint, String method, Map<String, String> headers, dynamic body) async {
-  //   final Uri uri = Uri.parse('$baseUrl$endpoint');
-  //   switch (method.toUpperCase()) {
-  //     case 'POST':
-  //       return await http.post(uri, headers: headers, body: body);
-  //     case 'PUT':
-  //       return await http.put(uri, headers: headers, body: body);
-  //     case 'DELETE':
-  //       return await http.delete(uri, headers: headers, body: body);
-  //     case 'GET':
-  //     default:
-  //       return await http.get(uri, headers: headers);
-  //   }
-  // }
   Future<http.Response> _sendRequest(
       String endpoint,
       String method,
@@ -136,6 +123,70 @@ class ApiProvider {
         return await http.get(uri, headers: headers);
     }
   }
+
+  Future<http.Response> uploadImageWithAuth({
+    required String endpoint,
+    required File imageFile,
+    Map<String, String>? fields,
+    String fieldName = 'file', // commonly 'image' or 'file'
+  }) async {
+    // Ensure access token
+    if (_accessToken == null) {
+      _accessToken = await shareStorage.getToken();
+      if (_accessToken == null) {
+        if (kDebugMode) {
+          print('✅ accessToken is null then call to login JWT 🔐');
+        }
+        await _loginJWT();
+      }
+    }
+
+    // Create multipart request
+    final uri = Uri.parse('$baseUrl$endpoint');
+    final request = http.MultipartRequest('POST', uri)
+      ..headers['Authorization'] = 'Bearer $_accessToken';
+
+    // Attach file
+    request.files.add(
+      await http.MultipartFile.fromPath(fieldName, imageFile.path),
+    );
+
+    // Attach additional fields if any
+    if (fields != null) {
+      request.fields.addAll(fields);
+    }
+
+    // Send
+    final streamedResponse = await request.send();
+    final response = await http.Response.fromStream(streamedResponse);
+
+    // If unauthorized, try refresh and retry
+    if (response.statusCode == 401) {
+      if (kDebugMode) {
+        print('🔄 Token expired, attempting refresh...');
+      }
+
+      bool refreshSuccess = await _refreshAccessToken();
+      if (!refreshSuccess && !await _loginJWT()) {
+        throw Exception("Authentication failed");
+      }
+
+      // Retry with new token
+      final retryRequest = http.MultipartRequest('POST', uri)
+        ..headers['Authorization'] = 'Bearer $_accessToken'
+        ..files.add(await http.MultipartFile.fromPath(fieldName, imageFile.path));
+
+      if (fields != null) {
+        retryRequest.fields.addAll(fields);
+      }
+
+      final retryStreamed = await retryRequest.send();
+      return await http.Response.fromStream(retryStreamed);
+    }
+
+    return response;
+  }
+
 
 }
 

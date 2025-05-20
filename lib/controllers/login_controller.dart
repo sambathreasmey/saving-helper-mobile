@@ -6,6 +6,8 @@ import 'package:saving_helper/screen/home_screen.dart';
 import 'package:saving_helper/constants/app_color.dart' as app_color;
 import 'package:saving_helper/services/share_storage.dart';
 
+import 'package:saving_helper/models/responses/login_response.dart' as LoginResponse;
+
 class LoginController extends GetxController {
   final LoginRepository loginRepository;
 
@@ -18,21 +20,23 @@ class LoginController extends GetxController {
 
   Future<void> login() async {
     try {
-      final response = await loginRepository.login(
-        userController.text,
-        passController.text,
-      );
-
       // final response = await loginRepository.login(
-      //   'reasmeysambath',
-      //   '123',
+      //   userController.text,
+      //   passController.text,
       // );
+
+      final response = await loginRepository.login(
+        'sambathreasmey',
+        '123',
+      );
 
       if (response.status == 0) {
 
         // Save userId using ShareStorage
         final String? userId = response.data?.userId;
         await shareStorage.saveUserCredential(userId!);
+        final LoginResponse.Data? user = response.data;
+        await shareStorage.saveUser(user!);
         final storedGroupId = await shareStorage.getGroupId();
         if (storedGroupId == null) {
           final String? groupId = response.data?.groups?.first.groupId;

@@ -19,7 +19,8 @@ class DepositSavingScreen extends StatefulWidget {
 }
 
 class _DepositSavingScreenState extends State<DepositSavingScreen> {
-  final DepositSavingController controller = Get.put(DepositSavingController(DepositSavingRepository(ApiProvider())));
+  final DepositSavingController controller =
+  Get.put(DepositSavingController(DepositSavingRepository(ApiProvider())));
 
   @override
   Widget build(BuildContext context) {
@@ -57,6 +58,18 @@ class _DepositSavingScreenState extends State<DepositSavingScreen> {
                       _buildAddToExistingCheckbox(),
                       const SizedBox(height: 16),
                       _buildImageUploadSection(),
+                      const SizedBox(height: 12),
+                      Obx(() => controller.isUploading.value
+                          ? const CircularProgressIndicator()
+                          : ElevatedButton(
+                        onPressed: controller.pickImage,
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: app_colors.baseColor,
+                          shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(10)),
+                        ),
+                        child: const Text('Pick & Upload Image'),
+                      )),
                       showDetectTextFromUpdateImage(),
                       const SizedBox(height: 32),
                     ],
@@ -79,7 +92,7 @@ class _DepositSavingScreenState extends State<DepositSavingScreen> {
                 ),
               ),
               onPressed: controller.saveDeposit,
-              child: Text(
+              child: const Text(
                 'បញ្ចូល',
                 style: TextStyle(
                   color: Colors.white,
@@ -94,7 +107,6 @@ class _DepositSavingScreenState extends State<DepositSavingScreen> {
       ),
     );
   }
-
 
   Widget _buildBreadcrumb() {
     return Container(
@@ -132,11 +144,12 @@ class _DepositSavingScreenState extends State<DepositSavingScreen> {
     return TextField(
       controller: controller.amountController,
       onChanged: (value) => controller.amount.value = value,
-      keyboardType: TextInputType.numberWithOptions(decimal: true),
+      keyboardType: const TextInputType.numberWithOptions(decimal: true),
       inputFormatters: [
         FilteringTextInputFormatter.allow(RegExp(r'^\d*\.?\d{0,2}')),
       ],
-      decoration: _inputDecoration('ចំនួនទឹកប្រាក់', Icons.account_balance_wallet_outlined),
+      decoration:
+      _inputDecoration('ចំនួនទឹកប្រាក់', Icons.account_balance_wallet_outlined),
     );
   }
 
@@ -151,7 +164,9 @@ class _DepositSavingScreenState extends State<DepositSavingScreen> {
       child: Obx(() => TextField(
         enabled: false,
         decoration: _inputDecoration(
-          controller.selectedCurrency.value.isEmpty ? "សូមជ្រើសរើសប្រភេទសាច់ប្រាក់" : controller.selectedCurrency.value,
+          controller.selectedCurrency.value.isEmpty
+              ? "សូមជ្រើសរើសប្រភេទសាច់ប្រាក់"
+              : controller.selectedCurrency.value,
           Icons.arrow_drop_down,
         ),
         style: Theme.of(context).textTheme.titleMedium?.apply(
@@ -170,13 +185,16 @@ class _DepositSavingScreenState extends State<DepositSavingScreen> {
           lastDate: DateTime(2101),
         );
         if (pickedDate != null) {
-          controller.selectedDate.value = DateFormat('yyyy-MM-dd').format(pickedDate);
+          controller.selectedDate.value =
+              DateFormat('yyyy-MM-dd').format(pickedDate);
         }
       },
       child: AbsorbPointer(
         child: TextField(
           decoration: _inputDecoration(
-              controller.selectedDate.value.isEmpty ? "ថ្ងៃខែឆ្នាំ" : controller.selectedDate.value,
+              controller.selectedDate.value.isEmpty
+                  ? "ថ្ងៃខែឆ្នាំ"
+                  : controller.selectedDate.value,
               Icons.calendar_today),
         ),
       ),
@@ -194,9 +212,12 @@ class _DepositSavingScreenState extends State<DepositSavingScreen> {
   Widget _buildAddToExistingCheckbox() {
     return Obx(() => CheckboxListTile(
       title: Text('បន្ថែមលើប្រតិបត្តិចាស់ក្នុងថ្ងៃ',
-          style: TextStyle(color: app_colors.baseWhiteColor, fontFamily: 'MyBaseFont')),
+          style: TextStyle(
+              color: app_colors.baseWhiteColor,
+              fontFamily: 'MyBaseFont')),
       value: controller.isSavingMore.value,
-      onChanged: (value) => controller.isSavingMore.value = value ?? false,
+      onChanged: (value) =>
+      controller.isSavingMore.value = value ?? false,
     ));
   }
 
@@ -221,11 +242,12 @@ class _DepositSavingScreenState extends State<DepositSavingScreen> {
           borderRadius: BorderRadius.circular(10),
           border: Border.all(color: Colors.grey),
         ),
-        child: Center(
+        child: const Center(
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
-            children: const [
-              Icon(Icons.add_a_photo_outlined, size: 40, color: Colors.grey),
+            children: [
+              Icon(Icons.add_a_photo_outlined,
+                  size: 40, color: Colors.grey),
               SizedBox(height: 8),
               Text(
                 "ចុចដើម្បីជ្រើសរូបភាព",
@@ -237,7 +259,6 @@ class _DepositSavingScreenState extends State<DepositSavingScreen> {
       ),
     ));
   }
-
 
   Widget showDetectTextFromUpdateImage() {
     return Obx(() => controller.extractedText.value.isNotEmpty
@@ -252,7 +273,8 @@ class _DepositSavingScreenState extends State<DepositSavingScreen> {
         ),
         child: Text(
           controller.extractedText.value,
-          style: const TextStyle(fontSize: 14, color: Colors.black87),
+          style:
+          const TextStyle(fontSize: 14, color: Colors.black87),
         ),
       ),
     )
@@ -262,9 +284,15 @@ class _DepositSavingScreenState extends State<DepositSavingScreen> {
   InputDecoration _inputDecoration(String label, IconData icon) {
     return InputDecoration(
       labelText: label,
-      border: OutlineInputBorder(borderRadius: BorderRadius.circular(10.0), borderSide: BorderSide(color: Colors.grey)),
-      enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(10.0), borderSide: BorderSide(color: Colors.grey)),
-      focusedBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(10.0), borderSide: BorderSide(color: Colors.blue)),
+      border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(10.0),
+          borderSide: const BorderSide(color: Colors.grey)),
+      enabledBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(10.0),
+          borderSide: const BorderSide(color: Colors.grey)),
+      focusedBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(10.0),
+          borderSide: const BorderSide(color: Colors.blue)),
       filled: true,
       fillColor: Colors.white,
       suffixIcon: Icon(icon),
@@ -279,15 +307,19 @@ class _DepositSavingScreenState extends State<DepositSavingScreen> {
       ),
       decoration: BoxDecoration(
         color: app_colors.baseWhiteColor,
-        borderRadius: const BorderRadius.only(topRight: Radius.circular(16), topLeft: Radius.circular(16)),
+        borderRadius: const BorderRadius.only(
+            topRight: Radius.circular(16), topLeft: Radius.circular(16)),
       ),
       child: Column(
         children: [
           Container(
             height: 55,
             decoration: BoxDecoration(
-              gradient: LinearGradient(colors: [app_colors.loveColor, app_colors.baseColor]),
-              borderRadius: const BorderRadius.only(topRight: Radius.circular(16), topLeft: Radius.circular(16)),
+              gradient: LinearGradient(
+                  colors: [app_colors.loveColor, app_colors.baseColor]),
+              borderRadius: const BorderRadius.only(
+                  topRight: Radius.circular(16),
+                  topLeft: Radius.circular(16)),
             ),
             child: const Center(child: Text("សូមជ្រើសរើសប្រភេទសាច់ប្រាក់")),
           ),
@@ -302,8 +334,10 @@ class _DepositSavingScreenState extends State<DepositSavingScreen> {
                     Get.back();
                   },
                   child: Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 16),
-                    child: Text(currency, style: Theme.of(context).textTheme.titleMedium),
+                    padding: const EdgeInsets.symmetric(
+                        vertical: 10, horizontal: 16),
+                    child: Text(currency,
+                        style: Theme.of(context).textTheme.titleMedium),
                   ),
                 );
               },

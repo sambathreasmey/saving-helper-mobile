@@ -15,6 +15,7 @@ import 'package:saving_helper/services/share_storage.dart';
 import 'package:saving_helper/splash_screen.dart';
 
 import '../constants/app_color.dart' as app_colors;
+import 'package:saving_helper/models/responses/login_response.dart' as LoginResponse;
 import 'animated_Invite_banner.dart';
 
 class CustomHeader extends StatefulWidget {
@@ -309,90 +310,97 @@ void _showModalBottomSheet(BuildContext context, HeaderController controller, Sh
                             ),
                             child: TextButton(
                               onPressed: () {
+                                controller.getGroup();
                                 showDialog(
                                   context: context,
                                   builder: (BuildContext dialogContext) {
-                                    final groups = user?.groups ?? [];
+                                    return Obx(() {
+                                      final groups = controller.groups.value?.groups ?? [];
+                                      return AlertDialog(
+                                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+                                        backgroundColor: Colors.white,
+                                        title: Text(
+                                          'ជ្រើសរើសក្រុម',
+                                          style: TextStyle(fontFamily: 'MyBaseFont', fontWeight: FontWeight.bold, fontSize: 18),
+                                        ),
+                                        content: groups.isEmpty
+                                            ? Text('No groups available', style: TextStyle(fontFamily: 'MyBaseFont'))
+                                            : SizedBox(
+                                          width: double.maxFinite,
+                                          child: ListView.separated(
+                                            shrinkWrap: true,
+                                            itemCount: groups.length,
+                                            separatorBuilder: (_, __) => SizedBox(height: 12),
+                                            itemBuilder: (context, index) {
+                                              final group = groups[index];
+                                              final groupName = group.groupName ?? 'Unnamed Group';
+                                              final isSelected = group.groupId == controller.currentGroupId.value;
 
-                                    return AlertDialog(
-                                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-                                      backgroundColor: Colors.white,
-                                      title: Text(
-                                        'ជ្រើសរើសក្រុម',
-                                        style: TextStyle(fontFamily: 'MyBaseFont', fontWeight: FontWeight.bold, fontSize: 18),
-                                      ),
-                                      content: groups.isEmpty
-                                          ? Text('No groups available', style: TextStyle(fontFamily: 'MyBaseFont'))
-                                          : SizedBox(
-                                        width: double.maxFinite,
-                                        child: ListView.separated(
-                                          shrinkWrap: true,
-                                          itemCount: groups.length,
-                                          separatorBuilder: (_, __) => SizedBox(height: 12),
-                                          itemBuilder: (context, index) {
-                                            final group = groups[index];
-                                            final groupName = group.groupName ?? 'Unnamed Group';
-                                            final isSelected = group.groupId == controller.currentGroupId.value;
-
-                                            return InkWell(
-                                              onTap: () {
-                                                controller.switchGroup(group.groupId!);
-                                                Get.to(() => SplashScreen());
-                                              },
-                                              borderRadius: BorderRadius.circular(16),
-                                              child: Container(
-                                                padding: EdgeInsets.all(16),
-                                                decoration: BoxDecoration(
-                                                  borderRadius: BorderRadius.circular(16),
-                                                  color: isSelected ? Colors.blueAccent.withOpacity(0.1) : Colors.grey[100],
-                                                  border: isSelected
-                                                      ? Border.all(color: Colors.blueAccent, width: 2)
-                                                      : Border.all(color: Colors.grey[300]!),
-                                                  boxShadow: [
-                                                    BoxShadow(
-                                                      color: Colors.black12,
-                                                      blurRadius: 4,
-                                                      offset: Offset(0, 2),
+                                              return InkWell(
+                                                onTap: () {
+                                                  controller.switchGroup(group.groupId!);
+                                                  Get.to(() => SplashScreen());
+                                                },
+                                                borderRadius: BorderRadius.circular(16),
+                                                child: Container(
+                                                  padding: EdgeInsets.all(16),
+                                                  decoration: BoxDecoration(
+                                                    borderRadius: BorderRadius.circular(16),
+                                                    gradient: LinearGradient(
+                                                      colors: [Colors.lightBlueAccent, Colors.blue],
+                                                      begin: Alignment.topLeft,
+                                                      end: Alignment.bottomRight,
                                                     ),
-                                                  ],
-                                                ),
-                                                child: Row(
-                                                  children: [
-                                                    Icon(
-                                                      Icons.group,
-                                                      color: isSelected ? Colors.blueAccent : Colors.grey[700],
-                                                    ),
-                                                    SizedBox(width: 12),
-                                                    Expanded(
-                                                      child: Text(
-                                                        groupName,
-                                                        style: TextStyle(
-                                                          fontFamily: 'MyBaseFont',
-                                                          fontSize: 14,
-                                                          fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
-                                                          color: isSelected ? Colors.blueAccent : Colors.black87,
+                                                    boxShadow: [
+                                                      BoxShadow(
+                                                        color: Colors.blue.withOpacity(0.3),
+                                                        blurRadius: 6,
+                                                        offset: Offset(0, 4),
+                                                      ),
+                                                    ],
+                                                    color: isSelected ? Colors.lightBlueAccent.withOpacity(0.1) : Colors.grey[100],
+                                                    border: isSelected
+                                                        ? Border.all(color: Colors.blueAccent, width: 2)
+                                                        : Border.all(color: Colors.grey[300]!),
+                                                  ),
+                                                  child: Row(
+                                                    children: [
+                                                      Icon(
+                                                        Icons.group,
+                                                        color: isSelected ? Colors.blueAccent : Colors.grey[700],
+                                                      ),
+                                                      SizedBox(width: 12),
+                                                      Expanded(
+                                                        child: Text(
+                                                          groupName,
+                                                          style: TextStyle(
+                                                            fontFamily: 'MyBaseFont',
+                                                            fontSize: 14,
+                                                            fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
+                                                            color: isSelected ? Colors.blueAccent : Colors.black87,
+                                                          ),
                                                         ),
                                                       ),
-                                                    ),
-                                                    if (isSelected)
-                                                      Icon(Icons.check_circle, color: Colors.blueAccent, size: 20),
-                                                  ],
+                                                      if (isSelected)
+                                                        Icon(Icons.check_circle, color: Colors.blueAccent, size: 20),
+                                                    ],
+                                                  ),
                                                 ),
-                                              ),
-                                            );
-                                          },
-                                        ),
-                                      ),
-                                      actions: [
-                                        TextButton(
-                                          onPressed: () => Navigator.of(dialogContext).pop(),
-                                          child: Text(
-                                            'បោះបង់',
-                                            style: TextStyle(fontFamily: 'MyBaseFont', color: Colors.grey[700], fontWeight: FontWeight.bold),
+                                              );
+                                            },
                                           ),
                                         ),
-                                      ],
-                                    );
+                                        actions: [
+                                          TextButton(
+                                            onPressed: () => Navigator.of(dialogContext).pop(),
+                                            child: Text(
+                                              'បោះបង់',
+                                              style: TextStyle(fontFamily: 'MyBaseFont', color: Colors.grey[700], fontWeight: FontWeight.bold),
+                                            ),
+                                          ),
+                                        ],
+                                      );
+                                    });
                                   },
                                 );
                               },
@@ -448,6 +456,7 @@ void _showModalBottomSheet(BuildContext context, HeaderController controller, Sh
                   shareStorage.removeUserCredential();
                   shareStorage.removeToken();
                   shareStorage.removeGroupId();
+                  shareStorage.removeUser();
                   Get.delete<HeaderController>();
                   Get.to(() => LoginScreen(title: 'Home Screen Title'));
                 },

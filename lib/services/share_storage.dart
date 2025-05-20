@@ -1,5 +1,8 @@
+import 'dart:convert';
 
 import 'package:shared_preferences/shared_preferences.dart';
+
+import 'package:saving_helper/models/responses/login_response.dart' as LoginResponse;
 
 class ShareStorage {
 
@@ -19,6 +22,28 @@ class ShareStorage {
   Future<void> removeUserCredential() async {
     final prefs = await SharedPreferences.getInstance();
     await prefs.remove('user_id');
+  }
+
+  // Save User object as JSON string
+  Future<void> saveUser(LoginResponse.Data user) async {
+    final prefs = await SharedPreferences.getInstance();
+    final userJson = jsonEncode(user.toJson());
+    await prefs.setString('user_data', userJson);
+  }
+
+// Retrieve User object from JSON string
+  Future<LoginResponse.Data?> getUser() async {
+    final prefs = await SharedPreferences.getInstance();
+    final userJson = prefs.getString('user_data');
+    if (userJson == null) return null;
+    final Map<String, dynamic> userMap = jsonDecode(userJson);
+    return LoginResponse.Data.fromJson(userMap);
+  }
+
+// Remove stored User object
+  Future<void> removeUser() async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.remove('user_data');
   }
 
   ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
