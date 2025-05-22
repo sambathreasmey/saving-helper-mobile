@@ -263,13 +263,12 @@ class _LoanRepayScreenState extends State<LoanRepayScreen> {
                 end: Alignment.bottomCenter,
               ),
             ),
-            child: Center(
-              child: Text(
-                "សូមជ្រើសរើសប្រភេទសាច់ប្រាក់",
-                textAlign: TextAlign.center,
-                style: Theme.of(context).textTheme.titleMedium,
-              ),
-            ),
+            child: Center(child: Text("សូមជ្រើសរើសប្រភេទសាច់ប្រាក់",style: TextStyle(
+              color: Colors.white,
+              fontFamily: 'MyBaseFont',
+              fontWeight: FontWeight.bold,
+              fontSize: 14,
+            ),),),
           ),
           Expanded(
             child: ListView.builder(

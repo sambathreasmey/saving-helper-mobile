@@ -36,112 +36,127 @@ class _CustomHeaderState extends State<CustomHeader> {
   Widget build(BuildContext context) {
     return Container(
       padding: EdgeInsets.all(2.0),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Container(
-                height: 28,
-                width: 28,
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.all(Radius.circular(8)),
-                  color: app_colors.menu3Color,
-                ),
-                child: IconButton(
-                  padding: EdgeInsets.all(0),
-                  icon: Icon(Icons.savings_outlined, color: Colors.white, size: 20,),
-                  onPressed: () {
-                    _showModalBottomSheet(context, controller, shareStorage);
-                  }
-                ),
-              ),
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 0),
-                    child: Obx(() {
-                      final user = controller.userInfo.value;
-                      final displayName = (user?.fullName?.isNotEmpty == true)
-                          ? user?.fullName
-                          : (user?.userName?.isNotEmpty == true)
-                          ? user?.userName
-                          : '';
-                      return Text(
-                        displayName!,
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 10,
-                          fontWeight: FontWeight.bold,
-                          fontFamily: 'MyBaseFont',
-                        ),
-                      );
-                    }),
+      child: InkWell(
+        onTap: () {_showModalBottomSheet(context, controller, shareStorage);},
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Container(
+                  height: 28,
+                  width: 28,
+                  decoration: BoxDecoration(
+                    gradient: LinearGradient(
+                      colors: [Colors.pinkAccent, Colors.blueAccent.withOpacity(0.9)],
+                      begin: Alignment.topLeft,
+                      end: Alignment.bottomRight,
+                    ),
+                    borderRadius: BorderRadius.all(Radius.circular(8)),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.blueAccent.withOpacity(0.3),
+                        blurRadius: 6,
+                        offset: Offset(0, 3),
+                      ),
+                    ],
+                    // color: app_colors.menu3Color,
                   ),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 0),
-                    child: Obx(() {
-                      final userInfo = controller.userInfo.value;
-                      final role = userInfo?.roles?.isNotEmpty == true ? userInfo!.roles!.first : '';
-
-                      return Text(
-                        role,
-                        style: const TextStyle(
-                          color: Colors.white,
-                          fontSize: 9,
-                          fontWeight: FontWeight.w500,
-                          fontFamily: 'MyBaseEnFont',
-                        ),
-                      );
-                    }),
-                  ),
-                ],
-              ),
-            ],
-          ),
-          Row(
-            spacing: 2,
-            children: [
-              _buildMoneyBox(Icons.mode_night_outlined, Colors.lightBlueAccent, Colors.blue, height: 30,
-                onTap: () {
-                  themeController.changeBackground();
-              },),
-              Container(
-                height: 32,
-                width: 32,
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.all(Radius.circular(100)),
-                  // ignore: deprecated_member_use
-                  color: Colors.blue.withOpacity(0.2),
-                ),
-                child: IconButton(
-                    icon: Icon(Icons.notifications_active, color: app_colors.baseWhiteColor, size: 16,),
+                  child: IconButton(
+                    padding: EdgeInsets.all(0),
+                    icon: Icon(Icons.savings_outlined, color: Colors.white, size: 20,),
                     onPressed: () {
-                      controller.getNotification();
-                      _showNotificationDialog(context, controller);
+                      _showModalBottomSheet(context, controller, shareStorage);
                     }
+                  ),
                 ),
-              ),
-              Container(
-                height: 32,
-                width: 32,
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.all(Radius.circular(100)),
-                  // ignore: deprecated_member_use
-                  color: Colors.blue.withOpacity(0.2),
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 0),
+                      child: Obx(() {
+                        final user = controller.userInfo.value;
+                        final displayName = (user?.fullName?.isNotEmpty == true)
+                            ? user?.fullName
+                            : (user?.userName?.isNotEmpty == true)
+                            ? user?.userName
+                            : '';
+                        return Text(
+                          displayName!,
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 10,
+                            fontWeight: FontWeight.bold,
+                            fontFamily: 'MyBaseFont',
+                          ),
+                        );
+                      }),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 0),
+                      child: Obx(() {
+                        final userInfo = controller.userInfo.value;
+                        final role = userInfo?.roles?.isNotEmpty == true ? userInfo!.roles!.first : '';
+
+                        return Text(
+                          role,
+                          style: const TextStyle(
+                            color: Colors.white,
+                            fontSize: 9,
+                            fontWeight: FontWeight.w500,
+                            fontFamily: 'MyBaseEnFont',
+                          ),
+                        );
+                      }),
+                    ),
+                  ],
                 ),
-                child: IconButton(
-                  icon: Icon(Icons.settings, color: app_colors.baseWhiteColor, size: 16,),
-                  onPressed: () {
-                    _showModalBottomSheet(context, controller, shareStorage);
-                  }
+              ],
+            ),
+            Row(
+              spacing: 2,
+              children: [
+                _buildMoneyBox(Icons.mode_night_outlined, Colors.pinkAccent, Colors.blueAccent, height: 30,
+                  onTap: () {
+                    themeController.changeBackground();
+                },),
+                Container(
+                  height: 32,
+                  width: 32,
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.all(Radius.circular(100)),
+                    // ignore: deprecated_member_use
+                    color: Colors.blue.withOpacity(0.2),
+                  ),
+                  child: IconButton(
+                      icon: Icon(Icons.notifications_active, color: app_colors.baseWhiteColor, size: 16,),
+                      onPressed: () {
+                        controller.getNotification();
+                        _showNotificationDialog(context, controller);
+                      }
+                  ),
                 ),
-              ),
-            ],
-          ),
-        ],
+                Container(
+                  height: 32,
+                  width: 32,
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.all(Radius.circular(100)),
+                    // ignore: deprecated_member_use
+                    color: Colors.blue.withOpacity(0.2),
+                  ),
+                  child: IconButton(
+                    icon: Icon(Icons.settings, color: app_colors.baseWhiteColor, size: 16,),
+                    onPressed: () {
+                      _showModalBottomSheet(context, controller, shareStorage);
+                    }
+                  ),
+                ),
+              ],
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -153,45 +168,86 @@ void _showNotificationDialog(BuildContext context, HeaderController controller) 
     builder: (BuildContext context) {
       return Obx(() => AlertDialog(
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(12),  // Rounded corners
+          borderRadius: BorderRadius.circular(20),  // Rounded corners
         ),
-        title: Row(
-          children: [
-            Icon(Icons.notifications, color: app_colors.baseColor, size: 28),  // Add an icon for the notification
-            SizedBox(width: 10),  // Space between the icon and text
-            Text(
-              'ជូនដំណឹង',
-              style: TextStyle(
-                color: app_colors.baseColor,
-                fontSize: 20,
-                fontWeight: FontWeight.bold,
-                fontFamily: 'MyBaseFont',
-              ),
+        titlePadding: EdgeInsets.all(0),
+        title: Container(
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+              colors: [Colors.pinkAccent, Colors.blueAccent.withOpacity(0.9)],
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
             ),
-          ],
+            borderRadius: BorderRadius.only(
+                topRight: Radius.circular(20),
+                topLeft: Radius.circular(20),
+            ),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.blueAccent.withOpacity(0.3),
+                blurRadius: 6,
+                offset: Offset(0, 3),
+              ),
+            ],
+            // color: app_colors.menu3Color,
+          ),
+          child: Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Row(
+              children: [
+                Icon(Icons.notifications, color: app_colors.baseWhiteColor, size: 26),  // Add an icon for the notification
+                SizedBox(width: 10),  // Space between the icon and text
+                Text(
+                  'ជូនដំណឹង',
+                  style: TextStyle(
+                    color: app_colors.baseWhiteColor,
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                    fontFamily: 'MyBaseFont',
+                  ),
+                ),
+              ],
+            ),
+          ),
         ),
         content: Text(
           controller.notificationMessage.value ?? "No new notifications",  // Display notification message
           style: TextStyle(
             color: Colors.black,
-            fontSize: 16,
+            fontSize: 15,
             fontFamily: 'MyBaseFont',
           ),
         ),
+        actionsPadding: EdgeInsets.all(12),
         actions: <Widget>[
           // Button to close the dialog
           SizedBox(
+            height: 40,
             width: double.infinity,
-            child: TextButton(
-              onPressed: () {
-                Navigator.of(context).pop(); // Close the dialog
-              },
-              style: TextButton.styleFrom(
-                backgroundColor: app_colors.baseColor,  // Custom button color
+            child: Container(
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  colors: [Colors.pinkAccent, Colors.blueAccent],
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
+                ),
+                borderRadius: BorderRadius.circular(8),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.orangeAccent.withOpacity(0.1),
+                    blurRadius: 6,
+                    offset: Offset(0, 2),
+                  ),
+                ],
               ),
-              child: Text(
-                'យល់ព្រម',
-                style: TextStyle(fontSize: 16, color: app_colors.baseWhiteColor, fontFamily: 'MyBaseFont', fontWeight: FontWeight.bold,),
+              child: TextButton(
+                onPressed: () {
+                  Navigator.of(context).pop(); // Close the dialog
+                },
+                child: Text(
+                  'យល់ព្រម',
+                  style: TextStyle(fontSize: 16, color: app_colors.baseWhiteColor, fontFamily: 'MyBaseFont', fontWeight: FontWeight.bold,),
+                ),
               ),
             ),
           ),
@@ -234,6 +290,7 @@ void _showModalBottomSheet(BuildContext context, HeaderController controller, Sh
           ),
           child: ListView(
             children: [
+              SizedBox(height: 4),
               AnimatedInviteBanner(),
 
               SizedBox(height: 8),
@@ -242,7 +299,7 @@ void _showModalBottomSheet(BuildContext context, HeaderController controller, Sh
               Container(
                 decoration: BoxDecoration(
                   gradient: LinearGradient(
-                    colors: [Colors.pinkAccent, Colors.orangeAccent],
+                    colors: [Colors.pinkAccent, Colors.blueAccent],
                     begin: Alignment.topLeft,
                     end: Alignment.bottomRight,
                   ),
@@ -319,10 +376,47 @@ void _showModalBottomSheet(BuildContext context, HeaderController controller, Sh
                                       return AlertDialog(
                                         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
                                         backgroundColor: Colors.white,
-                                        title: Text(
-                                          'ជ្រើសរើសក្រុម',
-                                          style: TextStyle(fontFamily: 'MyBaseFont', fontWeight: FontWeight.bold, fontSize: 18),
+                                        titlePadding: EdgeInsets.all(0),
+                                        title: Container(
+                                          decoration: BoxDecoration(
+                                            gradient: LinearGradient(
+                                              colors: [Colors.pinkAccent, Colors.blueAccent.withOpacity(0.9)],
+                                              begin: Alignment.topLeft,
+                                              end: Alignment.bottomRight,
+                                            ),
+                                            borderRadius: BorderRadius.only(
+                                              topRight: Radius.circular(20),
+                                              topLeft: Radius.circular(20),
+                                            ),
+                                            boxShadow: [
+                                              BoxShadow(
+                                                color: Colors.blueAccent.withOpacity(0.3),
+                                                blurRadius: 6,
+                                                offset: Offset(0, 3),
+                                              ),
+                                            ],
+                                            // color: app_colors.menu3Color,
+                                          ),
+                                          child: Padding(
+                                            padding: const EdgeInsets.all(16.0),
+                                            child: Row(
+                                              children: [
+                                                Icon(Icons.groups, color: app_colors.baseWhiteColor, size: 26),  // Add an icon for the notification
+                                                SizedBox(width: 10),  // Space between the icon and text
+                                                Text(
+                                                  'សូមជ្រើសរើសក្រុម',
+                                                  style: TextStyle(
+                                                    color: app_colors.baseWhiteColor,
+                                                    fontSize: 18,
+                                                    fontWeight: FontWeight.bold,
+                                                    fontFamily: 'MyBaseFont',
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                          ),
                                         ),
+                                        contentPadding: EdgeInsets.all(12),
                                         content: groups.isEmpty
                                             ? Text('No groups available', style: TextStyle(fontFamily: 'MyBaseFont'))
                                             : SizedBox(
@@ -347,13 +441,13 @@ void _showModalBottomSheet(BuildContext context, HeaderController controller, Sh
                                                   decoration: BoxDecoration(
                                                     borderRadius: BorderRadius.circular(16),
                                                     gradient: LinearGradient(
-                                                      colors: [Colors.lightBlueAccent, Colors.blue],
+                                                      colors: [Colors.pinkAccent, Colors.blueAccent],
                                                       begin: Alignment.topLeft,
                                                       end: Alignment.bottomRight,
                                                     ),
                                                     boxShadow: [
                                                       BoxShadow(
-                                                        color: Colors.blue.withOpacity(0.3),
+                                                        color: Colors.blueAccent.withOpacity(0.3),
                                                         blurRadius: 6,
                                                         offset: Offset(0, 4),
                                                       ),
@@ -367,7 +461,7 @@ void _showModalBottomSheet(BuildContext context, HeaderController controller, Sh
                                                     children: [
                                                       Icon(
                                                         Icons.group,
-                                                        color: isSelected ? Colors.blueAccent : Colors.grey[700],
+                                                        color: isSelected ? Colors.blueAccent : Colors.white,
                                                       ),
                                                       SizedBox(width: 12),
                                                       Expanded(
@@ -377,7 +471,7 @@ void _showModalBottomSheet(BuildContext context, HeaderController controller, Sh
                                                             fontFamily: 'MyBaseFont',
                                                             fontSize: 14,
                                                             fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
-                                                            color: isSelected ? Colors.blueAccent : Colors.black87,
+                                                            color: isSelected ? Colors.blueAccent : Colors.white,
                                                           ),
                                                         ),
                                                       ),
@@ -390,12 +484,37 @@ void _showModalBottomSheet(BuildContext context, HeaderController controller, Sh
                                             },
                                           ),
                                         ),
-                                        actions: [
-                                          TextButton(
-                                            onPressed: () => Navigator.of(dialogContext).pop(),
-                                            child: Text(
-                                              'បោះបង់',
-                                              style: TextStyle(fontFamily: 'MyBaseFont', color: Colors.grey[700], fontWeight: FontWeight.bold),
+                                        actionsPadding: EdgeInsets.all(12),
+                                        actions: <Widget>[
+                                          // Button to close the dialog
+                                          SizedBox(
+                                            height: 40,
+                                            width: double.infinity,
+                                            child: Container(
+                                              decoration: BoxDecoration(
+                                                gradient: LinearGradient(
+                                                  colors: [Colors.pinkAccent, Colors.blueAccent],
+                                                  begin: Alignment.topLeft,
+                                                  end: Alignment.bottomRight,
+                                                ),
+                                                borderRadius: BorderRadius.circular(8),
+                                                boxShadow: [
+                                                  BoxShadow(
+                                                    color: Colors.orangeAccent.withOpacity(0.1),
+                                                    blurRadius: 6,
+                                                    offset: Offset(0, 2),
+                                                  ),
+                                                ],
+                                              ),
+                                              child: TextButton(
+                                                onPressed: () {
+                                                  Navigator.of(context).pop(); // Close the dialog
+                                                },
+                                                child: Text(
+                                                  'បោះបង់',
+                                                  style: TextStyle(fontSize: 16, color: app_colors.baseWhiteColor, fontFamily: 'MyBaseFont', fontWeight: FontWeight.bold,),
+                                                ),
+                                              ),
                                             ),
                                           ),
                                         ],
@@ -428,7 +547,21 @@ void _showModalBottomSheet(BuildContext context, HeaderController controller, Sh
               Text("Navigation", style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold, fontFamily: 'MyBaseEnFont')),
               SizedBox(height: 8),
               ListTile(
-                leading: Icon(Icons.dashboard_outlined, color: app_colors.baseColor),
+                leading: ShaderMask(
+                  shaderCallback: (Rect bounds) {
+                    return LinearGradient(
+                      colors: [Colors.pinkAccent, Colors.blueAccent],
+                      begin: Alignment.topLeft,
+                      end: Alignment.bottomRight,
+                    ).createShader(bounds);
+                  },
+                  blendMode: BlendMode.srcIn,
+                  child: Icon(
+                    Icons.dashboard_outlined,
+                    size: 24,
+                    color: Colors.white,
+                  ),
+                ),
                 title: Text('Dashboard', style: TextStyle(color: app_colors.baseColor, fontWeight: FontWeight.bold, fontFamily: 'MyBaseEnFont')),
                 onTap: () {
                   Get.delete<HeaderController>();
@@ -443,7 +576,21 @@ void _showModalBottomSheet(BuildContext context, HeaderController controller, Sh
               SizedBox(height: 24),
               Divider(thickness: 1),
               ListTile(
-                leading: Icon(Icons.logout, color: app_colors.baseColor),
+                leading: ShaderMask(
+                  shaderCallback: (Rect bounds) {
+                    return LinearGradient(
+                      colors: [Colors.pinkAccent, Colors.blueAccent],
+                      begin: Alignment.topLeft,
+                      end: Alignment.bottomRight,
+                    ).createShader(bounds);
+                  },
+                  blendMode: BlendMode.srcIn,
+                  child: Icon(
+                    Icons.login_outlined,
+                    size: 24,
+                    color: Colors.white,
+                  ),
+                ),
                 title: Text(
                   'Logout',
                   style: TextStyle(
@@ -484,7 +631,21 @@ class _ManagementSubMenuState extends State<ManagementSubMenu> {
     return Column(
       children: [
         ListTile(
-          leading: Icon(Icons.science_outlined, color: app_colors.baseColor),
+          leading: ShaderMask(
+            shaderCallback: (Rect bounds) {
+              return LinearGradient(
+                colors: [Colors.pinkAccent, Colors.blueAccent],
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
+              ).createShader(bounds);
+            },
+            blendMode: BlendMode.srcIn,
+            child: Icon(
+              Icons.room_preferences_outlined,
+              size: 24,
+              color: Colors.white,
+            ),
+          ),
           title: Text(
             'គ្រប់គ្រង',
             style: TextStyle(
@@ -513,7 +674,21 @@ class _ManagementSubMenuState extends State<ManagementSubMenu> {
                 children: [
                   if (_isExpanded) ...[
                     ListTile(
-                      leading: Icon(Icons.savings_outlined, color: app_colors.baseColor),
+                      leading: ShaderMask(
+                        shaderCallback: (Rect bounds) {
+                          return LinearGradient(
+                            colors: [Colors.pinkAccent, Colors.blueAccent],
+                            begin: Alignment.topLeft,
+                            end: Alignment.bottomRight,
+                          ).createShader(bounds);
+                        },
+                        blendMode: BlendMode.srcIn,
+                        child: Icon(
+                          Icons.savings_outlined,
+                          size: 24,
+                          color: Colors.white,
+                        ),
+                      ),
                       title: Text(
                         'បញ្ចូលប្រាក់សន្សំ',
                         style: TextStyle(
@@ -528,7 +703,21 @@ class _ManagementSubMenuState extends State<ManagementSubMenu> {
                       },
                     ),
                     ListTile(
-                      leading: Icon(Icons.real_estate_agent_outlined, color: app_colors.baseColor),
+                      leading: ShaderMask(
+                        shaderCallback: (Rect bounds) {
+                          return LinearGradient(
+                            colors: [Colors.pinkAccent, Colors.blueAccent],
+                            begin: Alignment.topLeft,
+                            end: Alignment.bottomRight,
+                          ).createShader(bounds);
+                        },
+                        blendMode: BlendMode.srcIn,
+                        child: Icon(
+                          Icons.real_estate_agent_outlined,
+                          size: 24,
+                          color: Colors.white,
+                        ),
+                      ),
                       title: Text(
                         'បញ្ចូលប្រាក់កម្ចី',
                         style: TextStyle(
@@ -543,7 +732,21 @@ class _ManagementSubMenuState extends State<ManagementSubMenu> {
                       },
                     ),
                     ListTile(
-                      leading: Icon(Icons.group_outlined, color: app_colors.baseColor),
+                      leading: ShaderMask(
+                        shaderCallback: (Rect bounds) {
+                          return LinearGradient(
+                            colors: [Colors.pinkAccent, Colors.blueAccent],
+                            begin: Alignment.topLeft,
+                            end: Alignment.bottomRight,
+                          ).createShader(bounds);
+                        },
+                        blendMode: BlendMode.srcIn,
+                        child: Icon(
+                          Icons.groups,
+                          size: 24,
+                          color: Colors.white,
+                        ),
+                      ),
                       title: Text(
                         'សមាជិក',
                         style: TextStyle(
@@ -585,7 +788,21 @@ class _ReportSubMenuState extends State<ReportSubMenu> {
     return Column(
       children: [
         ListTile(
-          leading: Icon(Icons.account_balance_outlined, color: app_colors.baseColor,),
+          leading: ShaderMask(
+            shaderCallback: (Rect bounds) {
+              return LinearGradient(
+                colors: [Colors.pinkAccent, Colors.blueAccent],
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
+              ).createShader(bounds);
+            },
+            blendMode: BlendMode.srcIn,
+            child: Icon(
+              Icons.account_balance,
+              size: 24,
+              color: Colors.white,
+            ),
+          ),
           title: Text('របាយការណ៍', style: TextStyle(color: app_colors.baseColor, fontWeight: FontWeight.bold, fontFamily: 'MyBaseFont',)),
           trailing: Icon(
             _isExpanded ? Icons.arrow_drop_up : Icons.arrow_drop_down,
@@ -607,7 +824,21 @@ class _ReportSubMenuState extends State<ReportSubMenu> {
                 children: [
                   if (_isExpanded) ...[
                     ListTile(
-                      leading: Icon(Icons.event_repeat, color: app_colors.baseColor,),
+                      leading: ShaderMask(
+                        shaderCallback: (Rect bounds) {
+                          return LinearGradient(
+                            colors: [Colors.pinkAccent, Colors.blueAccent],
+                            begin: Alignment.topLeft,
+                            end: Alignment.bottomRight,
+                          ).createShader(bounds);
+                        },
+                        blendMode: BlendMode.srcIn,
+                        child: Icon(
+                          Icons.content_paste_search_outlined,
+                          size: 24,
+                          color: Colors.white,
+                        ),
+                      ),
                       title: Text('របាយការណ៍ទូទៅ', style: TextStyle(color: app_colors.baseColor, fontWeight: FontWeight.bold, fontFamily: 'MyBaseFont',)),
                       onTap: () {
                         Get.delete<HeaderController>();
@@ -643,8 +874,8 @@ Widget _buildMoneyBox(
         borderRadius: BorderRadius.circular(30),
         gradient: LinearGradient(
           colors: [
-            color1.withOpacity(0.6),
-            color2.withOpacity(0.6),
+            color1,
+            color2.withOpacity(0.3),
           ],
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,

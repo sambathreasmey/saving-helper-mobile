@@ -50,11 +50,22 @@ class _SplashScreenState extends State<SplashScreen> {
              color: Colors.white,
             ),
             Container(
-              height: 56,
-              width: 56,
+              height: 70,
+              width: 70,
               decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  colors: [Colors.pinkAccent, Colors.blueAccent.withOpacity(0.9)],
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
+                ),
                 borderRadius: BorderRadius.all(Radius.circular(16)),
-                color: app_colors.menu3Color,
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.blueAccent.withOpacity(0.3),
+                    blurRadius: 6,
+                    offset: Offset(0, 3),
+                  ),
+                ],
               ),
               child: IconButton(
                   padding: EdgeInsets.all(0),

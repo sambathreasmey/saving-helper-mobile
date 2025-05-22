@@ -112,9 +112,14 @@ Widget _buildSavingComponent(HomeController controller) {
         child: ClipRRect(
           child: Container(
             decoration: BoxDecoration(
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withOpacity(0.5),
+                ),
+              ],
               borderRadius: BorderRadius.circular(20),
               // ignore: deprecated_member_use
-              color: app_colors.baseWhiteColor.withOpacity(0.05),
+              color: app_colors.baseWhiteColor.withOpacity(0.06),
             ),
             child: Column(
               children: [
@@ -125,13 +130,13 @@ Widget _buildSavingComponent(HomeController controller) {
                       topRight: Radius.circular(20),
                     ),
                     gradient: LinearGradient(
-                      colors: [ Color(0xFF4A90E2), Color(0xFF9013FE)],
-                      begin: Alignment.topLeft,
-                      end: Alignment.bottomRight,
+                      colors: [Colors.white.withOpacity(0.1), Colors.black.withOpacity(0.5)],
+                      begin: Alignment.topRight,
+                      end: Alignment.bottomCenter,
                     ),
                     boxShadow: [
                       BoxShadow(
-                        color: Color(0xFF9013FE).withOpacity(0.3),
+                        color: Colors.black.withOpacity(0.3),
                         blurRadius: 6,
                         offset: Offset(0, 4),
                       ),
@@ -382,13 +387,13 @@ Widget _buildLoanComponent(HomeController controller) {
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(20),
               gradient: LinearGradient(
-                colors: [Color(0xFF4A90E2), Color(0xFF9013FE).withOpacity(0.9)],
+                colors: [Colors.pinkAccent, Colors.blueAccent.withOpacity(0.9)],
                 begin: Alignment.topLeft,
-                end: Alignment.bottomRight,
+                end: Alignment.bottomCenter,
               ),
               boxShadow: [
                 BoxShadow(
-                  color: Color(0xFF9013FE).withOpacity(0.25),
+                  color: Colors.blueAccent.withOpacity(0.25),
                   blurRadius: 10,
                   offset: Offset(0, 5),
                 ),
@@ -501,13 +506,13 @@ Widget _buildBalanceComponent(HomeController controller) {
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(20),
             gradient: LinearGradient(
-              colors: [Color(0xFF4A90E2), Color(0xFF9013FE).withOpacity(0.9)],
+              colors: [Colors.pinkAccent, Colors.blueAccent.withOpacity(0.9)],
               begin: Alignment.topLeft,
-              end: Alignment.bottomRight,
+              end: Alignment.bottomCenter,
             ),
             boxShadow: [
               BoxShadow(
-                color: Color(0xFF9013FE).withOpacity(0.25),
+                color: Colors.blueAccent.withOpacity(0.25),
                 blurRadius: 10,
                 offset: Offset(0, 5),
               ),
@@ -619,22 +624,15 @@ Widget _buildNewComponent(HomeController controller) {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Container(
-            width: 100,
-            height: 100,
+            width: 90,
+            height: 90,
             decoration: BoxDecoration(
               shape: BoxShape.circle,
               gradient: LinearGradient(
-                colors: [Colors.greenAccent.withOpacity(0.1), Colors.blueAccent.withOpacity(0.1)],
+                colors: [Colors.pinkAccent.withOpacity(0.9), Colors.blueAccent.withOpacity(0.9)],
                 begin: Alignment.topLeft,
                 end: Alignment.bottomRight,
               ),
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.orangeAccent.withOpacity(0.1),
-                  blurRadius: 10,
-                  offset: Offset(0, 0),
-                ),
-              ],
             ),
             child: Obx(() {
               final target = double.tryParse(controller.dashboard.value?.target ?? '0.00') ?? 0.00;
@@ -700,9 +698,9 @@ class _RingPainter extends CustomPainter {
   @override
   @override
   void paint(Canvas canvas, Size size) {
-    final strokeWidth = 8.0;
+    final strokeWidth = 12.0;
     final shadowStrokeWidth = strokeWidth + 6; // slightly larger for shadow
-    final radius = (size.width / 2) - strokeWidth;
+    final radius = (size.width / 1.7) - strokeWidth;
 
     final center = Offset(size.width / 2, size.height / 2);
     final backgroundPaint = Paint()

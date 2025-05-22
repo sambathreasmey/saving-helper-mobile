@@ -66,22 +66,25 @@ class _LoanScreenState extends State<LoanScreen> {
           child: SizedBox(
             width: double.infinity,
             height: 50,
-            child: ElevatedButton(
-              onPressed: controller.saveLoan,
-              style: ElevatedButton.styleFrom(
-                backgroundColor: app_colors.loveColor,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(15.0),
+            child: Container(
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  colors: [Colors.pinkAccent, Colors.blueAccent],
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
                 ),
+                borderRadius: BorderRadius.circular(20),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.orangeAccent.withOpacity(0.1),
+                    blurRadius: 6,
+                    offset: Offset(0, 2),
+                  ),
+                ],
               ),
-              child: Text(
-                'បញ្ចូល',
-                style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 16,
-                  fontFamily: 'MyBaseFont',
-                  fontWeight: FontWeight.bold,
-                ),
+              child: TextButton(
+                onPressed: controller.saveLoan,
+                child: Text('បញ្ចូល', style: TextStyle(color: Colors.white, fontSize: 16, fontFamily: 'MyBaseFont', fontWeight: FontWeight.bold,)),
               ),
             ),
           ),
@@ -231,29 +234,6 @@ class _LoanScreenState extends State<LoanScreen> {
   //   ));
   // }
 
-  Widget _buildSubmitButton() {
-    return SizedBox(
-      width: double.infinity,
-      height: 50,
-      child: ElevatedButton(
-        onPressed: controller.saveLoan,
-        style: ElevatedButton.styleFrom(
-          backgroundColor: app_colors.loveColor,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(15.0),
-          ),
-        ),
-        child: Text('បញ្ចូល',
-            style: TextStyle(
-              color: Colors.white,
-              fontSize: 16,
-              fontFamily: 'MyBaseFont',
-              fontWeight: FontWeight.bold,
-            )),
-      ),
-    );
-  }
-
   InputDecoration _inputDecoration(String label, IconData icon) {
     return InputDecoration(
       labelText: label,
@@ -275,8 +255,8 @@ class _LoanScreenState extends State<LoanScreen> {
   Widget openSelectCategory() {
     return Container(
       constraints: BoxConstraints(
-        minHeight: MediaQuery.of(context).size.height * 0.3,
-        maxHeight: MediaQuery.of(context).size.height * 0.6,
+        minHeight: MediaQuery.of(context).size.height * 0.1,
+        maxHeight: MediaQuery.of(context).size.height * 0.2,
       ),
       decoration: BoxDecoration(
         color: app_colors.baseWhiteColor,
@@ -292,21 +272,20 @@ class _LoanScreenState extends State<LoanScreen> {
             width: double.infinity,
             decoration: BoxDecoration(
               gradient: LinearGradient(
-                colors: [app_colors.loveColor, app_colors.baseColor],
-                begin: Alignment.topCenter,
-                end: Alignment.bottomCenter,
+                colors: [Colors.pinkAccent, Colors.blueAccent],
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
               ),
               borderRadius: const BorderRadius.only(
                 topLeft: Radius.circular(16),
                 topRight: Radius.circular(16),
               ),
             ),
-            child: Center(
-              child: Text(
-                "សូមជ្រើសរើសប្រភេទសាច់ប្រាក់",
-                style: Theme.of(context).textTheme.titleMedium,
-              ),
-            ),
+            child: Center(child: Text("សូមជ្រើសរើសប្រភេទសាច់ប្រាក់",style: TextStyle(
+              color: Colors.white,
+              fontFamily: 'MyBaseFont',
+              fontSize: 14,
+            ),),),
           ),
           Expanded(
             child: ListView.builder(

@@ -84,22 +84,25 @@ class _DepositSavingScreenState extends State<DepositSavingScreen> {
           child: SizedBox(
             width: double.infinity,
             height: 50,
-            child: ElevatedButton(
-              style: ElevatedButton.styleFrom(
-                backgroundColor: app_colors.loveColor,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(15.0),
+            child: Container(
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  colors: [Colors.pinkAccent, Colors.blueAccent],
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
                 ),
+                borderRadius: BorderRadius.circular(20),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.orangeAccent.withOpacity(0.1),
+                    blurRadius: 6,
+                    offset: Offset(0, 2),
+                  ),
+                ],
               ),
-              onPressed: controller.saveDeposit,
-              child: const Text(
-                'បញ្ចូល',
-                style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 16,
-                  fontFamily: 'MyBaseFont',
-                  fontWeight: FontWeight.bold,
-                ),
+              child: TextButton(
+                onPressed: controller.saveDeposit,
+                child: Text('បញ្ចូល', style: TextStyle(color: Colors.white, fontSize: 16, fontFamily: 'MyBaseFont', fontWeight: FontWeight.bold,)),
               ),
             ),
           ),
@@ -302,8 +305,8 @@ class _DepositSavingScreenState extends State<DepositSavingScreen> {
   Widget openSelectCategory() {
     return Container(
       constraints: BoxConstraints(
-        minHeight: MediaQuery.of(context).size.height * 0.3,
-        maxHeight: MediaQuery.of(context).size.height * 0.6,
+        minHeight: MediaQuery.of(context).size.height * 0.1,
+        maxHeight: MediaQuery.of(context).size.height * 0.2,
       ),
       decoration: BoxDecoration(
         color: app_colors.baseWhiteColor,
@@ -316,12 +319,19 @@ class _DepositSavingScreenState extends State<DepositSavingScreen> {
             height: 55,
             decoration: BoxDecoration(
               gradient: LinearGradient(
-                  colors: [app_colors.loveColor, app_colors.baseColor]),
+                colors: [Colors.pinkAccent, Colors.blueAccent],
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
+              ),
               borderRadius: const BorderRadius.only(
                   topRight: Radius.circular(16),
                   topLeft: Radius.circular(16)),
             ),
-            child: const Center(child: Text("សូមជ្រើសរើសប្រភេទសាច់ប្រាក់")),
+            child: const Center(child: Text("សូមជ្រើសរើសប្រភេទសាច់ប្រាក់",style: TextStyle(
+                color: Colors.white,
+                fontFamily: 'MyBaseFont',
+              fontSize: 14,
+            ),),),
           ),
           Expanded(
             child: ListView.builder(
