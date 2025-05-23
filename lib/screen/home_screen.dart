@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:saving_helper/controllers/home_screen_controller.dart';
+import 'package:saving_helper/controllers/theme_controller.dart';
 import 'package:saving_helper/repository/home_repository.dart';
 import 'package:saving_helper/screen/animated_Invite_banner.dart';
 import 'package:saving_helper/screen/report_repay_screen.dart';
@@ -25,6 +26,7 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
 
   final HomeController controller = Get.put(HomeController(HomeRepository(ApiProvider())));
+  final ThemeController themeController = Get.put(ThemeController());
 
   @override
   void initState() {
@@ -55,7 +57,7 @@ class _HomeScreenState extends State<HomeScreen> {
                           Text(
                             'Dashboard',  // Use null-aware operator to safely access userName
                             style: TextStyle(
-                              color: app_colors.baseWhiteColor,
+                              color: themeController.theme.value?.textColor ?? Colors.white,
                               fontSize: 16,
                               fontWeight: FontWeight.bold,
                               fontFamily: 'MyBaseEnFont',
@@ -65,12 +67,12 @@ class _HomeScreenState extends State<HomeScreen> {
                             children: [
                               Text('Home /',
                                 style: TextStyle(
-                                  color: app_colors.subTitleText,
+                                  color: themeController.theme.value?.textColor ?? Colors.white,
                                   fontSize: 9,
                                 ),),
                               Text(' Dashboard',
                                 style: TextStyle(
-                                  color: app_colors.baseWhiteColor,
+                                  color: themeController.theme.value?.textColor ?? Colors.white,
                                   fontSize: 9,
                                   fontFamily: 'MyBaseEnFont',
                                 ),),
@@ -81,16 +83,16 @@ class _HomeScreenState extends State<HomeScreen> {
                     ),
                     SizedBox(height: 20,),
                     // New Component
-                    _buildNewComponent(controller),
+                    _buildNewComponent(controller, themeController),
                     SizedBox(height: 20,),
                     // Saving Component
-                    _buildSavingComponent(controller),
+                    _buildSavingComponent(controller, themeController),
                     SizedBox(height: 20,),
                     // Loan Component
-                    _buildLoanComponent(controller),
+                    _buildLoanComponent(controller, themeController),
                     SizedBox(height: 20,),
                     // Balance Component
-                    _buildBalanceComponent(controller),
+                    _buildBalanceComponent(controller, themeController),
                     SizedBox(height: 20,),
                     AnimatedInviteBanner(),
                   ],
@@ -104,7 +106,7 @@ class _HomeScreenState extends State<HomeScreen> {
 }
 
 
-Widget _buildSavingComponent(HomeController controller) {
+Widget _buildSavingComponent(HomeController controller, ThemeController themeController) {
   return Column(
     children: [
       // Saving Component Start
@@ -375,7 +377,7 @@ Widget _buildSavingComponent(HomeController controller) {
   );
 }
 
-Widget _buildLoanComponent(HomeController controller) {
+Widget _buildLoanComponent(HomeController controller, ThemeController themeController) {
   return Column(
     children: [
       Center(
@@ -387,13 +389,16 @@ Widget _buildLoanComponent(HomeController controller) {
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(20),
               gradient: LinearGradient(
-                colors: [Colors.pinkAccent, Colors.blueAccent.withOpacity(0.9)],
+                colors: [
+                  themeController.theme.value?.firstControlColor ?? Colors.black,
+                  themeController.theme.value?.secondControlColor?.withOpacity(0.9) ?? Colors.black.withOpacity(0.9),
+                ],
                 begin: Alignment.topLeft,
                 end: Alignment.bottomCenter,
               ),
               boxShadow: [
                 BoxShadow(
-                  color: Colors.blueAccent.withOpacity(0.25),
+                  color: themeController.theme.value?.secondControlColor?.withOpacity(0.25) ?? Colors.blueAccent.withOpacity(0.25),
                   blurRadius: 10,
                   offset: Offset(0, 5),
                 ),
@@ -412,7 +417,7 @@ Widget _buildLoanComponent(HomeController controller) {
                         'កម្ចី',
                         style: TextStyle(
                           fontSize: 14,
-                          color: Colors.white,
+                          color: themeController.theme.value?.textColor ?? Colors.white,
                           fontFamily: 'MyBaseFont',
                           fontWeight: FontWeight.w600,
                         ),
@@ -421,7 +426,7 @@ Widget _buildLoanComponent(HomeController controller) {
                         '| ទាំងអស់',
                         style: TextStyle(
                           fontSize: 12,
-                          color: Colors.white70,
+                          color: themeController.theme.value?.textColor ?? Colors.white,
                           fontFamily: 'MyBaseFont',
                         ),
                       ),
@@ -433,7 +438,7 @@ Widget _buildLoanComponent(HomeController controller) {
                     children: [
                       Container(
                         decoration: BoxDecoration(
-                          color: Colors.white.withOpacity(0.15),
+                          color: themeController.theme.value?.textColor?.withOpacity(0.15) ?? Colors.white.withOpacity(0.15),
                           borderRadius: BorderRadius.circular(50),
                         ),
                         padding: const EdgeInsets.all(12),
@@ -462,13 +467,13 @@ Widget _buildLoanComponent(HomeController controller) {
                                       fontSize: 22,
                                       fontWeight: FontWeight.bold,
                                       fontFamily: 'MyBaseEnFont',
-                                      color: Colors.white,
+                                      color: themeController.theme.value?.textColor ?? Colors.white,
                                     ),
                                   ),
                                   const SizedBox(height: 4),
                                   Row(
                                     children: [
-                                      Icon(Icons.trending_up, size: 14, color: Colors.greenAccent),
+                                      Icon(Icons.trending_up, size: 14, color: Colors.greenAccent,),
                                       const SizedBox(width: 4),
                                       Text(
                                         '25% increase',
@@ -498,7 +503,7 @@ Widget _buildLoanComponent(HomeController controller) {
   );
 }
 
-Widget _buildBalanceComponent(HomeController controller) {
+Widget _buildBalanceComponent(HomeController controller, ThemeController themeController) {
   return Column(
     children: [
       Center(
@@ -506,13 +511,16 @@ Widget _buildBalanceComponent(HomeController controller) {
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(20),
             gradient: LinearGradient(
-              colors: [Colors.pinkAccent, Colors.blueAccent.withOpacity(0.9)],
+              colors: [
+                themeController.theme.value?.firstControlColor ?? Colors.black,
+                themeController.theme.value?.secondControlColor?.withOpacity(0.9) ?? Colors.black.withOpacity(0.9),
+              ],
               begin: Alignment.topLeft,
               end: Alignment.bottomCenter,
             ),
             boxShadow: [
               BoxShadow(
-                color: Colors.blueAccent.withOpacity(0.25),
+                color: themeController.theme.value?.secondControlColor?.withOpacity(0.25) ?? Colors.blueAccent.withOpacity(0.25),
                 blurRadius: 10,
                 offset: Offset(0, 5),
               ),
@@ -531,7 +539,7 @@ Widget _buildBalanceComponent(HomeController controller) {
                       'សមតុល្យ',
                       style: TextStyle(
                         fontSize: 14,
-                        color: Colors.white,
+                        color: themeController.theme.value?.textColor ?? Colors.white,
                         fontFamily: 'MyBaseFont',
                         fontWeight: FontWeight.w600,
                       ),
@@ -540,7 +548,7 @@ Widget _buildBalanceComponent(HomeController controller) {
                       '| ទាំងអស់',
                       style: TextStyle(
                         fontSize: 12,
-                        color: Colors.white70,
+                        color: themeController.theme.value?.textColor ?? Colors.white,
                         fontFamily: 'MyBaseFont',
                       ),
                     ),
@@ -552,7 +560,7 @@ Widget _buildBalanceComponent(HomeController controller) {
                   children: [
                     Container(
                       decoration: BoxDecoration(
-                        color: Colors.white.withOpacity(0.15),
+                        color: themeController.theme.value?.textColor?.withOpacity(0.15) ?? Colors.white.withOpacity(0.15),
                         borderRadius: BorderRadius.circular(50),
                       ),
                       padding: const EdgeInsets.all(12),
@@ -581,7 +589,7 @@ Widget _buildBalanceComponent(HomeController controller) {
                                     fontSize: 22,
                                     fontWeight: FontWeight.bold,
                                     fontFamily: 'MyBaseEnFont',
-                                    color: Colors.white,
+                                    color: themeController.theme.value?.textColor ?? Colors.white,
                                   ),
                                 ),
                                 const SizedBox(height: 4),
@@ -617,7 +625,7 @@ Widget _buildBalanceComponent(HomeController controller) {
 }
 
 
-Widget _buildNewComponent(HomeController controller) {
+Widget _buildNewComponent(HomeController controller, ThemeController themeController) {
   return Column(
     children: [
       Row(
@@ -629,7 +637,10 @@ Widget _buildNewComponent(HomeController controller) {
             decoration: BoxDecoration(
               shape: BoxShape.circle,
               gradient: LinearGradient(
-                colors: [Colors.pinkAccent.withOpacity(0.9), Colors.blueAccent.withOpacity(0.9)],
+                colors: [
+                  themeController.theme.value?.firstControlColor ?? Colors.black,
+                  themeController.theme.value?.secondControlColor?.withOpacity(0.9) ?? Colors.black.withOpacity(0.9),
+                ],
                 begin: Alignment.topLeft,
                 end: Alignment.bottomRight,
               ),
@@ -649,7 +660,7 @@ Widget _buildNewComponent(HomeController controller) {
                       child: Text(
                         '${(animatedValue * 100).toStringAsFixed(2)}%',
                         style: TextStyle(
-                          color: Colors.white,
+                          color: themeController.theme.value?.textColor ?? Colors.white,
                           fontSize: 14,
                           fontWeight: FontWeight.bold,
                           fontFamily: 'MyBaseEnFont',

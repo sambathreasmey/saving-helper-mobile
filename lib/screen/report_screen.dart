@@ -152,7 +152,7 @@ class _ReportScreenState extends State<ReportScreen> {
                                 gradient: LinearGradient(
                                   colors: [
                                     Colors.pinkAccent,
-                                    Colors.orangeAccent
+                                    Colors.blueAccent,
                                   ],
                                   begin: Alignment.topLeft,
                                   end: Alignment.bottomRight,

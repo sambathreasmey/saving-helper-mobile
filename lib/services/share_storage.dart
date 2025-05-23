@@ -1,5 +1,7 @@
 import 'dart:convert';
+import 'dart:ffi';
 
+import 'package:saving_helper/models/ThemeData.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:saving_helper/models/responses/login_response.dart' as LoginResponse;
@@ -71,14 +73,23 @@ class ShareStorage {
     await prefs.remove('theme_path');
   }
 
-  Future<void> saveTheme(String themePath) async {
+  Future<void> saveTheme(ThemeDataModel theme) async {
     final prefs = await SharedPreferences.getInstance();
-    await prefs.setString('theme_path', themePath);
+    final themeJson = jsonEncode(theme.toJson());
+    await prefs.setString('theme_path', themeJson);
   }
 
-  Future<String?> getTheme() async {
-    final prefs = await SharedPreferences.getInstance();
-    return prefs.getString('theme_path');
+  Future<ThemeDataModel?> getTheme() async {
+   try{
+     final prefs = await SharedPreferences.getInstance();
+     final themeJson = prefs.getString('theme_path');
+     if (themeJson == null) return null;
+     final Map<String, dynamic> themeMap = jsonDecode(themeJson);
+     return ThemeDataModel.fromJson(themeMap);
+   } catch (e) {
+     print('SMEY ______________________ ' + e.toString());
+     return null;
+   }
   }
 
   ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

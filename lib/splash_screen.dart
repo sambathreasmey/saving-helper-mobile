@@ -1,13 +1,13 @@
 // splash_screen.dart
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:saving_helper/controllers/theme_controller.dart';
 import 'package:saving_helper/screen/home_screen.dart';
 import 'dart:async';
 
 import 'package:saving_helper/screen/login_screen.dart';
 import 'package:saving_helper/services/share_storage.dart';
 import 'package:saving_helper/theme_screen.dart';
-
-import 'constants/app_color.dart' as app_colors;
 
 class SplashScreen extends StatefulWidget {
   @override
@@ -16,13 +16,14 @@ class SplashScreen extends StatefulWidget {
 
 class _SplashScreenState extends State<SplashScreen> {
 
+  final ThemeController themeController = Get.put(ThemeController());
   final ShareStorage shareStorage = ShareStorage();
 
   @override
   void initState() {
     super.initState();
     // Background Image
-    Timer(Duration(seconds: 2), () {
+    Timer(Duration(seconds: 1), () {
       checkUserCredential(context);
     });
   }
@@ -54,14 +55,17 @@ class _SplashScreenState extends State<SplashScreen> {
               width: 70,
               decoration: BoxDecoration(
                 gradient: LinearGradient(
-                  colors: [Colors.pinkAccent, Colors.blueAccent.withOpacity(0.9)],
+                  colors: [
+                    themeController.theme.value?.firstControlColor ?? Colors.black,
+                    themeController.theme.value?.secondControlColor?.withOpacity(0.9) ?? Colors.black.withOpacity(0.9),
+                  ],
                   begin: Alignment.topLeft,
                   end: Alignment.bottomRight,
                 ),
                 borderRadius: BorderRadius.all(Radius.circular(16)),
                 boxShadow: [
                   BoxShadow(
-                    color: Colors.blueAccent.withOpacity(0.3),
+                    color: themeController.theme.value?.secondControlColor?.withOpacity(0.3) ?? Colors.blueAccent.withOpacity(0.3),
                     blurRadius: 6,
                     offset: Offset(0, 3),
                   ),
@@ -69,14 +73,14 @@ class _SplashScreenState extends State<SplashScreen> {
               ),
               child: IconButton(
                   padding: EdgeInsets.all(0),
-                  icon: Icon(Icons.savings_outlined, color: Colors.white, size: 40,), onPressed: () {  },
+                  icon: Icon(Icons.savings_outlined, color: themeController.theme.value?.textColor ?? Colors.white, size: 40,), onPressed: () {  },
               ),
             ),
             SizedBox(height: 20),
             Text(
               'Saving Helper',
               style: TextStyle(
-                color: Colors.white,
+                color: themeController.theme.value?.textColor ?? Colors.white,
                 fontSize: 24,
                 fontWeight: FontWeight.bold,
               ),

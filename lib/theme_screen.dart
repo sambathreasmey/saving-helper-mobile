@@ -18,7 +18,7 @@ class ThemedScaffold extends StatelessWidget {
           Container(
             decoration: BoxDecoration(
               image: DecorationImage(
-                image: AssetImage(themeController.backgroundImage.value),
+                image: AssetImage(themeController.theme.value!.themePath!),
                 fit: BoxFit.cover,
               ),
             ),
