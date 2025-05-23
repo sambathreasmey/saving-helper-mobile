@@ -20,15 +20,15 @@ class LoginController extends GetxController {
 
   Future<void> login() async {
     try {
-      // final response = await loginRepository.login(
-      //   userController.text,
-      //   passController.text,
-      // );
-
       final response = await loginRepository.login(
-        'sambathreasmey',
-        '123',
+        userController.text,
+        passController.text,
       );
+
+      // final response = await loginRepository.login(
+      //   'sambathreasmey',
+      //   '123',
+      // );
 
       if (response.status == 0) {
 

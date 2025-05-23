@@ -16,6 +16,12 @@ class ReportController extends GetxController {
   RxString selectedTransactionType = "".obs;
   var isLoading = false.obs;
 
+  @override
+  void onInit() {
+    super.onInit();
+    fetchTransactions();
+  }
+
   Future<void> fetchTransactions() async {
     try {
       final ShareStorage shareStorage = ShareStorage();
