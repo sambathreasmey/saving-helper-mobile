@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:saving_helper/controllers/report_controller.dart';
+import 'package:saving_helper/controllers/theme_controller.dart';
 import 'package:saving_helper/models/report_model.dart';
 import 'package:saving_helper/repository/report_repository.dart';
 import 'package:saving_helper/screen/header.dart';
@@ -21,6 +22,7 @@ class ReportScreen extends StatefulWidget {
 class _ReportScreenState extends State<ReportScreen> {
   final ReportController controller =
   Get.put(ReportController(ReportRepository(ApiProvider())));
+  final ThemeController themeController = Get.put(ThemeController());
 
   @override
   void dispose() {
@@ -48,7 +50,7 @@ class _ReportScreenState extends State<ReportScreen> {
                     Text(
                       'របាយការណ៍',
                       style: TextStyle(
-                        color: app_colors.baseWhiteColor,
+                        color: themeController.theme.value?.textColor ?? Colors.white,
                         fontSize: 16,
                         fontWeight: FontWeight.bold,
                         fontFamily: 'MyBaseFont',
@@ -59,7 +61,7 @@ class _ReportScreenState extends State<ReportScreen> {
                         Text(
                           'របាយការណ៍ / ',
                           style: TextStyle(
-                            color: app_colors.subTitleText,
+                            color: themeController.theme.value?.textColor ?? Colors.white,
                             fontSize: 9,
                             fontFamily: 'MyBaseFont',
                           ),
@@ -67,7 +69,7 @@ class _ReportScreenState extends State<ReportScreen> {
                         Text(
                           'របាយការណ៍ទូទៅ',
                           style: TextStyle(
-                            color: app_colors.baseWhiteColor,
+                            color: themeController.theme.value?.textColor ?? Colors.white,
                             fontSize: 9,
                             fontFamily: 'MyBaseFont',
                             fontWeight: FontWeight.bold,
@@ -88,8 +90,8 @@ class _ReportScreenState extends State<ReportScreen> {
                       decoration: BoxDecoration(
                         gradient: LinearGradient(
                           colors: [
-                            Colors.pinkAccent,
-                            Colors.blueAccent.withOpacity(0.9)
+                            themeController.theme.value?.firstControlColor ?? Colors.black,
+                            themeController.theme.value?.secondControlColor ?? Colors.black,
                           ],
                           begin: Alignment.topLeft,
                           end: Alignment.bottomRight,
@@ -97,7 +99,7 @@ class _ReportScreenState extends State<ReportScreen> {
                         borderRadius: BorderRadius.circular(12),
                         boxShadow: [
                           BoxShadow(
-                            color: Colors.blueAccent.withOpacity(0.3),
+                            color: themeController.theme.value?.secondControlColor?.withOpacity(0.3) ?? Colors.white.withOpacity(0.3),
                             blurRadius: 6,
                             offset: Offset(0, 4),
                           ),
@@ -117,28 +119,28 @@ class _ReportScreenState extends State<ReportScreen> {
                                 value: "",
                                 child: Text("ទាំងអស់",
                                     style: TextStyle(
-                                        color: Colors.white,
+                                        color: themeController.theme.value?.textColor ?? Colors.white,
                                         fontFamily: 'MyBaseFont')),
                               ),
                               DropdownMenuItem(
                                 value: "loan",
                                 child: Text("កម្ចី",
                                     style: TextStyle(
-                                        color: Colors.white,
+                                        color: themeController.theme.value?.textColor ?? Colors.white,
                                         fontFamily: 'MyBaseFont')),
                               ),
                               DropdownMenuItem(
                                 value: "saving_deposit",
                                 child: Text("សន្សំ",
                                     style: TextStyle(
-                                        color: Colors.white,
+                                        color: themeController.theme.value?.textColor ?? Colors.white,
                                         fontFamily: 'MyBaseFont')),
                               ),
                               DropdownMenuItem(
                                 value: "saving_deposit_more",
                                 child: Text("សន្សំបន្ថែម",
                                     style: TextStyle(
-                                        color: Colors.white,
+                                        color: themeController.theme.value?.textColor ?? Colors.white,
                                         fontFamily: 'MyBaseFont')),
                               ),
                             ],
@@ -151,8 +153,8 @@ class _ReportScreenState extends State<ReportScreen> {
                               decoration: BoxDecoration(
                                 gradient: LinearGradient(
                                   colors: [
-                                    Colors.pinkAccent,
-                                    Colors.blueAccent,
+                                    themeController.theme.value?.firstControlColor ?? Colors.black,
+                                    themeController.theme.value?.secondControlColor ?? Colors.black,
                                   ],
                                   begin: Alignment.topLeft,
                                   end: Alignment.bottomRight,
@@ -161,7 +163,7 @@ class _ReportScreenState extends State<ReportScreen> {
                                 boxShadow: [
                                   BoxShadow(
                                     color:
-                                    Colors.orangeAccent.withOpacity(0.3),
+                                    themeController.theme.value?.secondControlColor?.withOpacity(0.3) ?? Colors.white.withOpacity(0.3),
                                     blurRadius: 6,
                                     offset: Offset(0, 4),
                                   ),
@@ -211,7 +213,7 @@ class _ReportScreenState extends State<ReportScreen> {
                       return Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Container(
+                          SizedBox(
                             width: double.infinity,
                             child: Padding(
                               padding:
@@ -280,7 +282,7 @@ class _ReportScreenState extends State<ReportScreen> {
                               controller
                                   .deleteTransaction(txn.transactionId!);
                             },
-                            child: _buildTransactionTile(context, txn, controller),
+                            child: _buildTransactionTile(context, txn, controller, themeController),
                           ))
                         ],
                       );
@@ -296,14 +298,14 @@ class _ReportScreenState extends State<ReportScreen> {
   }
 }
 
-Widget _buildTransactionTile(BuildContext context, ReportModel txn, ReportController controller) {
+Widget _buildTransactionTile(BuildContext context, ReportModel txn, ReportController controller, ThemeController themeController) {
   return Container(
     margin: EdgeInsets.symmetric(vertical: 4),
     decoration: BoxDecoration(
       gradient: LinearGradient(
         colors: [
-          Colors.black.withOpacity(0.9),
-          Colors.blueAccent.withOpacity(0.9)
+          Colors.black,
+          themeController.theme.value?.secondControlColor ?? Colors.black,
         ],
         begin: Alignment.topLeft,
         end: Alignment.bottomRight,
@@ -311,27 +313,29 @@ Widget _buildTransactionTile(BuildContext context, ReportModel txn, ReportContro
       borderRadius: BorderRadius.circular(12),
       boxShadow: [
         BoxShadow(
-          color: Colors.orangeAccent
-              .withOpacity(0.1),
+          color: themeController.theme.value?.secondControlColor?.withOpacity(0.3) ?? Colors.white.withOpacity(0.3),
           blurRadius: 10,
           offset: Offset(0, 0),
         ),
       ],
     ),
     child: ListTile(
-      onTap: () => _showTransactionDetailSheet(context, txn),
+      onTap: () => _showTransactionDetailSheet(context, txn, themeController),
       contentPadding: EdgeInsets.symmetric(horizontal: 16),
       leading: Container(
         decoration: BoxDecoration(
           gradient: LinearGradient(
-            colors: [Colors.pinkAccent, Colors.blueAccent.withOpacity(0.9)],
+            colors: [
+              themeController.theme.value?.firstControlColor ?? Colors.black,
+              themeController.theme.value?.secondControlColor ?? Colors.black,
+            ],
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
           ),
           borderRadius: BorderRadius.all(Radius.circular(100)),
           boxShadow: [
             BoxShadow(
-              color: Colors.blueAccent.withOpacity(0.3),
+              color: themeController.theme.value?.secondControlColor?.withOpacity(0.3) ?? Colors.white.withOpacity(0.3),
               blurRadius: 6,
               offset: Offset(0, 3),
             ),
@@ -342,7 +346,7 @@ Widget _buildTransactionTile(BuildContext context, ReportModel txn, ReportContro
             backgroundColor: Colors.transparent,
             child: Icon(
               txn.transactionType == "loan" ? Icons.currency_exchange_outlined : Icons.savings,
-              color: Colors.white,
+              color: themeController.theme.value?.textColor ?? Colors.white,
             )
         ),
       ),
@@ -416,14 +420,17 @@ Widget _buildTransactionTile(BuildContext context, ReportModel txn, ReportContro
             Container(
               decoration: BoxDecoration(
                 gradient: LinearGradient(
-                  colors: [Colors.pinkAccent, Colors.blueAccent],
+                  colors: [
+                    themeController.theme.value?.firstControlColor ?? Colors.black,
+                    themeController.theme.value?.secondControlColor ?? Colors.black,
+                  ],
                   begin: Alignment.topLeft,
                   end: Alignment.bottomRight,
                 ),
                 borderRadius: BorderRadius.circular(12),
                 boxShadow: [
                   BoxShadow(
-                    color: Colors.black.withOpacity(0.2),
+                    color: themeController.theme.value?.secondControlColor?.withOpacity(0.3) ?? Colors.white.withOpacity(0.3),
                     blurRadius: 4,
                     offset: Offset(0, 2),
                   ),
@@ -437,7 +444,7 @@ Widget _buildTransactionTile(BuildContext context, ReportModel txn, ReportContro
                     "-${txn.remainBalance?.toStringAsFixed(2)}",
                     style: TextStyle(
                       fontFamily: 'MyBaseEnFont',
-                      color: Colors.white,
+                      color: themeController.theme.value?.textColor ?? Colors.white,
                       fontSize: 11,
                       fontWeight: FontWeight.bold,
                     ),
@@ -446,7 +453,7 @@ Widget _buildTransactionTile(BuildContext context, ReportModel txn, ReportContro
                     "${txn.currencyType}",
                     style: TextStyle(
                       fontFamily: 'MyBaseEnFont',
-                      color: Colors.white,
+                      color: themeController.theme.value?.textColor ?? Colors.white,
                       fontSize: 9,
                       fontWeight: FontWeight.bold,
                     ),
@@ -462,7 +469,7 @@ Widget _buildTransactionTile(BuildContext context, ReportModel txn, ReportContro
   );
 }
 
-void _showTransactionDetailSheet(BuildContext context, ReportModel txn) {
+void _showTransactionDetailSheet(BuildContext context, ReportModel txn, ThemeController themeController) {
   showModalBottomSheet(
     context: context,
     backgroundColor: Colors.transparent,
@@ -471,7 +478,7 @@ void _showTransactionDetailSheet(BuildContext context, ReportModel txn) {
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(16),
           gradient: LinearGradient(
-              colors: [Colors.black, Colors.blueAccent],
+              colors: [Colors.black, themeController.theme.value?.secondControlColor ?? Colors.white],
           ),
         ),
         child: Padding(
@@ -514,14 +521,17 @@ void _showTransactionDetailSheet(BuildContext context, ReportModel txn) {
                             Container(
                               decoration: BoxDecoration(
                                 gradient: LinearGradient(
-                                  colors: [Colors.pinkAccent, Colors.blueAccent.withOpacity(0.9)],
+                                  colors: [
+                                    themeController.theme.value?.firstControlColor ?? Colors.black,
+                                    themeController.theme.value?.secondControlColor?.withOpacity(0.9) ?? Colors.black.withOpacity(0.9),
+                                  ],
                                   begin: Alignment.topLeft,
                                   end: Alignment.bottomRight,
                                 ),
                                 borderRadius: BorderRadius.all(Radius.circular(100)),
                                 boxShadow: [
                                   BoxShadow(
-                                    color: Colors.blueAccent.withOpacity(0.3),
+                                    color: themeController.theme.value?.secondControlColor?.withOpacity(0.3) ?? Colors.white.withOpacity(0.3),
                                     blurRadius: 6,
                                     offset: Offset(0, 3),
                                   ),
@@ -532,7 +542,7 @@ void _showTransactionDetailSheet(BuildContext context, ReportModel txn) {
                                   backgroundColor: Colors.transparent,
                                   child: Icon(
                                     txn.transactionType == "loan" ? Icons.currency_exchange_outlined : Icons.savings,
-                                    color: Colors.white,
+                                    color: themeController.theme.value?.textColor ?? Colors.white,
                                   )
                               ),
                             ),
@@ -556,14 +566,15 @@ void _showTransactionDetailSheet(BuildContext context, ReportModel txn) {
                           color: CupertinoColors.inactiveGray
                         ),
                       ),
-                      _buildDetailRow('ID', txn.transactionId ?? '-', false, true),
-                      _buildDetailRow('Type', txn.transactionType ?? '-', false, false),
-                      _buildDetailRow('Description', txn.transactionDesc ?? '-', true, false),
+                      _buildDetailRow('ID', txn.transactionId ?? '-', false, true, themeController),
+                      _buildDetailRow('Type', txn.transactionType ?? '-', false, false, themeController),
+                      _buildDetailRow('Description', txn.transactionDesc ?? '-', true, false, themeController),
                       _buildDetailRow('Amount',
-                          "${txn.transactionType == 'loan' ? '-' : '+'}${txn.amount?.toStringAsFixed(2)} ${txn.currencyType}", false, false),
+                          "${txn.transactionType == 'loan' ? '-' : '+'}${txn.amount?.toStringAsFixed(2)} ${txn.currencyType}", false, false, themeController,),
                       _buildDetailRow('Remain Balance',
-                          "${txn.remainBalance?.toStringAsFixed(2) ?? '0.00'} ${txn.currencyType}", false, false),
-                      _buildDetailRow('Date', txn.transactionDate ?? '-', false, false),
+                          "${txn.remainBalance?.toStringAsFixed(2) ?? '0.00'} ${txn.currencyType}", false, false, themeController,),
+                      _buildDetailRow('Date', txn.transactionDate ?? '-', false, false, themeController),
+                      _buildDetailRow('Created By', txn.createdBy ?? '-', false, false, themeController, color: Colors.green),
                     ],
                   ),
                 ),
@@ -577,7 +588,7 @@ void _showTransactionDetailSheet(BuildContext context, ReportModel txn) {
   );
 }
 
-Widget _buildDetailRow(String label, String value, bool isKhmer, bool isCopy) {
+Widget _buildDetailRow(String label, String value, bool isKhmer, bool isCopy, ThemeController themeController, {Color? color}) {
   return Row(
     mainAxisAlignment: MainAxisAlignment.spaceBetween,
     children: [
@@ -601,7 +612,7 @@ Widget _buildDetailRow(String label, String value, bool isKhmer, bool isCopy) {
                 overflow: TextOverflow.ellipsis,
                 style: TextStyle(
                   fontFamily: isKhmer ? 'MyBaseFont' : 'MyBaseEnFont',
-                  color: Colors.black54,
+                  color: color ?? Colors.black54,
                   fontWeight: FontWeight.bold,
                 ),
               ),
@@ -614,13 +625,16 @@ Widget _buildDetailRow(String label, String value, bool isKhmer, bool isCopy) {
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(12),
                   gradient: LinearGradient(
-                    colors: [Colors.pinkAccent, Colors.blueAccent.withOpacity(0.9)],
+                    colors: [
+                      themeController.theme.value?.firstControlColor ?? Colors.black,
+                      themeController.theme.value?.secondControlColor?.withOpacity(0.9) ?? Colors.black.withOpacity(0.9),
+                    ],
                     begin: Alignment.topLeft,
                     end: Alignment.bottomRight,
                   ),
                   boxShadow: [
                     BoxShadow(
-                      color: Colors.blueAccent,
+                      color: themeController.theme.value?.secondControlColor?.withOpacity(0.8) ?? Colors.white.withOpacity(0.8),
                       blurRadius: 2,
                       offset: Offset(0, 2),
                     ),
@@ -629,7 +643,7 @@ Widget _buildDetailRow(String label, String value, bool isKhmer, bool isCopy) {
                 height: 24,
                 width: 32,
                 child: IconButton(
-                  icon: Icon(Icons.copy, size: 10, color: Colors.white,),
+                  icon: Icon(Icons.copy, size: 10, color: themeController.theme.value?.textColor ?? Colors.white,),
                   tooltip: 'Copy',
                   onPressed: () {
                     Clipboard.setData(ClipboardData(text: value));
@@ -637,10 +651,28 @@ Widget _buildDetailRow(String label, String value, bool isKhmer, bool isCopy) {
                       "ចម្លងរួចរាល់",
                       "\"$value\" ត្រូវបានចម្លង",
                       snackPosition: SnackPosition.BOTTOM,
-                      backgroundColor: Colors.black87,
-                      colorText: Colors.white,
+                      snackStyle: SnackStyle.FLOATING, // Important to allow rounded corners and shadow
+                      backgroundGradient: LinearGradient(
+                        colors: [
+                          themeController.theme.value?.firstControlColor ?? Colors.black,
+                          themeController.theme.value?.secondControlColor?.withOpacity(0.9) ?? Colors.black.withOpacity(0.9),
+                        ],
+                        begin: Alignment.topLeft,
+                        end: Alignment.bottomRight,
+                      ),
+                      borderRadius: 12,
+                      margin: EdgeInsets.all(12),
+                      boxShadows: [
+                        BoxShadow(
+                          color: themeController.theme.value?.secondControlColor?.withOpacity(0.8) ?? Colors.white.withOpacity(0.8),
+                          blurRadius: 2,
+                          offset: Offset(0, 2),
+                        ),
+                      ],
+                      colorText: themeController.theme.value?.textColor ?? Colors.white,
                       duration: Duration(seconds: 2),
                     );
+
                   },
                 ),
               ),

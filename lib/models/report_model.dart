@@ -11,6 +11,7 @@ class ReportModel {
   String? userId;
   bool? isCompleted;
   String? remainDate;
+  String? createdBy;
   List<RepayLoanDetail>? repayLoanDetails;
 
   ReportModel({
@@ -24,7 +25,8 @@ class ReportModel {
     this.userId,
     this.isCompleted,
     this.repayLoanDetails,
-    this.remainDate
+    this.remainDate,
+    this.createdBy
   });
 
   factory ReportModel.fromJson(Map<String, dynamic> json) {
@@ -39,6 +41,7 @@ class ReportModel {
       userId: json['user_id'],
       isCompleted: json['is_completed'],
       remainDate: json['remain_date'],
+      createdBy: json['created_by'],
       repayLoanDetails: (json['repay_loan_details'] as List?)
           ?.map((item) => RepayLoanDetail.fromJson(item))
           .toList(),

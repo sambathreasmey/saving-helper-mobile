@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:saving_helper/controllers/loan_controller.dart';
+import 'package:saving_helper/controllers/theme_controller.dart';
 import 'package:saving_helper/repository/deposit_saving_repository.dart';
 import 'package:saving_helper/screen/header.dart';
 import 'package:saving_helper/services/api_provider.dart';
@@ -20,6 +21,7 @@ class _LoanScreenState extends State<LoanScreen> {
   final LoanController controller = Get.put(
     LoanController(DepositSavingRepository(ApiProvider())),
   );
+  final ThemeController themeController = Get.put(ThemeController());
 
   @override
   Widget build(BuildContext context) {
@@ -69,14 +71,17 @@ class _LoanScreenState extends State<LoanScreen> {
             child: Container(
               decoration: BoxDecoration(
                 gradient: LinearGradient(
-                  colors: [Colors.pinkAccent, Colors.blueAccent],
+                  colors: [
+                    themeController.theme.value?.firstControlColor ?? Colors.black,
+                    themeController.theme.value?.secondControlColor ?? Colors.black,
+                  ],
                   begin: Alignment.topLeft,
                   end: Alignment.bottomRight,
                 ),
                 borderRadius: BorderRadius.circular(20),
                 boxShadow: [
                   BoxShadow(
-                    color: Colors.orangeAccent.withOpacity(0.1),
+                    color: themeController.theme.value?.secondControlColor?.withOpacity(0.3) ?? Colors.white.withOpacity(0.3),
                     blurRadius: 6,
                     offset: Offset(0, 2),
                   ),
@@ -84,7 +89,7 @@ class _LoanScreenState extends State<LoanScreen> {
               ),
               child: TextButton(
                 onPressed: controller.saveLoan,
-                child: Text('បញ្ចូល', style: TextStyle(color: Colors.white, fontSize: 16, fontFamily: 'MyBaseFont', fontWeight: FontWeight.bold,)),
+                child: Text('បញ្ចូល', style: TextStyle(color: themeController.theme.value!.textColor ?? Colors.black, fontSize: 16, fontFamily: 'MyBaseFont', fontWeight: FontWeight.bold,)),
               ),
             ),
           ),
@@ -101,7 +106,7 @@ class _LoanScreenState extends State<LoanScreen> {
         children: [
           Text('គ្រប់គ្រង',
               style: TextStyle(
-                  color: app_colors.baseWhiteColor,
+                  color: themeController.theme.value?.textColor ?? Colors.white,
                   fontSize: 16,
                   fontWeight: FontWeight.bold,
                   fontFamily: 'MyBaseFont')),
@@ -109,12 +114,12 @@ class _LoanScreenState extends State<LoanScreen> {
             children: [
               Text('គ្រប់គ្រង /',
                   style: TextStyle(
-                      color: app_colors.subTitleText,
+                      color: themeController.theme.value?.textColor ?? Colors.white,
                       fontSize: 9,
                       fontFamily: 'MyBaseFont')),
               Text('បញ្ចូលប្រាក់កម្ចី',
                   style: TextStyle(
-                      color: app_colors.baseWhiteColor,
+                      color: themeController.theme.value?.textColor ?? Colors.white,
                       fontSize: 9,
                       fontWeight: FontWeight.bold,
                       fontFamily: 'MyBaseFont')),

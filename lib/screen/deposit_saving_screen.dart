@@ -5,6 +5,7 @@ import 'package:intl/intl.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:saving_helper/controllers/deposit_saving_controller.dart';
+import 'package:saving_helper/controllers/theme_controller.dart';
 import 'package:saving_helper/repository/deposit_saving_repository.dart';
 import 'package:saving_helper/services/api_provider.dart';
 import 'package:saving_helper/screen/header.dart';
@@ -21,6 +22,7 @@ class DepositSavingScreen extends StatefulWidget {
 class _DepositSavingScreenState extends State<DepositSavingScreen> {
   final DepositSavingController controller =
   Get.put(DepositSavingController(DepositSavingRepository(ApiProvider())));
+  final ThemeController themeController = Get.put(ThemeController());
 
   @override
   Widget build(BuildContext context) {
@@ -87,14 +89,17 @@ class _DepositSavingScreenState extends State<DepositSavingScreen> {
             child: Container(
               decoration: BoxDecoration(
                 gradient: LinearGradient(
-                  colors: [Colors.pinkAccent, Colors.blueAccent],
+                  colors: [
+                    themeController.theme.value?.firstControlColor ?? Colors.black,
+                    themeController.theme.value?.secondControlColor ?? Colors.black,
+                  ],
                   begin: Alignment.topLeft,
                   end: Alignment.bottomRight,
                 ),
                 borderRadius: BorderRadius.circular(20),
                 boxShadow: [
                   BoxShadow(
-                    color: Colors.orangeAccent.withOpacity(0.1),
+                    color: themeController.theme.value?.secondControlColor?.withOpacity(0.3) ?? Colors.white.withOpacity(0.3),
                     blurRadius: 6,
                     offset: Offset(0, 2),
                   ),
@@ -102,7 +107,7 @@ class _DepositSavingScreenState extends State<DepositSavingScreen> {
               ),
               child: TextButton(
                 onPressed: controller.saveDeposit,
-                child: Text('បញ្ចូល', style: TextStyle(color: Colors.white, fontSize: 16, fontFamily: 'MyBaseFont', fontWeight: FontWeight.bold,)),
+                child: Text('បញ្ចូល', style: TextStyle(color: themeController.theme.value?.textColor ?? Colors.white, fontSize: 16, fontFamily: 'MyBaseFont', fontWeight: FontWeight.bold,)),
               ),
             ),
           ),
@@ -119,7 +124,7 @@ class _DepositSavingScreenState extends State<DepositSavingScreen> {
         children: [
           Text('គ្រប់គ្រង',
               style: TextStyle(
-                  color: app_colors.baseWhiteColor,
+                  color: themeController.theme.value?.textColor ?? Colors.white,
                   fontSize: 16,
                   fontWeight: FontWeight.bold,
                   fontFamily: 'MyBaseFont')),
@@ -127,12 +132,12 @@ class _DepositSavingScreenState extends State<DepositSavingScreen> {
             children: [
               Text('គ្រប់គ្រង /',
                   style: TextStyle(
-                      color: app_colors.subTitleText,
+                      color: themeController.theme.value?.textColor ?? Colors.white,
                       fontSize: 9,
                       fontFamily: 'MyBaseFont')),
               Text('បញ្ចូលប្រាក់សន្សំ',
                   style: TextStyle(
-                      color: app_colors.baseWhiteColor,
+                      color: themeController.theme.value?.textColor ?? Colors.white,
                       fontSize: 9,
                       fontWeight: FontWeight.bold,
                       fontFamily: 'MyBaseFont')),

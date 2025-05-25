@@ -36,9 +36,9 @@ class ThemeController extends GetxController {
     ThemeDataModel(themePath: 'assets/images/beach_02.png', firstControlColor: Colors.pink, secondControlColor: Colors.blue, textColor: Colors.cyanAccent),
     ThemeDataModel(themePath: 'assets/images/beach_03.png', firstControlColor: Colors.brown, secondControlColor: Colors.cyan, textColor: Colors.cyanAccent),
     // ThemeDataModel(themePath: 'assets/images/beach_04.png', firstControlColor: Colors.white, secondControlColor: Colors.blueAccent, textColor: Colors.white),
-    // ThemeDataModel(themePath: 'assets/images/couple_01.png', firstControlColor: Colors.white, secondControlColor: Colors.blueAccent, textColor: Colors.white),
-    // ThemeDataModel(themePath: 'assets/images/couple_02.png', firstControlColor: Colors.white, secondControlColor: Colors.blueAccent, textColor: Colors.white),
-    // ThemeDataModel(themePath: 'assets/images/couple_03.png', firstControlColor: Colors.white, secondControlColor: Colors.blueAccent, textColor: Colors.white),
+    ThemeDataModel(themePath: 'assets/images/couple_01.png', firstControlColor: Colors.grey, secondControlColor: Colors.blueGrey, textColor: Colors.white),
+    ThemeDataModel(themePath: 'assets/images/couple_02.png', firstControlColor: Colors.pinkAccent, secondControlColor: Colors.lightBlue, textColor: Colors.white),
+    ThemeDataModel(themePath: 'assets/images/couple_03.png', firstControlColor: Colors.deepPurpleAccent, secondControlColor: Colors.blueGrey, textColor: Colors.tealAccent),
     // ThemeDataModel(themePath: 'assets/images/couple_04.png', firstControlColor: Colors.white, secondControlColor: Colors.blueAccent, textColor: Colors.white),
     // ThemeDataModel(themePath: 'assets/images/couple_05.png', firstControlColor: Colors.white, secondControlColor: Colors.blueAccent, textColor: Colors.white),
     // ThemeDataModel(themePath: 'assets/images/couple_06.png', firstControlColor: Colors.white, secondControlColor: Colors.blueAccent, textColor: Colors.white),
@@ -67,15 +67,15 @@ class ThemeController extends GetxController {
 
   /// Save selected theme to SharedPreferences
   Future<void> saveTheme(ThemeDataModel theme) async {
-    await shareStorage.saveTheme(theme);
+    // await shareStorage.saveTheme(theme);
   }
 
   /// Load theme from SharedPreferences on startup
   Future<void> loadTheme() async {
     final savedTheme = await shareStorage.getTheme();
     if (savedTheme != null && themes.contains(savedTheme)) {
-      theme.value = savedTheme;
-      _currentIndex = themes.indexOf(savedTheme);
+      // theme.value = savedTheme;
+      // _currentIndex = themes.indexOf(savedTheme);
     }
   }
 }

@@ -18,6 +18,7 @@ class HeaderController extends GetxController {
   RxBool isLoadingUserInfo = false.obs;
   RxBool isLoadingNotification = false.obs;
   RxString currentGroupId = ''.obs;
+  RxString currentGroupName = ''.obs;
 
   @override
   void onInit() {
@@ -28,13 +29,18 @@ class HeaderController extends GetxController {
 
   Future<void> _loadGroupIdFromPrefs() async {
     final storedGroupId = await shareStorage.getGroupId();
-    if (storedGroupId != null) {
+    final storedGroupName = await shareStorage.getGroupName();
+    if (storedGroupId != null && storedGroupName != null) {
       currentGroupId.value = storedGroupId;
+      currentGroupName.value = storedGroupName;
+      print("Group ID ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::: ${storedGroupId!}");
+      print("Group NAME ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::: ${storedGroupName!}");
     }
   }
 
-  Future<void> _saveGroupIdToPrefs(String groupId) async {
+  Future<void> _saveGroupIdToPrefs(String groupId, String groupName) async {
     await shareStorage.saveGroupId(groupId);
+    await shareStorage.saveGroupName(groupName);
   }
 
   Future<void> getUserInfo() async {
@@ -51,23 +57,6 @@ class HeaderController extends GetxController {
           roles: user.roles,
         );
       }
-
-      // userInfo.value!.roles = user?.roles;
-      // final response = await headerRepository.getUserInfo();
-      // if (response.status == 0) {
-      //   userInfo.value = response.data;
-      //
-      //   final groups = response.data?.groups ?? [];
-      //   if (groups.isNotEmpty) {
-      //     // If no stored group, default to first group
-      //     final foundGroup = groups.firstWhereOrNull((g) => g.groupId?.toString() == currentGroupId.value);
-      //     currentGroupId.value = (foundGroup?.groupId?.toString() ?? groups.first.groupId?.toString() ?? '');
-      //   }
-      // } else {
-      //   Get.snackbar("មានបញ្ហា", response.message ?? "Get user information failed",
-      //       colorText: app_color.background,
-      //       icon: Icon(Icons.sentiment_dissatisfied_outlined, color: app_color.baseWhiteColor));
-      // }
     } catch (e) {
       Get.snackbar("មានបញ្ហា", e.toString(),
           colorText: app_color.background,
@@ -88,6 +77,7 @@ class HeaderController extends GetxController {
           // If no stored group, default to first group
           final foundGroup = groupsApi.firstWhereOrNull((g) => g.groupId?.toString() == currentGroupId.value);
           currentGroupId.value = (foundGroup?.groupId?.toString() ?? groupsApi.first.groupId?.toString() ?? '');
+          currentGroupName.value = (foundGroup?.groupName?.toString() ?? groupsApi.first.groupName?.toString() ?? '');
         }
       } else {
         Get.snackbar("មានបញ្ហា", response.message ?? "Get user information failed",
@@ -103,11 +93,12 @@ class HeaderController extends GetxController {
     }
   }
 
-  void switchGroup(String groupId) {
+  void switchGroup(String groupId, String groupName) {
     if (groupId == currentGroupId.value) return;
 
     currentGroupId.value = groupId;
-    _saveGroupIdToPrefs(groupId); // 👈 Save to shared prefs
+    currentGroupName.value = groupName;
+    _saveGroupIdToPrefs(groupId, groupName); // 👈 Save to shared prefs
   }
 
   Future<void> getNotification() async {

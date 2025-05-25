@@ -110,4 +110,22 @@ class ShareStorage {
     return prefs.getString('group_id');
   }
 
+  ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  ////////////////////////////////////////////////// CURRENT_GROUP_NAME ///////////////////////////////////////////////////
+  ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  Future<void> removeGroupName() async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.remove('group_name');
+  }
+
+  Future<void> saveGroupName(String groupId) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString('group_name', groupId);
+  }
+
+  Future<String?> getGroupName() async {
+    final prefs = await SharedPreferences.getInstance();
+    return prefs.getString('group_name');
+  }
+
 }

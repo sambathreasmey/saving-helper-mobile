@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:saving_helper/constants/app_color.dart' as app_colors;
 import 'package:saving_helper/controllers/member_controller.dart';
+import 'package:saving_helper/controllers/theme_controller.dart';
 import 'package:saving_helper/repository/member_repository.dart';
 import 'package:saving_helper/screen/header.dart';
 import 'package:saving_helper/services/api_provider.dart';
@@ -16,6 +17,8 @@ class MemberScreen extends StatefulWidget {
 
 class _MemberScreenState extends State<MemberScreen> {
   late MemberController controller;
+
+  final ThemeController themeController = Get.put(ThemeController());
 
   @override
   void initState() {
@@ -44,7 +47,7 @@ class _MemberScreenState extends State<MemberScreen> {
                     Text(
                       'សមាជិក',
                       style: TextStyle(
-                        color: app_colors.baseWhiteColor,
+                        color: themeController.theme.value?.textColor ?? Colors.white,
                         fontSize: 16,
                         fontWeight: FontWeight.bold,
                         fontFamily: 'MyBaseFont',
@@ -55,7 +58,7 @@ class _MemberScreenState extends State<MemberScreen> {
                         Text(
                           'គ្រប់គ្រង /',
                           style: TextStyle(
-                            color: app_colors.subTitleText,
+                            color: themeController.theme.value?.textColor ?? Colors.white,
                             fontSize: 9,
                             fontFamily: 'MyBaseFont',
                           ),
@@ -63,7 +66,7 @@ class _MemberScreenState extends State<MemberScreen> {
                         Text(
                           'សមាជិក',
                           style: TextStyle(
-                            color: app_colors.baseWhiteColor,
+                            color: themeController.theme.value?.textColor ?? Colors.white,
                             fontSize: 9,
                             fontFamily: 'MyBaseFont',
                             fontWeight: FontWeight.bold,
@@ -109,15 +112,18 @@ class _MemberScreenState extends State<MemberScreen> {
                       return Container(
                         margin: const EdgeInsets.symmetric(vertical: 6, horizontal: 4),
                         decoration: BoxDecoration(
-                          gradient: const LinearGradient(
-                            colors: [Colors.pinkAccent, Colors.blueAccent],
+                          gradient: LinearGradient(
+                            colors: [
+                              themeController.theme.value?.firstControlColor ?? Colors.black,
+                              themeController.theme.value?.secondControlColor ?? Colors.black,
+                            ],
                             begin: Alignment.topLeft,
                             end: Alignment.bottomRight,
                           ),
                           borderRadius: BorderRadius.circular(12),
                           boxShadow: [
                             BoxShadow(
-                              color: Colors.black.withOpacity(0.2),
+                              color: themeController.theme.value?.secondControlColor?.withOpacity(0.3) ?? Colors.white,
                               blurRadius: 6,
                               offset: const Offset(0, 3),
                             ),
@@ -125,11 +131,31 @@ class _MemberScreenState extends State<MemberScreen> {
                         ),
                         child: ListTile(
                           contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-                          leading: CircleAvatar(
-                            backgroundColor: Colors.white24,
-                            child: Text(
-                              getInitials(member.userDetail?.fullName ?? ''),
-                              style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+                          leading: Container(
+                            decoration: BoxDecoration(
+                              gradient: LinearGradient(
+                                colors: [
+                                  themeController.theme.value?.firstControlColor ?? Colors.black,
+                                  themeController.theme.value?.secondControlColor?.withOpacity(0.9) ?? Colors.black.withOpacity(0.9),
+                                ],
+                                begin: Alignment.topLeft,
+                                end: Alignment.bottomRight,
+                              ),
+                              borderRadius: BorderRadius.circular(100),
+                              boxShadow: [
+                                BoxShadow(
+                                  color: Colors.black.withOpacity(0.6),
+                                  blurRadius: 6,
+                                  offset: Offset(0, 3),
+                                ),
+                              ],
+                            ),
+                            child: Padding(
+                              padding: const EdgeInsets.all(12.0),
+                              child: Text(
+                                getInitials(member.userDetail?.fullName ?? ''),
+                                style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 15,),
+                              ),
                             ),
                           ),
                           title: Text(
@@ -138,7 +164,7 @@ class _MemberScreenState extends State<MemberScreen> {
                               fontWeight: FontWeight.bold,
                               fontFamily: 'MyBaseFont',
                               color: Colors.white,
-                              fontSize: 16,
+                              fontSize: 14,
                             ),
                           ),
                           subtitle: Text(

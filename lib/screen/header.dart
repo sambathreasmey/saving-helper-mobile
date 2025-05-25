@@ -141,19 +141,73 @@ class _CustomHeaderState extends State<CustomHeader> {
                       }
                   ),
                 ),
+                // Container(
+                //   height: 32,
+                //   width: 32,
+                //   decoration: BoxDecoration(
+                //     borderRadius: BorderRadius.all(Radius.circular(100)),
+                //     // ignore: deprecated_member_use
+                //     color: Colors.blue.withOpacity(0.2),
+                //   ),
+                //   child: IconButton(
+                //     icon: Icon(Icons.settings, color: themeController.theme.value?.textColor ?? Colors.white, size: 16,),
+                //     onPressed: () {
+                //       _showModalBottomSheet(context, controller, shareStorage, themeController);
+                //     }
+                //   ),
+                // ),
                 Container(
-                  height: 32,
-                  width: 32,
                   decoration: BoxDecoration(
-                    borderRadius: BorderRadius.all(Radius.circular(100)),
-                    // ignore: deprecated_member_use
-                    color: Colors.blue.withOpacity(0.2),
+                    gradient: LinearGradient(
+                      colors: [
+                        themeController.theme.value?.firstControlColor ?? Colors.black,
+                        themeController.theme.value?.secondControlColor?.withOpacity(0.9) ?? Colors.blueAccent.withOpacity(0.9),
+                      ],
+                      begin: Alignment.topLeft,
+                      end: Alignment.bottomRight,
+                    ),
+                    borderRadius: BorderRadius.all(Radius.circular(8)),
+                    boxShadow: [
+                      BoxShadow(
+                        color: themeController.theme.value?.secondControlColor?.withOpacity(0.3) ?? Colors.blueAccent.withOpacity(0.3),
+                        blurRadius: 6,
+                        offset: Offset(0, 3),
+                      ),
+                    ],
+                    // color: app_colors.menu3Color,
                   ),
-                  child: IconButton(
-                    icon: Icon(Icons.settings, color: themeController.theme.value?.textColor ?? Colors.white, size: 16,),
-                    onPressed: () {
-                      _showModalBottomSheet(context, controller, shareStorage, themeController);
-                    }
+                  child: InkWell(
+                    onTap: () {
+                      controller.getGroup();
+                      showDialog(
+                        context: context,
+                        builder: (context) => _switchGroup(context, controller, themeController),
+                      );
+                    },
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 2, horizontal: 8),
+                      child: Obx(() {
+                        final groupName = controller.currentGroupName.value;
+
+                        return Column(
+                          children: [
+                            Icon(Icons.groups,
+                                color: themeController.theme.value?.textColor ?? Colors.white,
+                                size: 13),
+                            Text(
+                              groupName,
+                              style: TextStyle(
+                                color: themeController.theme.value?.textColor ??
+                                    Colors.white,
+                                fontSize: 10,
+                                fontWeight: FontWeight.bold,
+                                fontFamily: 'MyBaseFont',
+                              ),
+                            ),
+                          ],
+                        );
+                      }),
+                    ),
                   ),
                 ),
               ],
@@ -341,18 +395,32 @@ void _showModalBottomSheet(BuildContext context, HeaderController controller, Sh
                   children: [
                     Container(
                       decoration: BoxDecoration(
+                        gradient: LinearGradient(
+                          colors: [
+                            themeController.theme.value?.firstControlColor ?? Colors.black,
+                            themeController.theme.value?.secondControlColor?.withOpacity(0.9) ?? Colors.black.withOpacity(0.9),
+                          ],
+                          begin: Alignment.topLeft,
+                          end: Alignment.bottomRight,
+                        ),
+                        border: Border.all(
+                          color: themeController.theme.value?.textColor ?? Colors.white, // Border color
+                          width: 5.0,         // Border width
+                        ),
                         borderRadius: BorderRadius.circular(100),
                         boxShadow: [
                           BoxShadow(
-                            color: Colors.black.withOpacity(0.3),
-                            blurRadius: 3,
-                            offset: Offset(0, 2),
+                            color: Colors.black.withOpacity(0.6),
+                            blurRadius: 6,
+                            offset: Offset(0, 3),
                           ),
                         ],
                       ),
-                      child: CircleAvatar(
-                        radius: 28,
-                        backgroundImage: AssetImage('assets/images/profile.png'),
+                      child: Padding(
+                        padding: const EdgeInsets.all(16.0),
+                        child: Text(
+                          getInitials(displayName), style: TextStyle(color: themeController.theme.value!.textColor ?? Colors.black, fontWeight: FontWeight.bold, fontSize: 20),
+                        ),
                       ),
                     ),
                     SizedBox(width: 12),
@@ -410,164 +478,7 @@ void _showModalBottomSheet(BuildContext context, HeaderController controller, Sh
                                 showDialog(
                                   context: context,
                                   builder: (BuildContext dialogContext) {
-                                    return Obx(() {
-                                      final groups = controller.groups.value?.groups ?? [];
-                                      return AlertDialog(
-                                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-                                        backgroundColor: Colors.white,
-                                        titlePadding: EdgeInsets.all(0),
-                                        title: Container(
-                                          decoration: BoxDecoration(
-                                            gradient: LinearGradient(
-                                              colors: [
-                                                themeController.theme.value?.firstControlColor ?? Colors.black,
-                                                themeController.theme.value?.secondControlColor?.withOpacity(0.9) ?? Colors.black.withOpacity(0.9),
-                                              ],
-                                              begin: Alignment.topLeft,
-                                              end: Alignment.bottomRight,
-                                            ),
-                                            borderRadius: BorderRadius.only(
-                                              topRight: Radius.circular(20),
-                                              topLeft: Radius.circular(20),
-                                            ),
-                                            boxShadow: [
-                                              BoxShadow(
-                                                color: themeController.theme.value?.secondControlColor?.withOpacity(0.3) ?? Colors.black.withOpacity(0.9),
-                                                blurRadius: 6,
-                                                offset: Offset(0, 3),
-                                              ),
-                                            ],
-                                            // color: app_colors.menu3Color,
-                                          ),
-                                          child: Padding(
-                                            padding: const EdgeInsets.all(16.0),
-                                            child: Row(
-                                              children: [
-                                                Icon(Icons.groups, color: themeController.theme.value?.textColor ?? Colors.white, size: 26),  // Add an icon for the notification
-                                                SizedBox(width: 10),  // Space between the icon and text
-                                                Text(
-                                                  'សូមជ្រើសរើសក្រុម',
-                                                  style: TextStyle(
-                                                    color: themeController.theme.value?.textColor ?? Colors.white,
-                                                    fontSize: 18,
-                                                    fontWeight: FontWeight.bold,
-                                                    fontFamily: 'MyBaseFont',
-                                                  ),
-                                                ),
-                                              ],
-                                            ),
-                                          ),
-                                        ),
-                                        contentPadding: EdgeInsets.all(12),
-                                        content: groups.isEmpty
-                                            ? Text('No groups available', style: TextStyle(fontFamily: 'MyBaseFont'))
-                                            : SizedBox(
-                                          width: double.maxFinite,
-                                          child: ListView.separated(
-                                            shrinkWrap: true,
-                                            itemCount: groups.length,
-                                            separatorBuilder: (_, __) => SizedBox(height: 12),
-                                            itemBuilder: (context, index) {
-                                              final group = groups[index];
-                                              final groupName = group.groupName ?? 'Unnamed Group';
-                                              final isSelected = group.groupId == controller.currentGroupId.value;
-
-                                              return InkWell(
-                                                onTap: () {
-                                                  controller.switchGroup(group.groupId!);
-                                                  Get.to(() => SplashScreen());
-                                                },
-                                                borderRadius: BorderRadius.circular(16),
-                                                child: Container(
-                                                  padding: EdgeInsets.all(16),
-                                                  decoration: BoxDecoration(
-                                                    borderRadius: BorderRadius.circular(16),
-                                                    gradient: LinearGradient(
-                                                      colors: [
-                                                        themeController.theme.value?.firstControlColor ?? Colors.black,
-                                                        themeController.theme.value?.secondControlColor ?? Colors.black,
-                                                      ],
-                                                      begin: Alignment.topLeft,
-                                                      end: Alignment.bottomRight,
-                                                    ),
-                                                    boxShadow: [
-                                                      BoxShadow(
-                                                        color: themeController.theme.value?.secondControlColor?.withOpacity(0.3) ?? Colors.black.withOpacity(0.3),
-                                                        blurRadius: 6,
-                                                        offset: Offset(0, 4),
-                                                      ),
-                                                    ],
-                                                    color: isSelected ? themeController.theme.value?.textColor?.withOpacity(0.5) ?? Colors.white : themeController.theme.value?.textColor ?? Colors.white,
-                                                    border: isSelected
-                                                        ? Border.all(color: themeController.theme.value?.textColor ?? Colors.white, width: 2)
-                                                        : Border.all(color: Colors.grey[300]!),
-                                                  ),
-                                                  child: Row(
-                                                    children: [
-                                                      Icon(
-                                                        Icons.group,
-                                                        color: themeController.theme.value?.textColor ?? Colors.white,
-                                                      ),
-                                                      SizedBox(width: 12),
-                                                      Expanded(
-                                                        child: Text(
-                                                          groupName,
-                                                          style: TextStyle(
-                                                            fontFamily: 'MyBaseFont',
-                                                            fontSize: 14,
-                                                            fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
-                                                            color: themeController.theme.value?.textColor ?? Colors.white,
-                                                          ),
-                                                        ),
-                                                      ),
-                                                      if (isSelected)
-                                                        Icon(Icons.check_circle, color: themeController.theme.value?.textColor ?? Colors.white, size: 20),
-                                                    ],
-                                                  ),
-                                                ),
-                                              );
-                                            },
-                                          ),
-                                        ),
-                                        actionsPadding: EdgeInsets.all(12),
-                                        actions: <Widget>[
-                                          // Button to close the dialog
-                                          SizedBox(
-                                            height: 40,
-                                            width: double.infinity,
-                                            child: Container(
-                                              decoration: BoxDecoration(
-                                                gradient: LinearGradient(
-                                                  colors: [
-                                                    themeController.theme.value?.firstControlColor ?? Colors.black,
-                                                    themeController.theme.value?.secondControlColor ?? Colors.black,
-                                                  ],
-                                                  begin: Alignment.topLeft,
-                                                  end: Alignment.bottomRight,
-                                                ),
-                                                borderRadius: BorderRadius.circular(8),
-                                                boxShadow: [
-                                                  BoxShadow(
-                                                    color: themeController.theme.value?.secondControlColor?.withOpacity(0.1) ?? Colors.black.withOpacity(0.1),
-                                                    blurRadius: 6,
-                                                    offset: Offset(0, 2),
-                                                  ),
-                                                ],
-                                              ),
-                                              child: TextButton(
-                                                onPressed: () {
-                                                  Navigator.of(context).pop(); // Close the dialog
-                                                },
-                                                child: Text(
-                                                  'បោះបង់',
-                                                  style: TextStyle(fontSize: 16, color: themeController.theme.value?.textColor ?? Colors.white, fontFamily: 'MyBaseFont', fontWeight: FontWeight.bold,),
-                                                ),
-                                              ),
-                                            ),
-                                          ),
-                                        ],
-                                      );
-                                    });
+                                    return _switchGroup(context, controller, themeController);
                                   },
                                 );
                               },
@@ -655,6 +566,7 @@ void _showModalBottomSheet(BuildContext context, HeaderController controller, Sh
                   shareStorage.removeUserCredential();
                   shareStorage.removeToken();
                   shareStorage.removeGroupId();
+                  shareStorage.removeGroupName();
                   shareStorage.removeUser();
                   Get.delete<HeaderController>();
                   Get.to(() => LoginScreen(title: 'Home Screen Title'));
@@ -910,7 +822,7 @@ class _ReportSubMenuState extends State<ReportSubMenu> {
                           color: Colors.white,
                         ),
                       ),
-                      title: Text('របាយការណ៍ទូទៅ', style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontFamily: 'MyBaseFont',)),
+                      title: Text('របាយការណ៍ទូទៅ', style: TextStyle(color: themeController.theme.value?.textColor ?? Colors.white, fontWeight: FontWeight.bold, fontFamily: 'MyBaseFont',)),
                       onTap: () {
                         Get.delete<HeaderController>();
                         Get.to(() => ReportScreen());
@@ -969,3 +881,195 @@ Widget _buildMoneyBox(
   );
 }
 
+Widget _switchGroup(BuildContext context, HeaderController controller, ThemeController themeController) {
+  return Obx(() {
+    final groups = controller.groups.value?.groups ?? [];
+    return AlertDialog(
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+      backgroundColor: Colors.white,
+      titlePadding: EdgeInsets.all(0),
+      title: Container(
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            colors: [
+              themeController.theme.value?.firstControlColor ?? Colors.black,
+              themeController.theme.value?.secondControlColor?.withOpacity(
+                  0.9) ?? Colors.black.withOpacity(0.9),
+            ],
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+          ),
+          borderRadius: BorderRadius.only(
+            topRight: Radius.circular(20),
+            topLeft: Radius.circular(20),
+          ),
+          boxShadow: [
+            BoxShadow(
+              color: themeController.theme.value?.secondControlColor
+                  ?.withOpacity(0.3) ?? Colors.black.withOpacity(0.9),
+              blurRadius: 6,
+              offset: Offset(0, 3),
+            ),
+          ],
+          // color: app_colors.menu3Color,
+        ),
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Row(
+            children: [
+              Icon(Icons.groups,
+                  color: themeController.theme.value?.textColor ?? Colors.white,
+                  size: 26), // Add an icon for the notification
+              SizedBox(width: 10), // Space between the icon and text
+              Text(
+                'សូមជ្រើសរើសក្រុម',
+                style: TextStyle(
+                  color: themeController.theme.value?.textColor ?? Colors.white,
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
+                  fontFamily: 'MyBaseFont',
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+      contentPadding: EdgeInsets.all(12),
+      content: groups.isEmpty
+          ? Text(
+          'No groups available', style: TextStyle(fontFamily: 'MyBaseFont'))
+          : SizedBox(
+        width: double.maxFinite,
+        child: ListView.separated(
+          shrinkWrap: true,
+          itemCount: groups.length,
+          separatorBuilder: (_, __) => SizedBox(height: 12),
+          itemBuilder: (context, index) {
+            final group = groups[index];
+            final groupName = group.groupName ?? 'Unnamed Group';
+            final isSelected = group.groupId == controller.currentGroupId.value;
+
+            return InkWell(
+              onTap: () {
+                controller.switchGroup(group.groupId!, group.groupName!);
+                Get.to(() => SplashScreen());
+              },
+              borderRadius: BorderRadius.circular(16),
+              child: Container(
+                padding: EdgeInsets.all(16),
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(16),
+                  gradient: LinearGradient(
+                    colors: [
+                      themeController.theme.value?.firstControlColor ??
+                          Colors.black,
+                      themeController.theme.value?.secondControlColor ??
+                          Colors.black,
+                    ],
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
+                  ),
+                  boxShadow: [
+                    BoxShadow(
+                      color: themeController.theme.value?.secondControlColor
+                          ?.withOpacity(0.3) ?? Colors.black.withOpacity(0.3),
+                      blurRadius: 6,
+                      offset: Offset(0, 4),
+                    ),
+                  ],
+                  color: isSelected ? themeController.theme.value?.textColor
+                      ?.withOpacity(0.5) ?? Colors.white : themeController.theme
+                      .value?.textColor ?? Colors.white,
+                  border: isSelected
+                      ? Border.all(color: themeController.theme.value
+                      ?.textColor ?? Colors.white, width: 2)
+                      : Border.all(color: Colors.grey[300]!),
+                ),
+                child: Row(
+                  children: [
+                    Icon(
+                      Icons.group,
+                      color: themeController.theme.value?.textColor ??
+                          Colors.white,
+                    ),
+                    SizedBox(width: 12),
+                    Expanded(
+                      child: Text(
+                        groupName,
+                        style: TextStyle(
+                          fontFamily: 'MyBaseFont',
+                          fontSize: 14,
+                          fontWeight: isSelected ? FontWeight.bold : FontWeight
+                              .normal,
+                          color: themeController.theme.value?.textColor ??
+                              Colors.white,
+                        ),
+                      ),
+                    ),
+                    if (isSelected)
+                      Icon(Icons.check_circle, color: themeController.theme
+                          .value?.textColor ?? Colors.white, size: 20),
+                  ],
+                ),
+              ),
+            );
+          },
+        ),
+      ),
+      actionsPadding: EdgeInsets.all(12),
+      actions: <Widget>[
+        // Button to close the dialog
+        SizedBox(
+          height: 40,
+          width: double.infinity,
+          child: Container(
+            decoration: BoxDecoration(
+              gradient: LinearGradient(
+                colors: [
+                  themeController.theme.value?.firstControlColor ??
+                      Colors.black,
+                  themeController.theme.value?.secondControlColor ??
+                      Colors.black,
+                ],
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
+              ),
+              borderRadius: BorderRadius.circular(8),
+              boxShadow: [
+                BoxShadow(
+                  color: themeController.theme.value?.secondControlColor
+                      ?.withOpacity(0.1) ?? Colors.black.withOpacity(0.1),
+                  blurRadius: 6,
+                  offset: Offset(0, 2),
+                ),
+              ],
+            ),
+            child: TextButton(
+              onPressed: () {
+                Navigator.of(context).pop(); // Close the dialog
+              },
+              child: Text(
+                'បោះបង់',
+                style: TextStyle(fontSize: 16,
+                  color: themeController.theme.value?.textColor ?? Colors.white,
+                  fontFamily: 'MyBaseFont',
+                  fontWeight: FontWeight.bold,),
+              ),
+            ),
+          ),
+        ),
+      ],
+    );
+  });
+}
+
+String getInitials(String? fullName) {
+  if (fullName == null || fullName.trim().isEmpty) return '';
+  final parts = fullName.trim().split(RegExp(r'\s+'));
+  if (parts.length == 1) {
+    return parts[0][0].toUpperCase();
+  }
+  final first = parts.first[0];
+  final last = parts.last[0];
+  return (first + last).toUpperCase();
+}
