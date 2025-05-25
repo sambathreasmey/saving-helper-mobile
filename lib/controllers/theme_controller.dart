@@ -67,15 +67,15 @@ class ThemeController extends GetxController {
 
   /// Save selected theme to SharedPreferences
   Future<void> saveTheme(ThemeDataModel theme) async {
-    // await shareStorage.saveTheme(theme);
+    await shareStorage.saveTheme(theme);
   }
 
   /// Load theme from SharedPreferences on startup
   Future<void> loadTheme() async {
     final savedTheme = await shareStorage.getTheme();
     if (savedTheme != null && themes.contains(savedTheme)) {
-      // theme.value = savedTheme;
-      // _currentIndex = themes.indexOf(savedTheme);
+      theme.value = savedTheme;
+      _currentIndex = themes.indexOf(savedTheme);
     }
   }
 }

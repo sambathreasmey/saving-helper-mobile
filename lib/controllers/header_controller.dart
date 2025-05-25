@@ -33,8 +33,6 @@ class HeaderController extends GetxController {
     if (storedGroupId != null && storedGroupName != null) {
       currentGroupId.value = storedGroupId;
       currentGroupName.value = storedGroupName;
-      print("Group ID ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::: ${storedGroupId!}");
-      print("Group NAME ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::: ${storedGroupName!}");
     }
   }
 
