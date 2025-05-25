@@ -178,7 +178,6 @@ class _CustomHeaderState extends State<CustomHeader> {
                   ),
                   child: InkWell(
                     onTap: () {
-                      controller.getGroup();
                       showDialog(
                         context: context,
                         builder: (context) => _switchGroup(context, controller, themeController),
@@ -474,7 +473,6 @@ void _showModalBottomSheet(BuildContext context, HeaderController controller, Sh
                             ),
                             child: TextButton(
                               onPressed: () {
-                                controller.getGroup();
                                 showDialog(
                                   context: context,
                                   builder: (BuildContext dialogContext) {

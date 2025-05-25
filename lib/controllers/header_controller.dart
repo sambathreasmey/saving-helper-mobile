@@ -25,6 +25,7 @@ class HeaderController extends GetxController {
     super.onInit();
     _loadGroupIdFromPrefs();
     getUserInfo();
+    getGroup();
   }
 
   Future<void> _loadGroupIdFromPrefs() async {
