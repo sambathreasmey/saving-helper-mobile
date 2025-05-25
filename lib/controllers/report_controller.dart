@@ -15,6 +15,9 @@ class ReportController extends GetxController {
   RxList<ReportModel?> reports = RxList<ReportModel?>([]);
   RxString selectedTransactionType = "".obs;
   var isLoading = false.obs;
+  RxBool hasMore = true.obs;
+  int pageNum = 1;
+  final int pageSize = 10;
 
   @override
   void onInit() {
@@ -22,26 +25,62 @@ class ReportController extends GetxController {
     fetchTransactions();
   }
 
-  Future<void> fetchTransactions() async {
+  Future<void> fetchTransactions({bool refresh = false}) async {
+    if (isLoading.value) return; // prevent duplicate calls
+    if (!hasMore.value && !refresh) return; // no more data unless refreshing
+
     try {
+      isLoading.value = true;
+      if (refresh) {
+        pageNum = 1;
+        hasMore.value = true;
+        reports.clear();
+      }
+
       final ShareStorage shareStorage = ShareStorage();
       final userId = await shareStorage.getUserCredential();
       final groupId = await shareStorage.getGroupId();
+
       var request = GetReportRequest(
         channelId: app_global.channelId,
         userId: userId!,
         groupId: groupId!,
         reportType: selectedTransactionType.value,
+        pageNum: pageNum,
+        pageSize: pageSize,
       );
+
       final response = await reportRepository.getReport(request);
 
       if (response.resultMessage!.status == 0) {
-        reports.value = response.reports!;
+        final newReports = response.reports ?? [];
+        if (refresh) {
+          reports.value = newReports;
+        } else {
+          reports.addAll(newReports);
+        }
+        if (newReports.length < pageSize) {
+          hasMore.value = false; // no more pages
+        } else {
+          pageNum++;
+        }
       } else {
-        Get.snackbar("បរាជ័យ", response.resultMessage!.message ?? "Get report failed", colorText: app_color.background, icon: Icon(Icons.sentiment_dissatisfied_outlined, color: app_color.baseWhiteColor));
+        Get.snackbar(
+          "បរាជ័យ",
+          response.resultMessage!.message ?? "Get report failed",
+          colorText: app_color.background,
+          icon: Icon(Icons.sentiment_dissatisfied_outlined, color: app_color.baseWhiteColor),
+        );
       }
     } catch (e) {
-      Get.snackbar("ប្រព័ន្ធមានបញ្ហា", e.toString(), colorText: app_color.background, icon: Icon(Icons.warning_amber_sharp, color: app_color.baseWhiteColor));
+      Get.snackbar(
+        "ប្រព័ន្ធមានបញ្ហា",
+        e.toString(),
+        colorText: app_color.background,
+        icon: Icon(Icons.warning_amber_sharp, color: app_color.baseWhiteColor),
+      );
+    } finally {
+      isLoading.value = false;
     }
   }
 

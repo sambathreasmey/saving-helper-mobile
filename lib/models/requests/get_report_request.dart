@@ -1,26 +1,36 @@
 class GetReportRequest {
-  final String channelId;
-  final String userId;
-  final String groupId;
-  final String reportType;
+  String? channelId;
+  String? userId;
+  String? groupId;
+  String? reportType;
+  int? pageNum;
+  int? pageSize;
 
-  GetReportRequest({required this.channelId, required this.userId, required this.reportType, required this.groupId});
+  GetReportRequest(
+      {this.channelId,
+        this.userId,
+        this.groupId,
+        this.reportType,
+        this.pageNum,
+        this.pageSize});
 
-  factory GetReportRequest.fromJson(Map<String, dynamic> json) {
-    return GetReportRequest(
-      channelId: json['channel_id'],
-      userId: json['user_id'],
-      groupId: json['group_id'],
-      reportType: json['report_type'],
-    );
+  GetReportRequest.fromJson(Map<String, dynamic> json) {
+    channelId = json['channel_id'];
+    userId = json['user_id'];
+    groupId = json['group_id'];
+    reportType = json['report_type'];
+    pageNum = json['page_num'];
+    pageSize = json['page_size'];
   }
 
   Map<String, dynamic> toJson() {
-    return {
-      'channel_id': channelId,
-      'user_id': userId,
-      'group_id': groupId,
-      'report_type': reportType,
-    };
+    final Map<String, dynamic> data = new Map<String, dynamic>();
+    data['channel_id'] = this.channelId;
+    data['user_id'] = this.userId;
+    data['group_id'] = this.groupId;
+    data['report_type'] = this.reportType;
+    data['page_num'] = this.pageNum;
+    data['page_size'] = this.pageSize;
+    return data;
   }
 }

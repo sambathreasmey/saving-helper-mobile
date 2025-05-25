@@ -23,9 +23,28 @@ class _ReportScreenState extends State<ReportScreen> {
   final ReportController controller =
   Get.put(ReportController(ReportRepository(ApiProvider())));
   final ThemeController themeController = Get.put(ThemeController());
+  final ScrollController _scrollController = ScrollController();
+
+  @override
+  void initState() {
+    super.initState();
+
+    // Initial fetch
+    controller.fetchTransactions(refresh: true);
+
+    // Add scroll listener for pagination
+    _scrollController.addListener(() {
+      if (_scrollController.position.pixels >=
+          _scrollController.position.maxScrollExtent - 150) {
+        // Load next page when close to bottom
+        controller.fetchTransactions();
+      }
+    });
+  }
 
   @override
   void dispose() {
+    _scrollController.dispose();
     Get.delete<ReportController>();
     super.dispose();
   }
@@ -38,10 +57,10 @@ class _ReportScreenState extends State<ReportScreen> {
           padding: const EdgeInsets.all(16.0),
           child: Column(
             children: [
-              CustomHeader(),
-              SizedBox(height: 15),
+              const CustomHeader(),
+              const SizedBox(height: 15),
 
-              // Title
+              // Title section
               Container(
                 alignment: Alignment.centerLeft,
                 child: Column(
@@ -80,9 +99,9 @@ class _ReportScreenState extends State<ReportScreen> {
                   ],
                 ),
               ),
-              SizedBox(height: 15),
+              const SizedBox(height: 15),
 
-              // Dropdown
+              // Dropdown with underline hidden
               Row(
                 children: [
                   Expanded(
@@ -101,201 +120,209 @@ class _ReportScreenState extends State<ReportScreen> {
                           BoxShadow(
                             color: themeController.theme.value?.secondControlColor?.withOpacity(0.3) ?? Colors.white.withOpacity(0.3),
                             blurRadius: 6,
-                            offset: Offset(0, 4),
+                            offset: const Offset(0, 4),
                           ),
                         ],
                       ),
-                      padding: EdgeInsets.symmetric(horizontal: 12),
-                      child: Obx(
-                            () => DropdownButtonHideUnderline(
-                          child: DropdownButton2<String>(
-                            barrierColor: Colors.black.withOpacity(0.5),
-                            barrierDismissible: false,
-                            style: TextStyle(fontSize: 14),
-                            isExpanded: true,
-                            value: controller.selectedTransactionType.value,
-                            items: [
-                              DropdownMenuItem(
-                                value: "",
-                                child: Text("ទាំងអស់",
-                                    style: TextStyle(
-                                        color: themeController.theme.value?.textColor ?? Colors.white,
-                                        fontFamily: 'MyBaseFont')),
-                              ),
-                              DropdownMenuItem(
-                                value: "loan",
-                                child: Text("កម្ចី",
-                                    style: TextStyle(
-                                        color: themeController.theme.value?.textColor ?? Colors.white,
-                                        fontFamily: 'MyBaseFont')),
-                              ),
-                              DropdownMenuItem(
-                                value: "saving_deposit",
-                                child: Text("សន្សំ",
-                                    style: TextStyle(
-                                        color: themeController.theme.value?.textColor ?? Colors.white,
-                                        fontFamily: 'MyBaseFont')),
-                              ),
-                              DropdownMenuItem(
-                                value: "saving_deposit_more",
-                                child: Text("សន្សំបន្ថែម",
-                                    style: TextStyle(
-                                        color: themeController.theme.value?.textColor ?? Colors.white,
-                                        fontFamily: 'MyBaseFont')),
-                              ),
-                            ],
-                            onChanged: (value) {
-                              controller.selectedTransactionType.value =
-                                  value ?? '';
-                              controller.fetchTransactions();
-                            },
-                            dropdownStyleData: DropdownStyleData(
-                              decoration: BoxDecoration(
-                                gradient: LinearGradient(
-                                  colors: [
-                                    themeController.theme.value?.firstControlColor ?? Colors.black,
-                                    themeController.theme.value?.secondControlColor ?? Colors.black,
-                                  ],
-                                  begin: Alignment.topLeft,
-                                  end: Alignment.bottomRight,
+                      padding: const EdgeInsets.symmetric(horizontal: 12),
+                      child: Obx(() => DropdownButtonHideUnderline(
+                        child: DropdownButton2<String>(
+                          barrierColor: Colors.black.withOpacity(0.5),
+                          barrierDismissible: false,
+                          style: const TextStyle(fontSize: 14),
+                          isExpanded: true,
+                          value: controller.selectedTransactionType.value,
+                          items: [
+                            DropdownMenuItem(
+                              value: "",
+                              child: Text(
+                                "ទាំងអស់",
+                                style: TextStyle(
+                                  color: themeController.theme.value?.textColor ?? Colors.white,
+                                  fontFamily: 'MyBaseFont',
                                 ),
-                                borderRadius: BorderRadius.circular(12),
-                                boxShadow: [
-                                  BoxShadow(
-                                    color:
-                                    themeController.theme.value?.secondControlColor?.withOpacity(0.3) ?? Colors.white.withOpacity(0.3),
-                                    blurRadius: 6,
-                                    offset: Offset(0, 4),
-                                  ),
-                                ],
                               ),
+                            ),
+                            DropdownMenuItem(
+                              value: "loan",
+                              child: Text(
+                                "កម្ចី",
+                                style: TextStyle(
+                                  color: themeController.theme.value?.textColor ?? Colors.white,
+                                  fontFamily: 'MyBaseFont',
+                                ),
+                              ),
+                            ),
+                            DropdownMenuItem(
+                              value: "saving_deposit",
+                              child: Text(
+                                "សន្សំ",
+                                style: TextStyle(
+                                  color: themeController.theme.value?.textColor ?? Colors.white,
+                                  fontFamily: 'MyBaseFont',
+                                ),
+                              ),
+                            ),
+                            DropdownMenuItem(
+                              value: "saving_deposit_more",
+                              child: Text(
+                                "សន្សំបន្ថែម",
+                                style: TextStyle(
+                                  color: themeController.theme.value?.textColor ?? Colors.white,
+                                  fontFamily: 'MyBaseFont',
+                                ),
+                              ),
+                            ),
+                          ],
+                          onChanged: (value) {
+                            controller.selectedTransactionType.value = value ?? '';
+                            controller.fetchTransactions(refresh: true);
+                          },
+                          dropdownStyleData: DropdownStyleData(
+                            decoration: BoxDecoration(
+                              gradient: LinearGradient(
+                                colors: [
+                                  themeController.theme.value?.firstControlColor ?? Colors.black,
+                                  themeController.theme.value?.secondControlColor ?? Colors.black,
+                                ],
+                                begin: Alignment.topLeft,
+                                end: Alignment.bottomRight,
+                              ),
+                              borderRadius: BorderRadius.circular(12),
+                              boxShadow: [
+                                BoxShadow(
+                                  color: themeController.theme.value?.secondControlColor?.withOpacity(0.3) ?? Colors.white.withOpacity(0.3),
+                                  blurRadius: 6,
+                                  offset: const Offset(0, 4),
+                                ),
+                              ],
                             ),
                           ),
                         ),
-                      ),
+                      )),
                     ),
                   ),
                 ],
               ),
-              SizedBox(height: 15),
 
-              // Transaction List
-              Obx(() {
-                if (controller.reports.isEmpty) {
-                  return Center(
-                    child: Text(
-                      'មិនមានប្រតិបត្តិការ',
-                      style: TextStyle(
-                        fontFamily: 'MyBaseFont',
-                        color: app_colors.subTitleText,
+              const SizedBox(height: 15),
+
+              // Transactions List with pagination
+              Expanded(
+                child: Obx(() {
+                  if (controller.reports.isEmpty && controller.isLoading.value) {
+                    return const Center(child: CircularProgressIndicator());
+                  }
+                  if (controller.reports.isEmpty) {
+                    return Center(
+                      child: Text(
+                        'មិនមានប្រតិបត្តិការ',
+                        style: TextStyle(
+                          fontFamily: 'MyBaseFont',
+                          color: app_colors.subTitleText,
+                        ),
                       ),
-                    ),
-                  );
-                }
+                    );
+                  }
 
-                // Group by date
-                final groupedTransactions = <String, List<ReportModel>>{};
-                for (var txn in controller.reports) {
-                  final date = txn?.transactionDate?.split(' ').first ?? 'Unknown';
-                  groupedTransactions.putIfAbsent(date, () => []).add(txn!);
-                }
+                  // Group transactions by date
+                  final groupedTransactions = <String, List<ReportModel>>{};
+                  for (var txn in controller.reports) {
+                    final date = txn?.transactionDate?.split(' ').first ?? 'Unknown';
+                    groupedTransactions.putIfAbsent(date, () => []).add(txn!);
+                  }
 
-                final sortedDates = groupedTransactions.keys.toList()
-                  ..sort((a, b) => b.compareTo(a)); // Descending by date
+                  final sortedDates = groupedTransactions.keys.toList()
+                    ..sort((a, b) => b.compareTo(a)); // Descending dates
 
-                return Expanded(
-                  child: ListView.builder(
-                    itemCount: sortedDates.length,
-                    itemBuilder: (context, dateIndex) {
-                      final date = sortedDates[dateIndex];
+                  return ListView.builder(
+                    controller: _scrollController,
+                    itemCount: sortedDates.length + (controller.hasMore.value ? 1 : 0),
+                    itemBuilder: (context, index) {
+                      if (index == sortedDates.length) {
+                        // loading indicator at bottom
+                        if (controller.isLoading.value) {
+                          return const Padding(
+                            padding: EdgeInsets.all(16.0),
+                            child: Center(child: CircularProgressIndicator()),
+                          );
+                        } else {
+                          return const SizedBox.shrink();
+                        }
+                      }
+
+                      final date = sortedDates[index];
                       final transactions = groupedTransactions[date]!;
 
                       return Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          SizedBox(
-                            width: double.infinity,
-                            child: Padding(
-                              padding:
-                              const EdgeInsets.symmetric(horizontal: 18,),
-                              child: Text(
-                                date,
-                                style: TextStyle(
-                                  color: Colors.white,
-                                  fontFamily: 'MyBaseEnFont',
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 14,
-                                ),
+                          Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 18),
+                            child: Text(
+                              date,
+                              style: const TextStyle(
+                                color: Colors.white,
+                                fontFamily: 'MyBaseEnFont',
+                                fontWeight: FontWeight.bold,
+                                fontSize: 14,
                               ),
                             ),
                           ),
-                          ...transactions.map((txn) => Dismissible(
-                            key: ValueKey(txn.transactionId ??
-                                "${dateIndex}_${transactions.indexOf(txn)}"),
-                            direction: DismissDirection.endToStart,
-                            background: Container(
-                              alignment: Alignment.centerRight,
-                              padding:
-                              EdgeInsets.symmetric(horizontal: 20),
-                              decoration: BoxDecoration(
-                                color: Colors.redAccent,
-                                borderRadius: BorderRadius.circular(12),
-                              ),
-                              child:
-                              Icon(Icons.delete, color: Colors.white),
-                            ),
-                            confirmDismiss: (direction) async {
-                              return await showDialog<bool>(
-                                context: context,
-                                builder: (context) => AlertDialog(
-                                  shape: RoundedRectangleBorder(
-                                      borderRadius:
-                                      BorderRadius.circular(16)),
-                                  title: Text("បញ្ជាក់ការលុប",
-                                      style: TextStyle(
-                                          fontFamily: 'MyBaseFont')),
-                                  content: Text(
-                                      "តើអ្នកប្រាកដជាចង់លុបប្រតិបត្តិការនេះមែនទេ?",
-                                      style: TextStyle(
-                                          fontFamily: 'MyBaseFont')),
-                                  actions: [
-                                    TextButton(
-                                      onPressed: () =>
-                                          Navigator.of(context).pop(false),
-                                      child: Text("បោះបង់",
-                                          style: TextStyle(
-                                              fontFamily: 'MyBaseFont')),
-                                    ),
-                                    TextButton(
-                                      onPressed: () =>
-                                          Navigator.of(context).pop(true),
-                                      child: Text("លុប",
-                                          style: TextStyle(
-                                              color: Colors.red,
-                                              fontFamily: 'MyBaseFont')),
-                                    ),
-                                  ],
+                          ...transactions.asMap().entries.map((entry) {
+                            final txnIndex = entry.key;
+                            final txn = entry.value;
+                            return Dismissible(
+                              key: ValueKey('${date}_$txnIndex${txn.transactionId ?? UniqueKey().toString()}'),
+                              direction: DismissDirection.endToStart,
+                              background: Container(
+                                alignment: Alignment.centerRight,
+                                padding: const EdgeInsets.symmetric(horizontal: 20),
+                                decoration: BoxDecoration(
+                                  color: Colors.redAccent,
+                                  borderRadius: BorderRadius.circular(12),
                                 ),
-                              );
-                            },
-                            onDismissed: (direction) {
-                              controller
-                                  .deleteTransaction(txn.transactionId!);
-                            },
-                            child: _buildTransactionTile(context, txn, controller, themeController),
-                          ))
+                                child: const Icon(Icons.delete, color: Colors.white),
+                              ),
+                              confirmDismiss: (direction) async {
+                                return await showDialog<bool>(
+                                  context: context,
+                                  builder: (context) => AlertDialog(
+                                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+                                    title: const Text("បញ្ជាក់ការលុប", style: TextStyle(fontFamily: 'MyBaseFont')),
+                                    content: const Text("តើអ្នកប្រាកដជាចង់លុបប្រតិបត្តិការនេះមែនទេ?", style: TextStyle(fontFamily: 'MyBaseFont')),
+                                    actions: [
+                                      TextButton(
+                                        onPressed: () => Navigator.of(context).pop(false),
+                                        child: const Text("បោះបង់", style: TextStyle(fontFamily: 'MyBaseFont')),
+                                      ),
+                                      TextButton(
+                                        onPressed: () => Navigator.of(context).pop(true),
+                                        child: const Text("លុប", style: TextStyle(color: Colors.red, fontFamily: 'MyBaseFont')),
+                                      ),
+                                    ],
+                                  ),
+                                );
+                              },
+                              onDismissed: (direction) {
+                                controller.deleteTransaction(txn.transactionId!);
+                              },
+                              child: _buildTransactionTile(context, txn, controller, themeController),
+                            );
+                          }).toList(),
                         ],
                       );
                     },
-                  ),
-                );
-              }),
+                  );
+                }),
+              ),
             ],
           ),
         ),
       ),
     );
   }
+
 }
 
 Widget _buildTransactionTile(BuildContext context, ReportModel txn, ReportController controller, ThemeController themeController) {
