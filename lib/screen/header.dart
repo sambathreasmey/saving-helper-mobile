@@ -9,6 +9,7 @@ import 'package:saving_helper/screen/login_screen.dart';
 import 'package:get/get.dart';
 import 'package:saving_helper/screen/member_screen.dart';
 import 'package:saving_helper/screen/report_screen.dart';
+import 'package:saving_helper/screen/summary_report_screen.dart';
 import 'package:saving_helper/services/api_provider.dart';
 import 'package:saving_helper/services/share_storage.dart';
 import 'package:saving_helper/splash_screen.dart';
@@ -794,7 +795,7 @@ class _ReportSubMenuState extends State<ReportSubMenu> {
         ),
         AnimatedContainer(
           duration: Duration(milliseconds: 100),
-          height: _isExpanded ? 60 : 0, // Adjust height based on expansion
+          height: _isExpanded ? 100 : 0, // Adjust height based on expansion
           child: SingleChildScrollView(
             child: Padding(
               padding: const EdgeInsets.only(left: 32),
@@ -824,6 +825,31 @@ class _ReportSubMenuState extends State<ReportSubMenu> {
                       onTap: () {
                         Get.delete<HeaderController>();
                         Get.to(() => ReportScreen());
+                      },
+                    ),
+                    ListTile(
+                      leading: ShaderMask(
+                        shaderCallback: (Rect bounds) {
+                          return LinearGradient(
+                            colors: [
+                              themeController.theme.value?.firstControlColor ?? Colors.black,
+                              themeController.theme.value?.secondControlColor ?? Colors.black,
+                            ],
+                            begin: Alignment.topLeft,
+                            end: Alignment.bottomRight,
+                          ).createShader(bounds);
+                        },
+                        blendMode: BlendMode.srcIn,
+                        child: Icon(
+                          Icons.content_paste_search_outlined,
+                          size: 24,
+                          color: Colors.white,
+                        ),
+                      ),
+                      title: Text('របាយការណ៍សង្ខេបប្រចាំខែ', style: TextStyle(color: themeController.theme.value?.textColor ?? Colors.white, fontWeight: FontWeight.bold, fontFamily: 'MyBaseFont',)),
+                      onTap: () {
+                        Get.delete<HeaderController>();
+                        Get.to(() => SummaryReportScreen());
                       },
                     ),
                   ],
