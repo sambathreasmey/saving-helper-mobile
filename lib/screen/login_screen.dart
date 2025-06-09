@@ -30,8 +30,8 @@ class _LoginScreenState extends State<LoginScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return ThemedScaffold(
-      child: Stack(
+    return Scaffold(
+      body: Stack(
         children: [
           SafeArea(
             child: Center(
