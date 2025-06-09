@@ -3,6 +3,7 @@ import 'package:saving_helper/controllers/header_controller.dart';
 import 'package:saving_helper/controllers/theme_controller.dart';
 import 'package:saving_helper/repository/header_repository.dart';
 import 'package:saving_helper/screen/deposit_saving_screen.dart';
+import 'package:saving_helper/screen/goal_management_screen.dart';
 import 'package:saving_helper/screen/home_screen.dart';
 import 'package:saving_helper/screen/loan_screen.dart';
 import 'package:saving_helper/screen/login_screen.dart';
@@ -132,7 +133,14 @@ class _CustomHeaderState extends State<CustomHeader> {
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.all(Radius.circular(100)),
                     // ignore: deprecated_member_use
-                    color: Colors.blue.withOpacity(0.2),
+                    color: themeController.theme.value?.firstControlColor?.withOpacity(0.2) ?? Colors.blue.withOpacity(0.2),
+                    boxShadow: [
+                      BoxShadow(
+                        color: themeController.theme.value?.secondControlColor?.withOpacity(0.1) ?? Colors.blueAccent.withOpacity(0.1),
+                        blurRadius: 3,
+                        offset: Offset(0, 2),
+                      ),
+                    ],
                   ),
                   child: IconButton(
                       icon: Icon(Icons.notifications_active, color: themeController.theme.value?.textColor ?? Colors.white, size: 16,),
@@ -244,7 +252,7 @@ void _showNotificationDialog(BuildContext context, HeaderController controller, 
             ),
             boxShadow: [
               BoxShadow(
-                color: Colors.blueAccent.withOpacity(0.3),
+                color: themeController.theme.value?.secondControlColor?.withOpacity(0.3) ?? Colors.blueAccent.withOpacity(0.3),
                 blurRadius: 6,
                 offset: Offset(0, 3),
               ),
@@ -634,7 +642,7 @@ class _ManagementSubMenuState extends State<ManagementSubMenu> {
         ),
         AnimatedContainer(
           duration: Duration(milliseconds: 100),
-          height: _isExpanded ? 165 : 0, // Adjust height for 3 menu items
+          height: _isExpanded ? 220 : 0, // Adjust height for 3 menu items
           child: SingleChildScrollView(
             child: Padding(
               padding: const EdgeInsets.only(left: 32),
@@ -732,6 +740,37 @@ class _ManagementSubMenuState extends State<ManagementSubMenu> {
                       onTap: () {
                         Get.delete<HeaderController>();
                         Get.to(() => MemberScreen());
+                      },
+                    ),
+                    ListTile(
+                      leading: ShaderMask(
+                        shaderCallback: (Rect bounds) {
+                          return LinearGradient(
+                            colors: [
+                              themeController.theme.value?.firstControlColor ?? Colors.black,
+                              themeController.theme.value?.secondControlColor ?? Colors.black,
+                            ],
+                            begin: Alignment.topLeft,
+                            end: Alignment.bottomRight,
+                          ).createShader(bounds);
+                        },
+                        blendMode: BlendMode.srcIn,
+                        child: Icon(
+                          Icons.grass_outlined,
+                          size: 24,
+                        ),
+                      ),
+                      title: Text(
+                        'គម្រោងសន្សំប្រាក់',
+                        style: TextStyle(
+                          color: themeController.theme.value?.textColor ?? Colors.white,
+                          fontWeight: FontWeight.bold,
+                          fontFamily: 'MyBaseFont',
+                        ),
+                      ),
+                      onTap: () {
+                        Get.delete<HeaderController>();
+                        Get.to(() => GoalManagementScreen());
                       },
                     ),
                   ]

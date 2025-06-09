@@ -42,7 +42,7 @@ class DepositSavingController extends GetxController {
       selectedImage.value = picked;
 
       // Call upload immediately
-      await uploadSelectedImage();
+      // await uploadSelectedImage();
     }
   }
 
@@ -75,6 +75,7 @@ class DepositSavingController extends GetxController {
 
   // Method to save the deposit
   Future<void> saveDeposit() async {
+    print(selectedDate);
     // Validate input
     if (selectedCurrency.value == 'KHR') {
       Get.snackbar("ព័ត៍មានមិនត្រឹមត្រូវ", 'ប្រភេទប្រាក់រៀលមិនទាន់កំណត់នៅឡើយ សូមជ្រើសរើសដុល្លារជំនួស', colorText: app_color.background, icon: Icon(Icons.sentiment_dissatisfied_outlined, color: app_color.baseWhiteColor));

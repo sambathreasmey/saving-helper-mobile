@@ -4,11 +4,16 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
+import 'package:saving_helper/controllers/header_controller.dart';
 import 'package:saving_helper/controllers/home_screen_controller.dart';
 import 'package:saving_helper/controllers/theme_controller.dart';
 import 'package:saving_helper/repository/home_repository.dart';
 import 'package:saving_helper/screen/animated_Invite_banner.dart';
+import 'package:saving_helper/screen/member_screen.dart';
 import 'package:saving_helper/screen/report_repay_screen.dart';
+import 'package:saving_helper/screen/saving_plan_calculate_screen.dart';
+import 'package:saving_helper/screen/widgets/menu_grid/MenuGrid.dart';
+import 'package:saving_helper/screen/widgets/menu_grid/MenuItem.dart';
 import 'package:saving_helper/services/api_provider.dart';
 import 'package:saving_helper/screen/header.dart';
 
@@ -38,73 +43,119 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget build(BuildContext context) {
 
     return ThemedScaffold(
-        child: Stack(
-          children: [
-            // Main content
-            SafeArea(
-              child: Padding(
-                padding: const EdgeInsets.all(16.0),
-                child:
-                ListView(
-                  children: [
-                    CustomHeader(),
-                    SizedBox(height: 15,),
-                    Container(
-                      alignment: Alignment.centerLeft,
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            'Dashboard',  // Use null-aware operator to safely access userName
-                            style: TextStyle(
-                              color: themeController.theme.value?.textColor ?? Colors.white,
-                              fontSize: 16,
-                              fontWeight: FontWeight.bold,
-                              fontFamily: 'MyBaseEnFont',
-                            ),
+      child: Stack(
+        children: [
+          // Main content
+          SafeArea(
+            child: Padding(
+              padding: const EdgeInsets.all(16.0),
+              child:
+              Column(
+                children: [
+                  CustomHeader(),
+                  SizedBox(height: 15,),
+                  Container(
+                    alignment: Alignment.centerLeft,
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          'Dashboard',  // Use null-aware operator to safely access userName
+                          style: TextStyle(
+                            color: themeController.theme.value?.textColor ?? Colors.white,
+                            fontSize: 16,
+                            fontWeight: FontWeight.bold,
+                            fontFamily: 'MyBaseEnFont',
                           ),
-                          Row(
-                            children: [
-                              Text('Home /',
-                                style: TextStyle(
-                                  color: themeController.theme.value?.textColor ?? Colors.white,
-                                  fontSize: 9,
-                                ),),
-                              Text(' Dashboard',
-                                style: TextStyle(
-                                  color: themeController.theme.value?.textColor ?? Colors.white,
-                                  fontSize: 9,
-                                  fontFamily: 'MyBaseEnFont',
-                                ),),
-                            ],
-                          ),
-                        ],
-                      ),
+                        ),
+                        Row(
+                          children: [
+                            Text('Home /',
+                              style: TextStyle(
+                                color: themeController.theme.value?.textColor ?? Colors.white,
+                                fontSize: 9,
+                              ),),
+                            Text(' Dashboard',
+                              style: TextStyle(
+                                color: themeController.theme.value?.textColor ?? Colors.white,
+                                fontSize: 9,
+                                fontFamily: 'MyBaseEnFont',
+                              ),),
+                          ],
+                        ),
+                        SizedBox(height: 10,),
+                      ],
                     ),
-                    SizedBox(height: 20,),
-                    // New Component
-                    _buildNewComponent(controller, themeController),
-                    SizedBox(height: 20,),
-                    // Saving Component
-                    _buildSavingComponent(controller, themeController),
-                    SizedBox(height: 20,),
-                    // Loan Component
-                    _buildLoanComponent(controller, themeController),
-                    SizedBox(height: 20,),
-                    // Balance Component
-                    _buildBalanceComponent(controller, themeController),
-                    SizedBox(height: 20,),
-                    AnimatedInviteBanner(),
-                  ],
-                )
-              ),
+                  ),
+                  Expanded(
+                    child: ListView(
+                      children: [
+                        SizedBox(height: 10,),
+                        // New Component
+                        _buildNewComponent(controller, themeController),
+                        SizedBox(height: 20,),
+                        // Saving Component
+                        _buildSavingComponent(controller, themeController),
+                        SizedBox(height: 20,),
+                        // Loan Component
+                        _buildLoanComponent(controller, themeController),
+                        SizedBox(height: 20,),
+                        // Balance Component
+                        _buildBalanceComponent(controller, themeController),
+                        SizedBox(height: 20,),
+                        // AnimatedInviteBanner(),
+                        MenuGrid(
+                          menuItems: [
+                            SavingPlanCalculateScreen(),
+                            MenuItem(
+                              icon: Icons.supervised_user_circle_outlined,
+                              label: 'ដៃគូសន្សំ',
+                              onTap: () {
+                                // Handle navigation to Home Screen
+                                Get.to(() => MemberScreen());
+                              },
+                              firstControlColor: themeController.theme.value?.firstControlColor,
+                              secondControlColor: themeController.theme.value?.secondControlColor,
+                              textColor: themeController.theme.value?.textColor,
+                            ),
+                            MenuItem(
+                              icon: Icons.settings_outlined,
+                              label: 'គ្រប់គ្រង',
+                              onTap: () {
+                                // Handle navigation to Home Screen
+                                Get.to(() => MemberScreen());
+                              },
+                              firstControlColor: themeController.theme.value?.firstControlColor,
+                              secondControlColor: themeController.theme.value?.secondControlColor,
+                              textColor: themeController.theme.value?.textColor,
+                            ),
+                            MenuItem(
+                              icon: Icons.mood,
+                              label: 'ផ្សេងៗ',
+                              onTap: () {
+                                // Handle navigation to Home Screen
+                                Get.to(() => MemberScreen());
+                              },
+                              firstControlColor: themeController.theme.value?.firstControlColor,
+                              secondControlColor: themeController.theme.value?.secondControlColor,
+                              textColor: themeController.theme.value?.textColor,
+                            ),
+                          ],
+                        ),
+                        SizedBox(height: 20,),
+                        // AnimatedInviteBanner(),
+                      ],
+                    ),
+                  ),
+                ],
+              )
             ),
-          ],
+          ),
+        ],
         ),
     );
   }
 }
-
 
 Widget _buildSavingComponent(HomeController controller, ThemeController themeController) {
   return Column(
@@ -405,7 +456,7 @@ Widget _buildLoanComponent(HomeController controller, ThemeController themeContr
               ],
             ),
             child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 20),
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 18),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -527,7 +578,7 @@ Widget _buildBalanceComponent(HomeController controller, ThemeController themeCo
             ],
           ),
           child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 20),
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 18),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -631,52 +682,55 @@ Widget _buildNewComponent(HomeController controller, ThemeController themeContro
       Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Container(
-            width: 90,
-            height: 90,
-            decoration: BoxDecoration(
-              shape: BoxShape.circle,
-              gradient: LinearGradient(
-                colors: [
-                  themeController.theme.value?.firstControlColor ?? Colors.black,
-                  themeController.theme.value?.secondControlColor?.withOpacity(0.9) ?? Colors.black.withOpacity(0.9),
-                ],
-                begin: Alignment.topLeft,
-                end: Alignment.bottomRight,
+          Padding(
+            padding: const EdgeInsets.only(left: 8.0),
+            child: Container(
+              width: 90,
+              height: 90,
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                gradient: LinearGradient(
+                  colors: [
+                    themeController.theme.value?.firstControlColor ?? Colors.black,
+                    themeController.theme.value?.secondControlColor?.withOpacity(0.9) ?? Colors.black.withOpacity(0.9),
+                  ],
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
+                ),
               ),
-            ),
-            child: Obx(() {
-              final target = double.tryParse(controller.dashboard.value?.target ?? '0.00') ?? 0.00;
-              final progress = (target / 100).clamp(0.0, 1.0); // Ensure 0.0–1.0
+              child: Obx(() {
+                final target = double.tryParse(controller.dashboard.value?.target ?? '0.00') ?? 0.00;
+                final progress = (target / 100).clamp(0.0, 1.0); // Ensure 0.0–1.0
 
-              return TweenAnimationBuilder<double>(
-                key: ValueKey(target),
-                tween: Tween(begin: 0.0, end: progress),
-                duration: Duration(milliseconds: 800),
-                builder: (context, animatedValue, child) {
-                  return CustomPaint(
-                    painter: _RingPainter(animatedValue),
-                    child: Center(
-                      child: Text(
-                        '${(animatedValue * 100).toStringAsFixed(2)}%',
-                        style: TextStyle(
-                          color: themeController.theme.value?.textColor ?? Colors.white,
-                          fontSize: 14,
-                          fontWeight: FontWeight.bold,
-                          fontFamily: 'MyBaseEnFont',
-                          shadows: [
-                            Shadow(
-                              color: Colors.deepPurpleAccent,
-                              blurRadius: 8,
-                            ),
-                          ],
+                return TweenAnimationBuilder<double>(
+                  key: ValueKey(target),
+                  tween: Tween(begin: 0.0, end: progress),
+                  duration: Duration(milliseconds: 800),
+                  builder: (context, animatedValue, child) {
+                    return CustomPaint(
+                      painter: _RingPainter(animatedValue),
+                      child: Center(
+                        child: Text(
+                          '${(animatedValue * 100).toStringAsFixed(2)}%',
+                          style: TextStyle(
+                            color: themeController.theme.value?.textColor ?? Colors.white,
+                            fontSize: 14,
+                            fontWeight: FontWeight.bold,
+                            fontFamily: 'MyBaseEnFont',
+                            shadows: [
+                              Shadow(
+                                color: Colors.deepPurpleAccent,
+                                blurRadius: 8,
+                              ),
+                            ],
+                          ),
                         ),
                       ),
-                    ),
-                  );
-                },
-              );
-            }),
+                    );
+                  },
+                );
+              }),
+            ),
           ),
           SizedBox(width: 16),
           Expanded(

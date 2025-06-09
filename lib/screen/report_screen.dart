@@ -67,7 +67,7 @@ class _ReportScreenState extends State<ReportScreen> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      'របាយការណ៍',
+                      'របាយការណ៍ទូទៅ',
                       style: TextStyle(
                         color: themeController.theme.value?.textColor ?? Colors.white,
                         fontSize: 16,

@@ -14,14 +14,14 @@ import 'package:saving_helper/services/api_provider.dart';
 import 'package:saving_helper/screen/header.dart';
 import 'package:saving_helper/theme_screen.dart';
 
-class DepositSavingScreen extends StatefulWidget {
-  const DepositSavingScreen({super.key});
+class GoalManagementScreen extends StatefulWidget {
+  const GoalManagementScreen({super.key});
 
   @override
-  _DepositSavingScreenState createState() => _DepositSavingScreenState();
+  _GoalManagementScreenState createState() => _GoalManagementScreenState();
 }
 
-class _DepositSavingScreenState extends State<DepositSavingScreen> {
+class _GoalManagementScreenState extends State<GoalManagementScreen> {
   final DepositSavingController controller =
   Get.put(DepositSavingController(DepositSavingRepository(ApiProvider())));
   final ThemeController themeController = Get.put(ThemeController());
@@ -44,7 +44,7 @@ class _DepositSavingScreenState extends State<DepositSavingScreen> {
                     DynamicBreadcrumbWidget(
                       title: 'គ្រប់គ្រង',
                       subTitle: 'គ្រប់គ្រង',
-                      path: 'បញ្ចូលប្រាក់សន្សំ',
+                      path: 'គម្រោងសន្សំប្រាក់',
                       textColor: themeController.theme.value?.textColor ?? Colors.white,
                     )
                   ],
@@ -56,79 +56,88 @@ class _DepositSavingScreenState extends State<DepositSavingScreen> {
                   padding: const EdgeInsets.symmetric(horizontal: 16),
                   child: Column(
                     children: [
+                      TextFieldWidget(
+                          controller: controller.transactionDescController,
+                          required: true,
+                          label: 'ឈ្មោះគម្រោង',
+                          prefixIcon: Icons.grass_outlined,
+                          keyboardType: TextInputType.text,
+                      ),
+                      const SizedBox(height: 20),
                       AmountFieldWidget(
                         controller: controller.amountController,
                         required: true,
-                        label: 'ប្រាក់សន្សំ',
+                        prefixIcon: Icons.monetization_on_outlined,
+                        label: 'ទំហំសាច់ប្រាក់',
                         keyboardType: TextInputType.numberWithOptions(decimal: true),
                         inputFormatter: FilteringTextInputFormatter.allow(RegExp(r'^\d*\.?\d{0,2}')),
                       ),
-                      const SizedBox(height: 20),
-                      SelectItemWidget(
-                        title: 'សូមជ្រើសរើសប្រភេទសាច់ប្រាក់',
-                        itemList: controller.currencyList,  // Pass the list of currencies
-                        selectedCurrency: controller.selectedCurrency, // Pass the reactive selected currency
-                        labelText: 'ប្រភេទសាច់ប្រាក់',
-                        hintText: 'សូមជ្រើសរើសប្រភេទសាច់ប្រាក់',
-                        prefixIcon: Icons.monetization_on,
-                        suffixIcon: Icons.arrow_drop_down,
-                      ),
-                      const SizedBox(height: 16),
-                      DatePickerWidget(
-                        selectedDate: controller.selectedDate,
-                        firstControlColor: themeController.theme.value?.firstControlColor ?? Colors.black,
-                        secondControlColor: themeController.theme.value?.secondControlColor ?? Colors.black,
-                        textColor: themeController.theme.value?.textColor ?? Colors.white,
-                      ),
-                      const SizedBox(height: 16),
-                      TextFieldWidget(
-                        controller: controller.transactionDescController,
-                        label: 'កំណត់ចំណាំ',
-                        prefixIcon: Icons.note_alt_rounded,
-                        keyboardType: TextInputType.text,
-                      ),
-                      const SizedBox(height: 16),
-                      _buildAddToExistingCheckbox(),
-                      const SizedBox(height: 16),
-                      _buildImageUploadSection(),
-                      const SizedBox(height: 12),
-                      showDetectTextFromUpdateImage(),
-                      const SizedBox(height: 32),
+                      // const SizedBox(height: 20),
+                      // SelectItemWidget(
+                      //   title: 'សូមជ្រើសរើសប្រភេទសាច់ប្រាក់',
+                      //   itemList: controller.currencyList,  // Pass the list of currencies
+                      //   selectedCurrency: controller.selectedCurrency, // Pass the reactive selected currency
+                      //   labelText: 'ប្រភេទសាច់ប្រាក់',
+                      //   hintText: 'សូមជ្រើសរើសប្រភេទសាច់ប្រាក់',
+                      //   prefixIcon: Icons.monetization_on,
+                      //   suffixIcon: Icons.arrow_drop_down,
+                      // ),
+                      // const SizedBox(height: 16),
+                      // DatePickerWidget(
+                      //   selectedDate: controller.selectedDate,
+                      //   firstControlColor: themeController.theme.value?.firstControlColor ?? Colors.black,
+                      //   secondControlColor: themeController.theme.value?.secondControlColor ?? Colors.black,
+                      //   textColor: themeController.theme.value?.textColor ?? Colors.white,
+                      // ),
+                      // const SizedBox(height: 16),
+                      // TextFieldWidget(
+                      //   controller: controller.transactionDescController,
+                      //   label: 'កំណត់ចំណាំ',
+                      //   prefixIcon: Icons.note_alt_rounded,
+                      //   keyboardType: TextInputType.text,
+                      // ),
+                      // const SizedBox(height: 16),
+                      // _buildAddToExistingCheckbox(),
+                      // const SizedBox(height: 16),
+                      // _buildImageUploadSection(),
+                      // const SizedBox(height: 12),
+                      // showDetectTextFromUpdateImage(),
+                      // const SizedBox(height: 32),
                     ],
                   ),
                 ),
               ),
-              Padding(
-                padding: const EdgeInsets.fromLTRB(16, 0, 16, 24),
-                child: SizedBox(
-                  width: double.infinity,
-                  height: 50,
-                  child: Container(
-                    decoration: BoxDecoration(
-                      gradient: LinearGradient(
-                        colors: [
-                          themeController.theme.value?.firstControlColor ?? Colors.black,
-                          themeController.theme.value?.secondControlColor ?? Colors.black,
-                        ],
-                        begin: Alignment.topLeft,
-                        end: Alignment.bottomRight,
-                      ),
-                      borderRadius: BorderRadius.circular(20),
-                      boxShadow: [
-                        BoxShadow(
-                          color: themeController.theme.value?.secondControlColor?.withOpacity(0.3) ?? Colors.white.withOpacity(0.3),
-                          blurRadius: 6,
-                          offset: Offset(0, 2),
-                        ),
-                      ],
-                    ),
-                    child: TextButton(
-                      onPressed: controller.saveDeposit,
-                      child: Text('បញ្ចូល', style: TextStyle(color: themeController.theme.value?.textColor ?? Colors.white, fontSize: 16, fontFamily: 'MyBaseFont', fontWeight: FontWeight.bold,)),
-                    ),
-                  ),
-                ),
-              ),
+              // Padding(
+              //   padding: const EdgeInsets.fromLTRB(16, 0, 16, 24),
+              //   child: SizedBox(
+              //     width: double.infinity,
+              //     height: 50,
+              //     child: Container(
+              //       decoration: BoxDecoration(
+              //         gradient: LinearGradient(
+              //           colors: [
+              //             themeController.theme.value?.firstControlColor ?? Colors.black,
+              //             themeController.theme.value?.secondControlColor ?? Colors.black,
+              //           ],
+              //           begin: Alignment.topLeft,
+              //           end: Alignment.bottomRight,
+              //         ),
+              //         borderRadius: BorderRadius.circular(20),
+              //         boxShadow: [
+              //           BoxShadow(
+              //             color: themeController.theme.value?.secondControlColor?.withOpacity(0.3) ?? Colors.white.withOpacity(0.3),
+              //             blurRadius: 6,
+              //             offset: Offset(0, 2),
+              //           ),
+              //         ],
+              //       ),
+              //       child: TextButton(
+              //         onPressed: controller.saveDeposit,
+              //         child: Text('បញ្ចូល', style: TextStyle(color: themeController.theme.value?.textColor ?? Colors.white, fontSize: 16, fontFamily: 'MyBaseFont', fontWeight: FontWeight.bold,)),
+              //       ),
+              //     ),
+              //   ),
+              // ),
             ],
           ),
         ),
