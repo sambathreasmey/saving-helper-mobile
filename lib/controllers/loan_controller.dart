@@ -12,9 +12,7 @@ import 'package:saving_helper/constants/app_global.dart' as app_global;
 class LoanController extends GetxController {
   final DepositSavingRepository depositSavingRepository;
 
-  LoanController(this.depositSavingRepository) {
-    selectedDate.value = DateFormat('yyyy-MM-dd').format(DateTime.now());
-  }
+  LoanController(this.depositSavingRepository);
 
   // Reactive variables
   RxString amount = ''.obs;
@@ -25,6 +23,22 @@ class LoanController extends GetxController {
 
   final TextEditingController amountController = TextEditingController();
   final TextEditingController transactionDescController = TextEditingController();
+
+  @override
+  void onInit() {
+    super.onInit();
+
+    // Sync amount.text to amount.value reactively
+    amountController.addListener(() {
+      amount.value = amountController.text;
+    });
+
+    transactionDescController.addListener(() {
+      transactionDesc.value = transactionDescController.text;
+    });
+
+    selectedDate.value = DateFormat('yyyy-MM-dd').format(DateTime.now());
+  }
 
   @override
   void onClose() {
