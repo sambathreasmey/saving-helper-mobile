@@ -7,8 +7,10 @@ import 'package:intl/intl.dart';
 import 'package:saving_helper/controllers/header_controller.dart';
 import 'package:saving_helper/controllers/home_screen_controller.dart';
 import 'package:saving_helper/controllers/theme_controller.dart';
+import 'package:saving_helper/repository/header_repository.dart';
 import 'package:saving_helper/repository/home_repository.dart';
 import 'package:saving_helper/screen/animated_Invite_banner.dart';
+import 'package:saving_helper/screen/login_screen.dart';
 import 'package:saving_helper/screen/member_screen.dart';
 import 'package:saving_helper/screen/report_repay_screen.dart';
 import 'package:saving_helper/screen/saving_plan_calculate_screen.dart';
@@ -16,8 +18,10 @@ import 'package:saving_helper/screen/widgets/menu_grid/MenuGrid.dart';
 import 'package:saving_helper/screen/widgets/menu_grid/MenuItem.dart';
 import 'package:saving_helper/services/api_provider.dart';
 import 'package:saving_helper/screen/header.dart';
+import 'package:saving_helper/services/share_storage.dart';
 
 import '../constants/app_color.dart' as app_colors;
+import '../splash_screen.dart';
 import '../theme_screen.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -41,6 +45,9 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
+
+    final HeaderController headerController = Get.put(HeaderController(HeaderRepository(ApiProvider())));
+    final ShareStorage shareStorage = ShareStorage();
 
     return ThemedScaffold(
       child: Stack(
@@ -122,19 +129,17 @@ class _HomeScreenState extends State<HomeScreen> {
                               icon: Icons.settings_outlined,
                               label: 'គ្រប់គ្រង',
                               onTap: () {
-                                // Handle navigation to Home Screen
-                                Get.to(() => MemberScreen());
+                                _showModalBottomSheet(context, headerController, shareStorage, themeController);
                               },
                               firstControlColor: themeController.theme.value?.firstControlColor,
                               secondControlColor: themeController.theme.value?.secondControlColor,
                               textColor: themeController.theme.value?.textColor,
                             ),
                             MenuItem(
-                              icon: Icons.mood,
-                              label: 'ផ្សេងៗ',
+                              icon: Icons.balance,
+                              label: 'កម្ចី',
                               onTap: () {
-                                // Handle navigation to Home Screen
-                                Get.to(() => MemberScreen());
+                                Get.to(() => ReportRepayScreen());
                               },
                               firstControlColor: themeController.theme.value?.firstControlColor,
                               secondControlColor: themeController.theme.value?.secondControlColor,
@@ -866,4 +871,455 @@ Widget _buildMoneyBox(double value, Color color1, Color color2, {double height =
       );
     },
   );
+}
+
+void _showModalBottomSheet(BuildContext context, HeaderController controller, ShareStorage shareStorage, ThemeController themeController) {
+  showModalBottomSheet(
+    context: context,
+    shape: RoundedRectangleBorder(
+      borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+    ),
+    backgroundColor: Colors.transparent,
+    builder: (BuildContext context) {
+      return Obx(() {
+        if (controller.isLoadingUserInfo.value) {
+          return Container(
+            height: 200,
+            alignment: Alignment.center,
+            child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white),
+          );
+        }
+
+        final user = controller.userInfo.value;
+        final displayName = () {
+          if (user == null) return "N/A";
+          if (user.fullName?.isNotEmpty == true) return user.fullName!;
+          if (user.userName?.isNotEmpty == true) return user.userName!;
+          return "N/A";
+        }();
+
+        return Container(
+          padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 16.0),
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+              colors: [Colors.black, themeController.theme.value?.secondControlColor?.withOpacity(0.9) ?? Colors.black.withOpacity(0.9),],
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+            ),
+            borderRadius: BorderRadius.all(Radius.circular(20)),
+            boxShadow: [
+              BoxShadow(
+                color: themeController.theme.value?.secondControlColor?.withOpacity(0.3) ?? Colors.blueAccent.withOpacity(0.3),
+                blurRadius: 6,
+                offset: Offset(0, 3),
+              ),
+            ],
+            // color: app_colors.menu3Color,
+          ),
+          child: ListView(
+            children: [
+              SizedBox(height: 4),
+              AnimatedInviteBanner(),
+
+              SizedBox(height: 8),
+
+              // Profile Section
+              Container(
+                decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                    colors: [
+                      themeController.theme.value?.firstControlColor ?? Colors.black,
+                      themeController.theme.value?.secondControlColor?.withOpacity(0.9) ?? Colors.black.withOpacity(0.9),
+                    ],
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
+                  ),
+                  borderRadius: BorderRadius.circular(16),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.blueAccent.withOpacity(0.3),
+                      blurRadius: 2,
+                      offset: Offset(0, 1),
+                    ),
+                  ],
+                ),
+                padding: const EdgeInsets.all(16.0),
+                child: Row(
+                  children: [
+                    Container(
+                      decoration: BoxDecoration(
+                        gradient: LinearGradient(
+                          colors: [
+                            themeController.theme.value?.firstControlColor ?? Colors.black,
+                            themeController.theme.value?.secondControlColor?.withOpacity(0.9) ?? Colors.black.withOpacity(0.9),
+                          ],
+                          begin: Alignment.topLeft,
+                          end: Alignment.bottomRight,
+                        ),
+                        border: Border.all(
+                          color: themeController.theme.value?.textColor ?? Colors.white, // Border color
+                          width: 5.0,         // Border width
+                        ),
+                        borderRadius: BorderRadius.circular(100),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.black.withOpacity(0.6),
+                            blurRadius: 6,
+                            offset: Offset(0, 3),
+                          ),
+                        ],
+                      ),
+                      child: Padding(
+                        padding: const EdgeInsets.all(16.0),
+                        child: Text(
+                          getInitials(displayName), style: TextStyle(color: themeController.theme.value!.textColor ?? Colors.black, fontWeight: FontWeight.bold, fontSize: 20),
+                        ),
+                      ),
+                    ),
+                    SizedBox(width: 12),
+                    Expanded(
+                      child: Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  displayName,
+                                  style: TextStyle(
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.bold,
+                                    color: themeController.theme.value?.textColor ?? Colors.white,
+                                    fontFamily: 'MyBaseFont',
+                                  ),
+                                ),
+                                Text(
+                                  user?.emailAddress ?? 'N/A',
+                                  style: TextStyle(
+                                    fontSize: 13,
+                                    color: themeController.theme.value?.textColor ?? Colors.white,
+                                    fontFamily: 'MyBaseEnFont',
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                          SizedBox(width: 8),
+                          Container(
+                            decoration: BoxDecoration(
+                              gradient: LinearGradient(
+                                colors: [
+                                  themeController.theme.value?.firstControlColor ?? Colors.black,
+                                  themeController.theme.value?.secondControlColor ?? Colors.black,
+                                ],
+                                begin: Alignment.topLeft,
+                                end: Alignment.bottomRight,
+                              ),
+                              borderRadius: BorderRadius.circular(20),
+                              boxShadow: [
+                                BoxShadow(
+                                  color: Colors.black.withOpacity(0.3),
+                                  blurRadius: 3,
+                                  offset: Offset(0, 2),
+                                ),
+                              ],
+                            ),
+                            child: TextButton(
+                              onPressed: () {
+                                showDialog(
+                                  context: context,
+                                  builder: (BuildContext dialogContext) {
+                                    return _switchGroup(context, controller, themeController);
+                                  },
+                                );
+                              },
+                              style: TextButton.styleFrom(
+                                padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                                tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                              ),
+                              child: Icon(
+                                Icons.autorenew,
+                                color: themeController.theme.value?.textColor ?? Colors.white,
+                                size: 26,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+
+              SizedBox(height: 24),
+
+              // Navigation Menu
+              Text("Navigation", style: TextStyle(fontSize: 14, color: themeController.theme.value?.textColor ?? Colors.white, fontWeight: FontWeight.bold, fontFamily: 'MyBaseEnFont')),
+              SizedBox(height: 8),
+              ListTile(
+                leading: ShaderMask(
+                  shaderCallback: (Rect bounds) {
+                    return LinearGradient(
+                      colors: [
+                        themeController.theme.value?.firstControlColor ?? Colors.black,
+                        themeController.theme.value?.secondControlColor ?? Colors.black,
+                      ],
+                      begin: Alignment.topLeft,
+                      end: Alignment.bottomRight,
+                    ).createShader(bounds);
+                  },
+                  blendMode: BlendMode.srcIn,
+                  child: Icon(
+                    Icons.dashboard_outlined,
+                    size: 24,
+                  ),
+                ),
+                title: Text('Dashboard', style: TextStyle(color:themeController.theme.value?.textColor ?? Colors.white, fontWeight: FontWeight.bold, fontFamily: 'MyBaseEnFont')),
+                onTap: () {
+                  Get.delete<HeaderController>();
+                  Get.to(() => HomeScreen());
+                },
+              ),
+
+              ManagementSubMenu(themeController: themeController,),
+              ReportSubMenu(themeController: themeController,),
+
+              // Logout
+              SizedBox(height: 24),
+              Divider(thickness: 1),
+              ListTile(
+                leading: ShaderMask(
+                  shaderCallback: (Rect bounds) {
+                    return LinearGradient(
+                      colors: [
+                        themeController.theme.value?.firstControlColor ?? Colors.black,
+                        themeController.theme.value?.secondControlColor ?? Colors.black,
+                      ],
+                      begin: Alignment.topLeft,
+                      end: Alignment.bottomRight,
+                    ).createShader(bounds);
+                  },
+                  blendMode: BlendMode.srcIn,
+                  child: Icon(
+                    Icons.login_outlined,
+                    size: 24,
+                  ),
+                ),
+                title: Text(
+                  'Logout',
+                  style: TextStyle(
+                    color: themeController.theme.value?.textColor ?? Colors.white,
+                    fontWeight: FontWeight.bold,
+                    fontFamily: 'MyBaseEnFont',
+                  ),
+                ),
+                onTap: () {
+                  shareStorage.removeUserCredential();
+                  shareStorage.removeToken();
+                  shareStorage.removeGroupId();
+                  shareStorage.removeGroupName();
+                  shareStorage.removeUser();
+                  Get.delete<HeaderController>();
+                  Get.to(() => LoginScreen(title: 'Home Screen Title'));
+                },
+              ),
+            ],
+          ),
+        );
+      });
+    },
+  );
+}
+Widget _switchGroup(BuildContext context, HeaderController controller, ThemeController themeController) {
+  return Obx(() {
+    final groups = controller.groups.value?.groups ?? [];
+    return AlertDialog(
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+      backgroundColor: Colors.white,
+      titlePadding: EdgeInsets.all(0),
+      title: Container(
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            colors: [
+              themeController.theme.value?.firstControlColor ?? Colors.black,
+              themeController.theme.value?.secondControlColor?.withOpacity(
+                  0.9) ?? Colors.black.withOpacity(0.9),
+            ],
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+          ),
+          borderRadius: BorderRadius.only(
+            topRight: Radius.circular(20),
+            topLeft: Radius.circular(20),
+          ),
+          boxShadow: [
+            BoxShadow(
+              color: themeController.theme.value?.secondControlColor
+                  ?.withOpacity(0.3) ?? Colors.black.withOpacity(0.9),
+              blurRadius: 6,
+              offset: Offset(0, 3),
+            ),
+          ],
+          // color: app_colors.menu3Color,
+        ),
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Row(
+            children: [
+              Icon(Icons.groups,
+                  color: themeController.theme.value?.textColor ?? Colors.white,
+                  size: 26), // Add an icon for the notification
+              SizedBox(width: 10), // Space between the icon and text
+              Text(
+                'សូមជ្រើសរើសក្រុម',
+                style: TextStyle(
+                  color: themeController.theme.value?.textColor ?? Colors.white,
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
+                  fontFamily: 'MyBaseFont',
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+      contentPadding: EdgeInsets.all(12),
+      content: groups.isEmpty
+          ? Text(
+          'No groups available', style: TextStyle(fontFamily: 'MyBaseFont'))
+          : SizedBox(
+        width: double.maxFinite,
+        child: ListView.separated(
+          shrinkWrap: true,
+          itemCount: groups.length,
+          separatorBuilder: (_, __) => SizedBox(height: 12),
+          itemBuilder: (context, index) {
+            final group = groups[index];
+            final groupName = group.groupName ?? 'Unnamed Group';
+            final isSelected = group.groupId == controller.currentGroupId.value;
+
+            return InkWell(
+              onTap: () {
+                controller.switchGroup(group.groupId!, group.groupName!);
+                Get.to(() => SplashScreen());
+              },
+              borderRadius: BorderRadius.circular(16),
+              child: Container(
+                padding: EdgeInsets.all(16),
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(16),
+                  gradient: LinearGradient(
+                    colors: [
+                      themeController.theme.value?.firstControlColor ??
+                          Colors.black,
+                      themeController.theme.value?.secondControlColor ??
+                          Colors.black,
+                    ],
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
+                  ),
+                  boxShadow: [
+                    BoxShadow(
+                      color: themeController.theme.value?.secondControlColor
+                          ?.withOpacity(0.3) ?? Colors.black.withOpacity(0.3),
+                      blurRadius: 6,
+                      offset: Offset(0, 4),
+                    ),
+                  ],
+                  color: isSelected ? themeController.theme.value?.textColor
+                      ?.withOpacity(0.5) ?? Colors.white : themeController.theme
+                      .value?.textColor ?? Colors.white,
+                  border: isSelected
+                      ? Border.all(color: themeController.theme.value
+                      ?.textColor ?? Colors.white, width: 2)
+                      : Border.all(color: Colors.grey[300]!),
+                ),
+                child: Row(
+                  children: [
+                    Icon(
+                      Icons.group,
+                      color: themeController.theme.value?.textColor ??
+                          Colors.white,
+                    ),
+                    SizedBox(width: 12),
+                    Expanded(
+                      child: Text(
+                        groupName,
+                        style: TextStyle(
+                          fontFamily: 'MyBaseFont',
+                          fontSize: 14,
+                          fontWeight: isSelected ? FontWeight.bold : FontWeight
+                              .normal,
+                          color: themeController.theme.value?.textColor ??
+                              Colors.white,
+                        ),
+                      ),
+                    ),
+                    if (isSelected)
+                      Icon(Icons.check_circle, color: themeController.theme
+                          .value?.textColor ?? Colors.white, size: 20),
+                  ],
+                ),
+              ),
+            );
+          },
+        ),
+      ),
+      actionsPadding: EdgeInsets.all(12),
+      actions: <Widget>[
+        // Button to close the dialog
+        SizedBox(
+          height: 40,
+          width: double.infinity,
+          child: Container(
+            decoration: BoxDecoration(
+              gradient: LinearGradient(
+                colors: [
+                  themeController.theme.value?.firstControlColor ??
+                      Colors.black,
+                  themeController.theme.value?.secondControlColor ??
+                      Colors.black,
+                ],
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
+              ),
+              borderRadius: BorderRadius.circular(8),
+              boxShadow: [
+                BoxShadow(
+                  color: themeController.theme.value?.secondControlColor
+                      ?.withOpacity(0.1) ?? Colors.black.withOpacity(0.1),
+                  blurRadius: 6,
+                  offset: Offset(0, 2),
+                ),
+              ],
+            ),
+            child: TextButton(
+              onPressed: () {
+                Navigator.of(context).pop(); // Close the dialog
+              },
+              child: Text(
+                'បោះបង់',
+                style: TextStyle(fontSize: 16,
+                  color: themeController.theme.value?.textColor ?? Colors.white,
+                  fontFamily: 'MyBaseFont',
+                  fontWeight: FontWeight.bold,),
+              ),
+            ),
+          ),
+        ),
+      ],
+    );
+  });
+}
+
+String getInitials(String? fullName) {
+  if (fullName == null || fullName.trim().isEmpty) return '';
+  final parts = fullName.trim().split(RegExp(r'\s+'));
+  if (parts.length == 1) {
+    return parts[0][0].toUpperCase();
+  }
+  final first = parts.first[0];
+  final last = parts.last[0];
+  return (first + last).toUpperCase();
 }

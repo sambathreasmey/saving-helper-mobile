@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:saving_helper/constants/app_color.dart' as app_colors;
 import 'package:saving_helper/controllers/register_controller.dart';
+import 'package:saving_helper/controllers/theme_controller.dart';
 import 'package:saving_helper/repository/register_repository.dart';
 import 'package:saving_helper/services/api_provider.dart';
 import 'package:saving_helper/theme_screen.dart';
@@ -27,114 +28,139 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final themeController = Get.find<ThemeController>();
+
     return Scaffold(
-      body: SafeArea(
-        child: Center(
-          child: SingleChildScrollView(
-            padding: const EdgeInsets.all(20),
-            child: Container(
-              padding: const EdgeInsets.all(24),
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(20),
-              ),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  buildRegisterTitleBanner(),
-                  const SizedBox(height: 25),
-
-                  _buildInputField(label: 'ឈ្មោះពេញ', icon: Icons.person, controller: registerController.fullName),
-                  const SizedBox(height: 15),
-
-                  _buildInputField(label: 'ឈ្មោះអ្នកប្រើប្រាស់', icon: Icons.account_circle, controller: registerController.userName),
-                  const SizedBox(height: 15),
-
-                  _buildInputField(label: 'អ៊ីមែល', icon: Icons.email, controller: registerController.email, keyboardType: TextInputType.emailAddress),
-                  const SizedBox(height: 15),
-
-                  _buildInputField(label: 'ពាក្យសម្ងាត់', icon: Icons.lock, controller: registerController.password, obscure: true),
-                  const SizedBox(height: 25),
-
-                  StatefulBuilder(
-                    builder: (context, setState) {
-                      List<Color> _colors = [
-                        Color((Random().nextDouble() * 0xFFFFFF).toInt()).withOpacity(1.0),
-                        Color((Random().nextDouble() * 0xFFFFFF).toInt()).withOpacity(1.0),
-                      ];
-
-                      return GestureDetector(
-                        onTap: () {
-                          setState(() {
-                            _colors = [
-                              Color((Random().nextDouble() * 0xFFFFFF).toInt()).withOpacity(1.0),
-                              Color((Random().nextDouble() * 0xFFFFFF).toInt()).withOpacity(1.0),
-                            ];
-                          });
-
-                          registerController.login();
-                        },
-                        child: AnimatedContainer(
-                          duration: const Duration(milliseconds: 600),
-                          height: 50,
-                          width: double.infinity,
-                          decoration: BoxDecoration(
-                            gradient: LinearGradient(
-                              colors: _colors,
-                              begin: Alignment.topLeft,
-                              end: Alignment.bottomRight,
-                            ),
-                            borderRadius: BorderRadius.circular(15),
-                            boxShadow: [
-                              BoxShadow(
-                                color: _colors[1].withOpacity(0.4),
-                                blurRadius: 8,
-                                offset: const Offset(0, 4),
-                              ),
-                            ],
-                          ),
-                          alignment: Alignment.center,
-                          child: const Text(
-                            'ចុះឈ្មោះ',
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontSize: 16,
-                              fontFamily: 'MyBaseFont',
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                        ),
-                      );
-                    },
-                  ),
-                  const SizedBox(height: 15),
-
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      const Text(
-                        'មានគណនីរួចហើយ?',
-                        style: TextStyle(fontFamily: 'MyBaseFont', color: Colors.white),
-                      ),
-                      TextButton(
-                        onPressed: () {
-                          Get.back(); // Or navigate to login
-                        },
-                        child: Text(
-                          'ចូលគណនី',
-                          style: TextStyle(
-                            color: app_colors.loveColor,
-                            fontWeight: FontWeight.bold,
-                            fontFamily: 'MyBaseFont',
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                ],
+      body: Stack(
+        children: [
+          Container(
+            decoration: BoxDecoration(
+              image: DecorationImage(
+                image: AssetImage(themeController.theme.value!.themePath!),
+                fit: BoxFit.cover,
               ),
             ),
           ),
+          Positioned.fill(
+            child: Container(
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  begin: Alignment.topCenter,
+                  end: Alignment.bottomCenter,
+                  colors: [
+                    Colors.black.withOpacity(0.1),
+                    Colors.transparent,
+                    Colors.black.withOpacity(0.1),
+                  ],
+                ),
+              ),
+            ),
+          ),
+        SingleChildScrollView(
+          padding: const EdgeInsets.all(20),
+          child: Container(
+            padding: const EdgeInsets.all(24),
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(20),
+            ),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                buildRegisterTitleBanner(),
+                const SizedBox(height: 25),
+
+                _buildInputField(label: 'ឈ្មោះពេញ', icon: Icons.person, controller: registerController.fullName),
+                const SizedBox(height: 15),
+
+                _buildInputField(label: 'ឈ្មោះអ្នកប្រើប្រាស់', icon: Icons.account_circle, controller: registerController.userName),
+                const SizedBox(height: 15),
+
+                _buildInputField(label: 'អ៊ីមែល', icon: Icons.email, controller: registerController.email, keyboardType: TextInputType.emailAddress),
+                const SizedBox(height: 15),
+
+                _buildInputField(label: 'ពាក្យសម្ងាត់', icon: Icons.lock, controller: registerController.password, obscure: true),
+                const SizedBox(height: 25),
+
+                StatefulBuilder(
+                  builder: (context, setState) {
+                    List<Color> _colors = [
+                      Color((Random().nextDouble() * 0xFFFFFF).toInt()).withOpacity(1.0),
+                      Color((Random().nextDouble() * 0xFFFFFF).toInt()).withOpacity(1.0),
+                    ];
+
+                    return GestureDetector(
+                      onTap: () {
+                        setState(() {
+                          _colors = [
+                            Color((Random().nextDouble() * 0xFFFFFF).toInt()).withOpacity(1.0),
+                            Color((Random().nextDouble() * 0xFFFFFF).toInt()).withOpacity(1.0),
+                          ];
+                        });
+
+                        registerController.login();
+                      },
+                      child: AnimatedContainer(
+                        duration: const Duration(milliseconds: 600),
+                        height: 50,
+                        width: double.infinity,
+                        decoration: BoxDecoration(
+                          gradient: LinearGradient(
+                            colors: _colors,
+                            begin: Alignment.topLeft,
+                            end: Alignment.bottomRight,
+                          ),
+                          borderRadius: BorderRadius.circular(15),
+                          boxShadow: [
+                            BoxShadow(
+                              color: _colors[1].withOpacity(0.4),
+                              blurRadius: 8,
+                              offset: const Offset(0, 4),
+                            ),
+                          ],
+                        ),
+                        alignment: Alignment.center,
+                        child: const Text(
+                          'ចុះឈ្មោះ',
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 16,
+                            fontFamily: 'MyBaseFont',
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ),
+                    );
+                  },
+                ),
+                const SizedBox(height: 15),
+
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    const Text(
+                      'មានគណនីរួចហើយ?',
+                      style: TextStyle(fontFamily: 'MyBaseFont', color: Colors.white),
+                    ),
+                    TextButton(
+                      onPressed: () {
+                        Get.back(); // Or navigate to login
+                      },
+                      child: Text(
+                        'ចូលគណនី',
+                        style: TextStyle(
+                          color: app_colors.loveColor,
+                          fontWeight: FontWeight.bold,
+                          fontFamily: 'MyBaseFont',
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ),
         ),
+        ]
       ),
     );
   }

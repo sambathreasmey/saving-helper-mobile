@@ -10,6 +10,8 @@ import 'package:saving_helper/screen/register_screen.dart';
 import 'package:saving_helper/services/api_provider.dart';
 import 'package:saving_helper/theme_screen.dart';
 
+import '../controllers/theme_controller.dart';
+
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key, required this.title});
   final String title;
@@ -30,9 +32,33 @@ class _LoginScreenState extends State<LoginScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final themeController = Get.find<ThemeController>();
     return Scaffold(
       body: Stack(
         children: [
+          Container(
+            decoration: BoxDecoration(
+              image: DecorationImage(
+                image: AssetImage(themeController.theme.value!.themePath!),
+                fit: BoxFit.cover,
+              ),
+            ),
+          ),
+          Positioned.fill(
+            child: Container(
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  begin: Alignment.topCenter,
+                  end: Alignment.bottomCenter,
+                  colors: [
+                    Colors.black.withOpacity(0.1),
+                    Colors.transparent,
+                    Colors.black.withOpacity(0.1),
+                  ],
+                ),
+              ),
+            ),
+          ),
           SafeArea(
             child: Center(
               child: Container(
