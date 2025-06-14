@@ -1,4 +1,6 @@
 import 'dart:io';
+import 'dart:math';
+import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
@@ -46,7 +48,9 @@ class _GoalManagementScreenState extends State<GoalManagementScreen> {
                       subTitle: 'គ្រប់គ្រង',
                       path: 'គម្រោងសន្សំប្រាក់',
                       textColor: themeController.theme.value?.textColor ?? Colors.white,
-                    )
+                    ),
+                    const SizedBox(height: 16),
+                    totalGroupComponent(context),
                   ],
                 ),
               ),
@@ -72,72 +76,10 @@ class _GoalManagementScreenState extends State<GoalManagementScreen> {
                         keyboardType: TextInputType.numberWithOptions(decimal: true),
                         inputFormatter: FilteringTextInputFormatter.allow(RegExp(r'^\d*\.?\d{0,2}')),
                       ),
-                      // const SizedBox(height: 20),
-                      // SelectItemWidget(
-                      //   title: 'សូមជ្រើសរើសប្រភេទសាច់ប្រាក់',
-                      //   itemList: controller.currencyList,  // Pass the list of currencies
-                      //   selectedCurrency: controller.selectedCurrency, // Pass the reactive selected currency
-                      //   labelText: 'ប្រភេទសាច់ប្រាក់',
-                      //   hintText: 'សូមជ្រើសរើសប្រភេទសាច់ប្រាក់',
-                      //   prefixIcon: Icons.monetization_on,
-                      //   suffixIcon: Icons.arrow_drop_down,
-                      // ),
-                      // const SizedBox(height: 16),
-                      // DatePickerWidget(
-                      //   selectedDate: controller.selectedDate,
-                      //   firstControlColor: themeController.theme.value?.firstControlColor ?? Colors.black,
-                      //   secondControlColor: themeController.theme.value?.secondControlColor ?? Colors.black,
-                      //   textColor: themeController.theme.value?.textColor ?? Colors.white,
-                      // ),
-                      // const SizedBox(height: 16),
-                      // TextFieldWidget(
-                      //   controller: controller.transactionDescController,
-                      //   label: 'កំណត់ចំណាំ',
-                      //   prefixIcon: Icons.note_alt_rounded,
-                      //   keyboardType: TextInputType.text,
-                      // ),
-                      // const SizedBox(height: 16),
-                      // _buildAddToExistingCheckbox(),
-                      // const SizedBox(height: 16),
-                      // _buildImageUploadSection(),
-                      // const SizedBox(height: 12),
-                      // showDetectTextFromUpdateImage(),
-                      // const SizedBox(height: 32),
                     ],
                   ),
                 ),
               ),
-              // Padding(
-              //   padding: const EdgeInsets.fromLTRB(16, 0, 16, 24),
-              //   child: SizedBox(
-              //     width: double.infinity,
-              //     height: 50,
-              //     child: Container(
-              //       decoration: BoxDecoration(
-              //         gradient: LinearGradient(
-              //           colors: [
-              //             themeController.theme.value?.firstControlColor ?? Colors.black,
-              //             themeController.theme.value?.secondControlColor ?? Colors.black,
-              //           ],
-              //           begin: Alignment.topLeft,
-              //           end: Alignment.bottomRight,
-              //         ),
-              //         borderRadius: BorderRadius.circular(20),
-              //         boxShadow: [
-              //           BoxShadow(
-              //             color: themeController.theme.value?.secondControlColor?.withOpacity(0.3) ?? Colors.white.withOpacity(0.3),
-              //             blurRadius: 6,
-              //             offset: Offset(0, 2),
-              //           ),
-              //         ],
-              //       ),
-              //       child: TextButton(
-              //         onPressed: controller.saveDeposit,
-              //         child: Text('បញ្ចូល', style: TextStyle(color: themeController.theme.value?.textColor ?? Colors.white, fontSize: 16, fontFamily: 'MyBaseFont', fontWeight: FontWeight.bold,)),
-              //       ),
-              //     ),
-              //   ),
-              // ),
             ],
           ),
         ),
@@ -145,124 +87,141 @@ class _GoalManagementScreenState extends State<GoalManagementScreen> {
     );
   }
 
-  Widget _buildImageUploadSection() {
-    return Obx(() => GestureDetector(
-      onTap: controller.pickImage,
-      child: controller.selectedImage.value != null
-          ? ClipRRect(
-        borderRadius: BorderRadius.circular(10),
-        child: Image.file(
-          File(controller.selectedImage.value!.path),
-          height: 150,
-          width: double.infinity,
-          fit: BoxFit.cover,
-        ),
-      )
-          : Container(
-        height: 150,
-        width: double.infinity,
-        decoration: BoxDecoration(
-          color: Colors.grey.shade300,
-          borderRadius: BorderRadius.circular(10),
-          border: Border.all(color: Colors.grey),
-        ),
-        child: const Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Icon(Icons.add_a_photo_outlined,
-                  size: 40, color: Colors.grey),
-              SizedBox(height: 8),
-              Text(
-                "ចុចដើម្បីជ្រើសរូបភាព",
-                style: TextStyle(fontSize: 12, color: Colors.grey),
+
+  Widget totalGroupComponent(BuildContext context) {
+    return ClipRect(
+      child: BackdropFilter(
+        filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10), // Adjust blur level
+        child: Container(
+            height: 150,
+            width: double.infinity,
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(20),
+              border: Border.all(
+                  color: Colors.white.withOpacity(0.2),
               ),
-            ],
-          ),
-        ),
-      ),
-    ));
-  }
-
-  Widget showDetectTextFromUpdateImage() {
-    return Obx(() => controller.extractedText.value.isNotEmpty
-        ? Padding(
-      padding: const EdgeInsets.only(top: 12.0),
-      child: Container(
-        width: double.infinity,
-        padding: const EdgeInsets.all(12),
-        decoration: BoxDecoration(
-          color: Colors.grey.shade100,
-          borderRadius: BorderRadius.circular(10),
-        ),
-        child: Text(
-          controller.extractedText.value,
-          style:
-          const TextStyle(fontSize: 14, color: Colors.black87),
-        ),
-      ),
-    )
-        : const SizedBox.shrink());
-  }
-
-  Widget _buildAddToExistingCheckbox() {
-    return Obx(() => GestureDetector(
-      onTap: () {
-        controller.isSavingMore.value = !(controller.isSavingMore.value);
-      },
-      child: Container(
-        padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
-        decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(12),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.deepPurple.withOpacity(0.15),
-              blurRadius: 6,
-              offset: const Offset(0, 4),
+              color: Colors.white.withOpacity(0.1),
             ),
-          ],
-        ),
-        child: Row(
-          children: [
-            // Modern Radio Button
-            Container(
-              width: 20,
-              height: 20,
-              decoration: BoxDecoration(
-                color: controller.isSavingMore.value
-                    ? themeController.theme.value?.secondControlColor ?? Colors.black
-                    : Colors.transparent,
-                border: Border.all(
-                  color: controller.isSavingMore.value
-                      ? themeController.theme.value?.secondControlColor ?? Colors.black
-                      : Colors.grey.withOpacity(0.4),
-                  width: 2,
+            child: Center(
+                child: Padding(
+                  padding: const EdgeInsets.only(left: 8.0),
+                  child: Container(
+                    width: 120,
+                    height: 120,
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      gradient: LinearGradient(
+                        colors: [
+                          themeController.theme.value?.secondControlColor ?? Colors.black,
+                          themeController.theme.value?.firstControlColor ?? Colors.black.withOpacity(0.9),
+                        ],
+                        begin: Alignment.topLeft,
+                        end: Alignment.bottomRight,
+                      ),
+                    ),
+                    child: Obx(() {
+                      final target = double.tryParse(controller.amount.value ?? '0.00') ?? 86.00;
+                      final progress = (target / 100).clamp(0.0, 1.0); // Ensure 0.0–1.0
+      
+                      return TweenAnimationBuilder<double>(
+                        key: ValueKey(target),
+                        tween: Tween(begin: 0.0, end: progress),
+                        duration: Duration(milliseconds: 800),
+                        builder: (context, animatedValue, child) {
+                          return CustomPaint(
+                            painter: _RingPainter(animatedValue, themeController),
+                            child: Center(
+                              child: Text(
+                                '${(animatedValue * 100).toStringAsFixed(2)}%',
+                                style: TextStyle(
+                                  color: themeController.theme.value?.textColor ?? Colors.white,
+                                  fontSize: 20,
+                                  fontWeight: FontWeight.bold,
+                                  fontFamily: 'MyBaseEnFont',
+                                  shadows: [
+                                    Shadow(
+                                      color: Colors.deepPurpleAccent,
+                                      blurRadius: 8,
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
+                          );
+                        },
+                      );
+                    }),
+                  ),
                 ),
-                shape: BoxShape.circle, // Circular shape for the radio button
-              ),
-              child: controller.isSavingMore.value
-                  ? const Icon(
-                Icons.check,
-                color: Colors.white,
-                size: 14,
-              )
-                  : null,
             ),
-            const SizedBox(width: 12),
-            const Text(
-              'បន្ថែមលើប្រតិបត្ដិចាស់ក្នុងថ្ងៃ',
-              style: TextStyle(
-                fontFamily: 'MyBaseFont',
-                fontSize: 16,
-                color: Colors.black87,
-              ),
-            ),
-          ],
         ),
       ),
-    ));
+    );
   }
 
 
+}
+
+class _RingPainter extends CustomPainter {
+  final double progress;
+  final ThemeController themeController;
+
+  _RingPainter(this.progress,
+      this.themeController);
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    final strokeWidth = 12.0;
+    final shadowStrokeWidth = strokeWidth + 6; // slightly larger for shadow
+    final radius = (size.width / 1.7) - strokeWidth;
+
+    final center = Offset(size.width / 2, size.height / 2);
+    final backgroundPaint = Paint()
+      ..color = Colors.grey[850]!
+      ..strokeWidth = strokeWidth
+      ..style = PaintingStyle.stroke;
+
+    final shadowPaint = Paint()
+      ..color = Colors.orangeAccent.withOpacity(0.5) // shadow color
+      ..strokeWidth = shadowStrokeWidth
+      ..style = PaintingStyle.stroke
+      ..maskFilter = MaskFilter.blur(BlurStyle.normal, 6); // blur radius
+
+    final progressPaint = Paint()
+      ..shader = LinearGradient(
+        colors: [
+          themeController.theme.value?.secondControlColor ?? Colors.black,
+          themeController.theme.value?.firstControlColor ?? Colors.black.withOpacity(0.9),
+        ],
+      ).createShader(Rect.fromCircle(center: center, radius: radius))
+      ..strokeCap = StrokeCap.round
+      ..strokeWidth = strokeWidth
+      ..style = PaintingStyle.stroke;
+
+    // Background ring
+    canvas.drawCircle(center, radius, backgroundPaint);
+
+    // Shadow behind the progress arc
+    final angle = 2 * pi * progress;
+    canvas.drawArc(
+      Rect.fromCircle(center: center, radius: radius),
+      -pi / 2,
+      angle,
+      false,
+      shadowPaint,
+    );
+
+    // Foreground gradient arc
+    canvas.drawArc(
+      Rect.fromCircle(center: center, radius: radius),
+      -pi / 2,
+      angle,
+      false,
+      progressPaint,
+    );
+  }
+
+
+  @override
+  bool shouldRepaint(CustomPainter oldDelegate) => true;
 }
