@@ -170,14 +170,17 @@ Widget _buildSavingComponent(HomeController controller, ThemeController themeCon
         child: ClipRRect(
           child: Container(
             decoration: BoxDecoration(
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.black.withOpacity(0.5),
-                ),
-              ],
+              // boxShadow: [
+              //   BoxShadow(
+              //     color: Colors.black.withOpacity(0.3),
+              //   ),
+              // ],
               borderRadius: BorderRadius.circular(20),
               // ignore: deprecated_member_use
-              color: app_colors.baseWhiteColor.withOpacity(0.06),
+              color: themeController.theme.value?.textColor?.withOpacity(0.05),
+              border: Border.all(
+                color: themeController.theme.value?.textColor?.withOpacity(0.9) ?? Colors.white,
+              ),
             ),
             child: Column(
               children: [
@@ -188,20 +191,23 @@ Widget _buildSavingComponent(HomeController controller, ThemeController themeCon
                       topRight: Radius.circular(20),
                     ),
                     gradient: LinearGradient(
-                      colors: [Colors.white.withOpacity(0.1), Colors.black.withOpacity(0.5)],
+                      colors: [
+                        themeController.theme.value?.textColor?.withOpacity(0.08) ?? Colors.white.withOpacity(0.08),
+                        themeController.theme.value?.textColor?.withOpacity(0.04) ?? Colors.black.withOpacity(0.04)
+                      ],
                       begin: Alignment.topRight,
                       end: Alignment.bottomCenter,
                     ),
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.black.withOpacity(0.3),
-                        blurRadius: 6,
-                        offset: Offset(0, 4),
-                      ),
-                    ],
+                    // boxShadow: [
+                    //   BoxShadow(
+                    //     color: themeController.theme.value?.textColor?.withOpacity(0.15) ?? Colors.black.withOpacity(0.15),
+                    //     blurRadius: 6,
+                    //     offset: Offset(0, 4),
+                    //   ),
+                    // ],
                   ),
                   child: Padding(
-                    padding: const EdgeInsets.all(14.0),
+                    padding: const EdgeInsets.all(8.0),
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
@@ -209,14 +215,14 @@ Widget _buildSavingComponent(HomeController controller, ThemeController themeCon
                           children: [
                             Text('សន្សំ ',
                               style: TextStyle(
-                                color: app_colors.baseWhiteColor,
+                                color: themeController.theme.value?.textColor,
                                 fontSize: 12,
                                 fontWeight: FontWeight.bold,
                                 fontFamily: 'MyBaseFont',
                               ),),
                             Text('| សង្ខេប',
                               style: TextStyle(
-                                color: Colors.white,
+                                color: themeController.theme.value?.textColor,
                                 fontSize: 12,
                                 fontFamily: 'MyBaseFont',
                               ),),
@@ -227,7 +233,7 @@ Widget _buildSavingComponent(HomeController controller, ThemeController themeCon
                   ),
                 ),
                 Padding(
-                  padding: const EdgeInsets.all(14.0),
+                  padding: const EdgeInsets.all(8.0),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.start,
                     children: [
@@ -250,12 +256,12 @@ Widget _buildSavingComponent(HomeController controller, ThemeController themeCon
                                     return Text(
                                       formatCurrency(animatedValue),
                                       style: TextStyle(
-                                        color: Colors.white,
+                                        color: themeController.theme.value?.textColor,
                                         fontSize: 28,
                                         fontWeight: FontWeight.bold,
                                         shadows: [
                                           Shadow(
-                                            color: Colors.deepPurpleAccent,
+                                            color: themeController.theme.value?.secondControlColor?.withOpacity(0.3) ?? Colors.deepPurpleAccent,
                                             blurRadius: 8,
                                           ),
                                         ],
@@ -455,13 +461,13 @@ Widget _buildLoanComponent(HomeController controller, ThemeController themeContr
               boxShadow: [
                 BoxShadow(
                   color: themeController.theme.value?.secondControlColor?.withOpacity(0.25) ?? Colors.blueAccent.withOpacity(0.25),
-                  blurRadius: 10,
-                  offset: Offset(0, 5),
+                  blurRadius: 2,
+                  offset: Offset(0, 2),
                 ),
               ],
             ),
             child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 18),
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -488,7 +494,7 @@ Widget _buildLoanComponent(HomeController controller, ThemeController themeContr
                       ),
                     ],
                   ),
-                  const SizedBox(height: 16),
+                  const SizedBox(height: 4),
                   // Content Row
                   Row(
                     children: [
@@ -504,7 +510,7 @@ Widget _buildLoanComponent(HomeController controller, ThemeController themeContr
                           size: 28,
                         ),
                       ),
-                      const SizedBox(width: 16),
+                      const SizedBox(width: 8),
                       Expanded(
                         child: Obx(() {
                           final balance = parseCurrency(controller.dashboard.value?.loanBalance);
@@ -577,13 +583,13 @@ Widget _buildBalanceComponent(HomeController controller, ThemeController themeCo
             boxShadow: [
               BoxShadow(
                 color: themeController.theme.value?.secondControlColor?.withOpacity(0.25) ?? Colors.blueAccent.withOpacity(0.25),
-                blurRadius: 10,
-                offset: Offset(0, 5),
+                blurRadius: 2,
+                offset: Offset(0, 2),
               ),
             ],
           ),
           child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 18),
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -610,7 +616,7 @@ Widget _buildBalanceComponent(HomeController controller, ThemeController themeCo
                     ),
                   ],
                 ),
-                const SizedBox(height: 16),
+                const SizedBox(height: 4),
                 // Content Row
                 Row(
                   children: [
@@ -626,7 +632,7 @@ Widget _buildBalanceComponent(HomeController controller, ThemeController themeCo
                         size: 28,
                       ),
                     ),
-                    const SizedBox(width: 16),
+                    const SizedBox(width: 8),
                     Expanded(
                       child: Obx(() {
                         final balance = parseCurrency(controller.dashboard.value?.balance);

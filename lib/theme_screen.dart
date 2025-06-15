@@ -47,9 +47,9 @@ class _ThemedScaffoldState extends State<ThemedScaffold> {
                   begin: Alignment.topCenter,
                   end: Alignment.bottomCenter,
                   colors: [
-                    Colors.black.withOpacity(0.1),
+                    Colors.black.withOpacity(0.6),
                     Colors.transparent,
-                    Colors.black.withOpacity(0.1),
+                    Colors.black.withOpacity(0.3),
                   ],
                 ),
               ),

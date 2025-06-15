@@ -94,7 +94,7 @@ class _LoanScreenState extends State<LoanScreen> {
                 ),
               ),
               Padding(
-                padding: const EdgeInsets.fromLTRB(16, 0, 16, 24),
+                padding: const EdgeInsets.fromLTRB(16, 16, 16, 16),
                 child: SizedBox(
                   width: double.infinity,
                   height: 50,
