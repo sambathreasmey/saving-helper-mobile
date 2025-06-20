@@ -9,6 +9,7 @@ class TextFieldWidget extends StatelessWidget {
   final String label;
   final IconData prefixIcon;
   final TextInputType keyboardType;
+  final bool isPassword;
 
   TextFieldWidget({
     required this.controller,
@@ -16,6 +17,7 @@ class TextFieldWidget extends StatelessWidget {
     this.label = 'កំណត់ចំណាំ',
     this.prefixIcon = Icons.note_alt_rounded,
     this.keyboardType = TextInputType.text,
+    this.isPassword = false,
     Key? key,
   }) : super(key: key);
 
@@ -36,6 +38,7 @@ class TextFieldWidget extends StatelessWidget {
         ],
       ),
       child: TextField(
+        obscureText: isPassword,
         controller: controller,
         onChanged: (value) {
           // Optional: You can add custom logic to handle changes here

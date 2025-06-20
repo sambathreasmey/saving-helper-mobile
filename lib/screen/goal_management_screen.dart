@@ -156,14 +156,20 @@ class _GoalManagementScreenState extends State<GoalManagementScreen> {
                     final data = controller.data;
 
                     return RefreshIndicator(
-                      onRefresh: _onRefresh,  // Trigger refresh when the user pulls down
+                      onRefresh: _onRefresh,
                       child: ListView.builder(
                         controller: _scrollController,
-                        itemCount: data.length + (controller.hasMore.value ? 1 : 0),
+                        itemCount: controller.data.length + (controller.hasMore.value ? 1 : 0),
                         itemBuilder: (context, index) {
-                          final item = data[index];
+                          if (index >= controller.data.length) {
+                            return const Padding(
+                              padding: EdgeInsets.all(16),
+                              child: Center(child: CircularProgressIndicator()),
+                            );
+                          }
 
-                          return _buildTransactionTile(context, controller, item, themeController);
+                          final item = controller.data[index];
+                          return _buildTransactionTile(context, controller, item, themeController, index);
                         },
                       ),
                     );
@@ -186,9 +192,9 @@ class _GoalManagementScreenState extends State<GoalManagementScreen> {
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(20),
         border: Border.all(
-          color: themeController.theme.value?.textColor?.withOpacity(0.9) ?? Colors.white.withOpacity(0.9),
+          color: themeController.theme.value?.textColor ?? Colors.white.withOpacity(0.9),
         ),
-        color: themeController.theme.value?.textColor?.withOpacity(0.2) ?? Colors.white.withOpacity(0.5),
+        color: themeController.theme.value?.textColor?.withOpacity(0.1) ?? Colors.white.withOpacity(0.5),
       ),
       padding: EdgeInsets.all(12),
       child: Row(
@@ -256,102 +262,93 @@ class _GoalManagementScreenState extends State<GoalManagementScreen> {
       ),
     );
   }
-}
 
-Widget _buildTransactionTile(BuildContext context, controller, GetGoalResponse.Data txn, ThemeController themeController) {
-  return Dismissible(
-    key: ValueKey(txn.groupId ?? UniqueKey().toString()),
-    direction: DismissDirection.endToStart,
-    onDismissed: (direction) async {
-      // Show a confirmation dialog before deleting
-      bool? confirmed = await _showDeleteConfirmationDialog(context);
-      if (confirmed ?? false) {
-        // Call the controller to delete the goal
-        controller.deleteGoal(txn.groupId!);
-      }
-    },
-    background: Container(
-      alignment: Alignment.centerRight,
-      padding: const EdgeInsets.symmetric(horizontal: 20),
-      decoration: BoxDecoration(
-        color: Colors.redAccent,
-        borderRadius: BorderRadius.circular(12),
+  Widget _buildTransactionTile(BuildContext context, controller, GetGoalResponse.Data txn, ThemeController themeController, int index) {
+    return Dismissible(
+      key: ValueKey(txn.groupId ?? UniqueKey().toString()),
+      direction: DismissDirection.endToStart,
+      onDismissed: (direction) async {
+        bool? confirmed = await _showDeleteConfirmationDialog(context);
+        if (confirmed ?? false) {
+          controller.deleteGoal(txn.groupId!);
+
+          controller.goals.removeAt(index);
+          controller.goals.refresh(); // RxList requires refresh
+        }
+      },
+      background: Container(
+        alignment: Alignment.centerRight,
+        padding: const EdgeInsets.symmetric(horizontal: 20),
+        decoration: BoxDecoration(
+          color: Colors.redAccent,
+          borderRadius: BorderRadius.circular(12),
+        ),
+        child: const Icon(Icons.delete, color: Colors.white),
       ),
-      child: const Icon(Icons.delete, color: Colors.white),
-    ),
-    child: Container(
-      margin: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(16),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black12,
-            blurRadius: 8,
-            offset: const Offset(0, 4),
-          ),
-        ],
-      ),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Container(
-            height: 60,
-            width: 55,
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.only(
-                  topLeft: Radius.circular(16), bottomLeft: Radius.circular(16)),
-              gradient: LinearGradient(
-                colors: [
-                  themeController.theme.value?.firstControlColor ?? Colors.black,
-                  themeController.theme.value?.secondControlColor ?? Colors.black,
-                ],
-                begin: Alignment.topLeft,
-                end: Alignment.bottomRight,
+      child: Container(
+        margin: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(16),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black12,
+              blurRadius: 8,
+              offset: const Offset(0, 4),
+            ),
+          ],
+        ),
+        child: Row(
+          children: [
+            Container(
+              height: 60,
+              width: 55,
+              decoration: BoxDecoration(
+                borderRadius: const BorderRadius.only(
+                    topLeft: Radius.circular(16), bottomLeft: Radius.circular(16)),
+                gradient: LinearGradient(
+                  colors: [
+                    themeController.theme.value?.firstControlColor ?? Colors.black,
+                    themeController.theme.value?.secondControlColor ?? Colors.black,
+                  ],
+                ),
               ),
-              boxShadow: [
-                BoxShadow(
-                  color: themeController.theme.value?.secondControlColor?.withOpacity(0.3) ?? Colors.white.withOpacity(0.3),
-                  blurRadius: 6,
-                  offset: Offset(0, 2),
-                ),
-              ],
+              child: Icon(
+                Icons.grass_outlined,
+                color: themeController.theme.value?.textColor ?? Colors.white,
+              ),
             ),
-            child: Icon(
-              Icons.grass_outlined, // Icon for transaction (you can change it based on the content)
-              color: themeController.theme.value?.textColor ?? Colors.white,
-            ),
-          ),
-          SizedBox(width: 8),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  txn.groupName ?? 'Unknown Transaction',
-                  style: TextStyle(
-                    fontFamily: 'MyBaseFont',
-                    fontWeight: FontWeight.bold,
-                    fontSize: 16,
+            const SizedBox(width: 8),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    txn.groupName ?? 'Unknown Transaction',
+                    style: const TextStyle(
+                      fontFamily: 'MyBaseFont',
+                      fontWeight: FontWeight.bold,
+                      fontSize: 16,
+                    ),
                   ),
-                ),
-                SizedBox(height: 8),
-                Text(
-                  txn.goalAmount.toString(),
-                  style: TextStyle(
-                    fontFamily: 'MyBaseEnFont',
-                    fontWeight: FontWeight.w600,
-                    fontSize: 14,
-                    color: Colors.black87,
+                  const SizedBox(height: 8),
+                  Text(
+                    txn.goalAmount.toString(),
+                    style: const TextStyle(
+                      fontFamily: 'MyBaseEnFont',
+                      fontWeight: FontWeight.w600,
+                      fontSize: 14,
+                      color: Colors.black87,
+                    ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
-    ),
-  );
+    );
+  }
 }
 
 Future<bool?> _showDeleteConfirmationDialog(BuildContext context) async {

@@ -177,7 +177,7 @@ Widget _buildSavingComponent(HomeController controller, ThemeController themeCon
               // ],
               borderRadius: BorderRadius.circular(20),
               // ignore: deprecated_member_use
-              color: themeController.theme.value?.textColor?.withOpacity(0.05),
+              color: themeController.theme.value?.textColor?.withOpacity(0.02),
               border: Border.all(
                 color: themeController.theme.value?.textColor?.withOpacity(0.9) ?? Colors.white,
               ),
