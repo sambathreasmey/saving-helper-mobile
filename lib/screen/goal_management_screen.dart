@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:intl/intl.dart';
 import 'package:saving_helper/controllers/goal_management_controller.dart';
 import 'package:saving_helper/controllers/theme_controller.dart';
 import 'package:saving_helper/repository/goal_management_repository.dart';
@@ -263,19 +264,32 @@ class _GoalManagementScreenState extends State<GoalManagementScreen> {
     );
   }
 
-  Widget _buildTransactionTile(BuildContext context, controller, GetGoalResponse.Data txn, ThemeController themeController, int index) {
+  Widget _buildTransactionTile(
+      BuildContext context,
+      GoalManagementController controller,
+      GetGoalResponse.Data txn,
+      ThemeController themeController,
+      int index,
+      ) {
     return Dismissible(
       key: ValueKey(txn.groupId ?? UniqueKey().toString()),
       direction: DismissDirection.endToStart,
-      onDismissed: (direction) async {
-        bool? confirmed = await _showDeleteConfirmationDialog(context);
-        if (confirmed ?? false) {
-          controller.deleteGoal(txn.groupId!);
 
-          controller.goals.removeAt(index);
-          controller.goals.refresh(); // RxList requires refresh
+      // ✅ Show OTP confirmation, and remove immediately if confirmed
+      confirmDismiss: (direction) async {
+        final confirmed = await _showDeleteConfirmationDialog(context);
+        if (confirmed == true) {
+          controller.deleteGoal(txn.groupId!);
+          controller.data.removeAt(index);
+          controller.data.refresh();
+          return true;
         }
+        return false;
       },
+
+      // ✅ No-op; deletion handled in confirmDismiss
+      onDismissed: (_) {},
+
       background: Container(
         alignment: Alignment.centerRight,
         padding: const EdgeInsets.symmetric(horizontal: 20),
@@ -285,6 +299,7 @@ class _GoalManagementScreenState extends State<GoalManagementScreen> {
         ),
         child: const Icon(Icons.delete, color: Colors.white),
       ),
+
       child: Container(
         margin: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
         decoration: BoxDecoration(
@@ -305,7 +320,9 @@ class _GoalManagementScreenState extends State<GoalManagementScreen> {
               width: 55,
               decoration: BoxDecoration(
                 borderRadius: const BorderRadius.only(
-                    topLeft: Radius.circular(16), bottomLeft: Radius.circular(16)),
+                  topLeft: Radius.circular(16),
+                  bottomLeft: Radius.circular(16),
+                ),
                 gradient: LinearGradient(
                   colors: [
                     themeController.theme.value?.firstControlColor ?? Colors.black,
@@ -344,31 +361,178 @@ class _GoalManagementScreenState extends State<GoalManagementScreen> {
                 ],
               ),
             ),
+
+            // ✅ Edit Button
+            IconButton(
+              icon: Icon(Icons.edit, color: Colors.grey[700]),
+              tooltip: "Edit",
+              onPressed: () {
+                Get.to(() => CreateGoalScreen(goalToEdit: txn));
+              },
+            ),
           ],
         ),
       ),
     );
   }
+
 }
 
 Future<bool?> _showDeleteConfirmationDialog(BuildContext context) async {
-  return await showDialog<bool>(
+  final themeController = Get.find<ThemeController>();
+  final theme = themeController.theme.value;
+  final isDark = Theme.of(context).brightness == Brightness.dark;
+
+  final backgroundColor =
+  isDark ? theme?.textColor ?? Colors.grey[900] : Colors.white;
+  final textColor =
+      theme?.textColor ?? (isDark ? Colors.white : Colors.black87);
+  final subtitleColor = isDark ? Colors.white70 : Colors.black54;
+  final gradientColors = [
+    theme?.firstControlColor ?? Colors.pinkAccent,
+    theme?.secondControlColor ?? Colors.deepPurpleAccent,
+  ];
+
+  String otp = '';
+  bool showOtpField = false;
+  final otpController = TextEditingController();
+
+  return showDialog<bool>(
     context: context,
+    barrierDismissible: true,
     builder: (BuildContext context) {
-      return AlertDialog(
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-        title: const Text("Are you sure you want to delete this goal?"),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.of(context).pop(false),
-            child: const Text("Cancel"),
+      return StatefulBuilder(builder: (context, setState) {
+        return Dialog(
+          backgroundColor: backgroundColor,
+          shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(20)),
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 28),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Icon(Icons.warning_amber_rounded,
+                    color: gradientColors.first, size: 48),
+                const SizedBox(height: 16),
+
+                ShaderMask(
+                  shaderCallback: (bounds) => LinearGradient(
+                    colors: gradientColors,
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
+                  ).createShader(Rect.fromLTWH(0, 0, bounds.width, bounds.height)),
+                  blendMode: BlendMode.srcIn,
+                  child: Text(
+                    "Delete Goal?",
+                    style: const TextStyle(
+                      fontSize: 20,
+                      fontWeight: FontWeight.w800,
+                      letterSpacing: 0.3,
+                      fontFamily: 'MyBaseFont',
+                    ),
+                  ),
+                ),
+
+                const SizedBox(height: 12),
+                Text(
+                  showOtpField
+                      ? "Enter the OTP sent to your number to confirm deletion."
+                      : "តើអ្នកប្រាកដថាចង់លុបគម្រោងនេះទេ? សកម្មភាពនេះមិនអាចត្រឡប់វិញបានទេ។",
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    fontSize: 15,
+                    color: subtitleColor,
+                    height: 1.4,
+                  ),
+                ),
+
+                if (showOtpField) ...[
+                  const SizedBox(height: 16),
+                  TextField(
+                    controller: otpController,
+                    keyboardType: TextInputType.number,
+                    decoration: const InputDecoration(
+                      labelText: "OTP",
+                      border: OutlineInputBorder(),
+                    ),
+                  ),
+                ],
+
+                const SizedBox(height: 24),
+
+                InkWell(
+                  borderRadius: const BorderRadius.vertical(top: Radius.circular(16)),
+                  onTap: () {
+                    if (!showOtpField) {
+                      setState(() => showOtpField = true);
+                      // Optional: trigger OTP send here
+                    } else {
+                      otp = otpController.text.trim();
+                      if (otp == "123456") {
+                        Navigator.of(context).pop(true);
+                      } else {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(content: Text("Invalid OTP")),
+                        );
+                      }
+                    }
+                  },
+                  child: Container(
+                    width: double.infinity,
+                    padding: const EdgeInsets.symmetric(vertical: 14),
+                    decoration: BoxDecoration(
+                      gradient: LinearGradient(
+                        colors: [Colors.pink, Colors.red],
+                        begin: Alignment.topLeft,
+                        end: Alignment.bottomRight,
+                      ),
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    child: Text(
+                      showOtpField ? "Verify OTP" : "Delete",
+                      textAlign: TextAlign.center,
+                      style: const TextStyle(
+                        color: Colors.white,
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
+                        fontFamily: 'MyBaseFont',
+                      ),
+                    ),
+                  ),
+                ),
+
+                const SizedBox(height: 12),
+
+                InkWell(
+                  onTap: () => Navigator.of(context).pop(false),
+                  child: Container(
+                    width: double.infinity,
+                    padding: const EdgeInsets.symmetric(vertical: 14),
+                    decoration: BoxDecoration(
+                      gradient: LinearGradient(
+                        colors: gradientColors,
+                        begin: Alignment.topLeft,
+                        end: Alignment.bottomRight,
+                      ),
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    child: Text(
+                      "Cancel",
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        color: textColor,
+                        fontSize: 16,
+                        fontWeight: FontWeight.w500,
+                        fontFamily: 'MyBaseFont',
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            ),
           ),
-          TextButton(
-            onPressed: () => Navigator.of(context).pop(true),
-            child: const Text("Delete", style: TextStyle(color: Colors.red)),
-          ),
-        ],
-      );
+        );
+      });
     },
   );
 }
@@ -378,7 +542,7 @@ class LoadingIndicator extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const Center(child: CircularProgressIndicator());
+    return const Center(child: CircularProgressIndicator(color: Colors.grey,));
   }
 }
 
@@ -397,4 +561,12 @@ class EmptyState extends StatelessWidget {
       ),
     );
   }
+}
+
+String formatCurrency(double value, {String symbol = '\$ ', int decimalDigits = 2, String locale = 'en_US'}) {
+  return NumberFormat.currency(
+    symbol: symbol,
+    decimalDigits: decimalDigits,
+    locale: locale,
+  ).format(value);
 }
