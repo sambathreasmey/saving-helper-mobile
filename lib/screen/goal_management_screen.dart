@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
+import 'package:pin_code_fields/pin_code_fields.dart';
 import 'package:saving_helper/controllers/goal_management_controller.dart';
 import 'package:saving_helper/controllers/theme_controller.dart';
 import 'package:saving_helper/repository/goal_management_repository.dart';
@@ -277,7 +278,7 @@ class _GoalManagementScreenState extends State<GoalManagementScreen> {
 
       // ✅ Show OTP confirmation, and remove immediately if confirmed
       confirmDismiss: (direction) async {
-        final confirmed = await _showDeleteConfirmationDialog(context);
+        final confirmed = await _showDeleteConfirmationDialog(context, controller);
         if (confirmed == true) {
           controller.deleteGoal(txn.groupId!);
           controller.data.removeAt(index);
@@ -378,7 +379,7 @@ class _GoalManagementScreenState extends State<GoalManagementScreen> {
 
 }
 
-Future<bool?> _showDeleteConfirmationDialog(BuildContext context) async {
+Future<bool?> _showDeleteConfirmationDialog(BuildContext context, GoalManagementController controller) async {
   final themeController = Get.find<ThemeController>();
   final theme = themeController.theme.value;
   final isDark = Theme.of(context).brightness == Brightness.dark;
@@ -423,7 +424,8 @@ Future<bool?> _showDeleteConfirmationDialog(BuildContext context) async {
                   ).createShader(Rect.fromLTWH(0, 0, bounds.width, bounds.height)),
                   blendMode: BlendMode.srcIn,
                   child: Text(
-                    "Delete Goal?",
+                    showOtpField
+                    ? "OTP Verification" : "Delete Goal?",
                     style: const TextStyle(
                       fontSize: 20,
                       fontWeight: FontWeight.w800,
@@ -436,7 +438,7 @@ Future<bool?> _showDeleteConfirmationDialog(BuildContext context) async {
                 const SizedBox(height: 12),
                 Text(
                   showOtpField
-                      ? "Enter the OTP sent to your number to confirm deletion."
+                      ? "Enter the OTP sent to your email reasmeysambath@gmail.com to confirm deletion."
                       : "តើអ្នកប្រាកដថាចង់លុបគម្រោងនេះទេ? សកម្មភាពនេះមិនអាចត្រឡប់វិញបានទេ។",
                   textAlign: TextAlign.center,
                   style: TextStyle(
@@ -448,13 +450,38 @@ Future<bool?> _showDeleteConfirmationDialog(BuildContext context) async {
 
                 if (showOtpField) ...[
                   const SizedBox(height: 16),
-                  TextField(
+                  PinCodeTextField(
+                    appContext: context,
+                    length: 6, // number of digits
                     controller: otpController,
                     keyboardType: TextInputType.number,
-                    decoration: const InputDecoration(
-                      labelText: "OTP",
-                      border: OutlineInputBorder(),
+                    animationType: AnimationType.fade,
+                    enableActiveFill: true,
+                    pinTheme: PinTheme(
+                      shape: PinCodeFieldShape.box,
+                      borderRadius: BorderRadius.circular(10),
+                      fieldHeight: 50,
+                      fieldWidth: 40,
+                      activeFillColor: Colors.white,
+                      selectedFillColor: Colors.grey.shade200,
+                      inactiveFillColor: Colors.grey.shade100,
+                      activeColor: Colors.blue,
+                      selectedColor: Colors.deepPurple,
+                      inactiveColor: Colors.grey,
                     ),
+                    animationDuration: const Duration(milliseconds: 300),
+                    onChanged: (value) {
+                      // handle input change if needed
+                      if (value.length == 6) {
+                        if (otp == "049332") {
+                          Navigator.of(context).pop(true);
+                        } else {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(content: Text("Invalid OTP")),
+                          );
+                        }
+                      }
+                    },
                   ),
                 ],
 
@@ -465,10 +492,11 @@ Future<bool?> _showDeleteConfirmationDialog(BuildContext context) async {
                   onTap: () {
                     if (!showOtpField) {
                       setState(() => showOtpField = true);
-                      // Optional: trigger OTP send here
+                        print('call to send OTP .............');
+                      controller.sendVerifyOTP();
                     } else {
                       otp = otpController.text.trim();
-                      if (otp == "123456") {
+                      if (otp == "049332") {
                         Navigator.of(context).pop(true);
                       } else {
                         ScaffoldMessenger.of(context).showSnackBar(

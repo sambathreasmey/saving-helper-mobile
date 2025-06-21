@@ -237,4 +237,85 @@ class GoalManagementController extends GetxController {
     }
   }
 
+  Future<void> sendVerifyOTP() async {
+    isLoading.value = true;
+    try {
+      final ShareStorage shareStorage = ShareStorage();
+      final user = await shareStorage.getUser();
+      final String? email = user!.email;
+      final String subject = "[Helper Mobile] Verification Code";
+      final String body = '''
+                          <html>
+                            <body style="margin:0; padding:0; background-color:#f4f8fb; font-family:Arial,sans-serif;">
+                              <table width="100%" cellpadding="0" cellspacing="0">
+                                <tr>
+                                  <td align="center" style="padding:40px 0;">
+                                    <table width="480" cellpadding="0" cellspacing="0" style="background:#ffffff; border-radius:12px; box-shadow:0 4px 16px rgba(0,0,0,0.05); overflow:hidden;">
+                                      <tr>
+                                        <td style="background-color:#00b894; padding:20px; text-align:center; color:white;">
+                                          <h2 style="margin:0; font-size:20px;">🔐 Verification Code</h2>
+                                          <p style="margin:5px 0 0; font-size:14px; opacity:0.85;">Saving Helper Security</p>
+                                        </td>
+                                      </tr>
+                                      <tr>
+                                        <td style="padding:30px; text-align:left;">
+                                          <p style="margin-top:0;">Dear Sambath Reasmey,</p>
+                                          <p>
+                                            We received a request to verify your <strong>Saving Helper</strong> account associated with
+                                            <a href="mailto:reasmeysambath@gmail.com">reasmeysambath@gmail.com</a>.
+                                          </p>
+                                          <div style="margin:30px 0; text-align:center;">
+                                            <span style="display:inline-block; padding:16px 32px; background-color:#ecfdf5; color:#00b894; font-size:28px; font-weight:bold; border:2px dashed #00b894; border-radius:8px; letter-spacing:4px;">
+                                              049332
+                                            </span>
+                                          </div>
+                                          <p>
+                                            If you did not request this code, someone else may be trying to access your account.
+                                            Do <strong>not share this code</strong> with anyone.
+                                          </p>
+                                          <p style="margin-top:40px;">
+                                            Stay safe,<br>
+                                            <strong>The Saving Helper Team</strong>
+                                          </p>
+                                        </td>
+                                      </tr>
+                                    </table>
+                                  </td>
+                                </tr>
+                              </table>
+                            </body>
+                          </html>
+                          ''';
+      final response = await goalManagementRepository.sendVerifyOTP(email, subject, body );
+
+      if (response.status == 0) {
+        Get.snackbar(
+          "ជោគជ័យ",
+          response.message ?? "បានគណនារួចរាល់!",
+          backgroundColor: Colors.green,
+          colorText: Colors.white,
+          icon: const Icon(Icons.check_circle_outline, color: Colors.white),
+        );
+      } else {
+        Get.snackbar(
+          "បរាជ័យ",
+          response.message ?? "បរាជ័យក្នុងការគណនា",
+          backgroundColor: Colors.red,
+          colorText: Colors.white,
+          icon: const Icon(Icons.error_outline, color: Colors.white),
+        );
+      }
+    } catch (e) {
+      Get.snackbar(
+        "មានបញ្ហា",
+        e.toString(),
+        backgroundColor: Colors.red,
+        colorText: Colors.white,
+        icon: const Icon(Icons.error_outline, color: Colors.white),
+      );
+    } finally {
+      isLoading.value = false;
+    }
+  }
+
 }

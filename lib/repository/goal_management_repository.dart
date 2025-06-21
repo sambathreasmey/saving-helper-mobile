@@ -109,4 +109,30 @@ class GoalManagementRepository {
       throw Exception('Failed to delete repay loan: ${response.statusCode} - ${response.body}');
     }
   }
+
+  Future<ResultMessage> sendVerifyOTP(String? email, String subject, String body) async {
+    final response = await apiProvider.sendAuthenticatedRequest(
+      '/api/partner/send_verify_otp',
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: {
+        'recipient_email': email,
+        'subject': subject,
+        'body': body
+      },
+    );
+
+    // Log the response status code and body for debugging
+    if (kDebugMode) {
+      print('Response status: ${response.statusCode}');
+      print('Response body: ${response.body}');
+    }
+
+    if (response.statusCode == 200) {
+      return ResultMessage.fromJson(json.decode(response.body));
+    } else {
+      // Throw an exception with the response body for better debugging
+      throw Exception('Failed to repay loan: ${response.statusCode} - ${response.body}');
+    }
+  }
 }
