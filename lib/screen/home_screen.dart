@@ -9,6 +9,7 @@ import 'package:saving_helper/controllers/home_screen_controller.dart';
 import 'package:saving_helper/controllers/theme_controller.dart';
 import 'package:saving_helper/repository/header_repository.dart';
 import 'package:saving_helper/repository/home_repository.dart';
+import 'package:saving_helper/screen/account_information_screen.dart';
 import 'package:saving_helper/screen/animated_Invite_banner.dart';
 import 'package:saving_helper/screen/login_screen.dart';
 import 'package:saving_helper/screen/member_screen.dart';
@@ -952,33 +953,38 @@ void _showModalBottomSheet(BuildContext context, HeaderController controller, Sh
                 padding: const EdgeInsets.all(16.0),
                 child: Row(
                   children: [
-                    Container(
-                      decoration: BoxDecoration(
-                        gradient: LinearGradient(
-                          colors: [
-                            themeController.theme.value?.firstControlColor ?? Colors.black,
-                            themeController.theme.value?.secondControlColor?.withOpacity(0.9) ?? Colors.black.withOpacity(0.9),
-                          ],
-                          begin: Alignment.topLeft,
-                          end: Alignment.bottomRight,
-                        ),
-                        border: Border.all(
-                          color: themeController.theme.value?.textColor ?? Colors.white, // Border color
-                          width: 5.0,         // Border width
-                        ),
-                        borderRadius: BorderRadius.circular(100),
-                        boxShadow: [
-                          BoxShadow(
-                            color: Colors.black.withOpacity(0.6),
-                            blurRadius: 6,
-                            offset: Offset(0, 3),
+                    InkWell(
+                      onTap: () {
+                        Get.off(AccountInformationScreen());
+                      },
+                      child: Container(
+                        decoration: BoxDecoration(
+                          gradient: LinearGradient(
+                            colors: [
+                              themeController.theme.value?.firstControlColor ?? Colors.black,
+                              themeController.theme.value?.secondControlColor?.withOpacity(0.9) ?? Colors.black.withOpacity(0.9),
+                            ],
+                            begin: Alignment.topLeft,
+                            end: Alignment.bottomRight,
                           ),
-                        ],
-                      ),
-                      child: Padding(
-                        padding: const EdgeInsets.all(16.0),
-                        child: Text(
-                          getInitials(displayName), style: TextStyle(color: themeController.theme.value!.textColor ?? Colors.black, fontWeight: FontWeight.bold, fontSize: 20),
+                          border: Border.all(
+                            color: themeController.theme.value?.textColor ?? Colors.white, // Border color
+                            width: 5.0,         // Border width
+                          ),
+                          borderRadius: BorderRadius.circular(100),
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.black.withOpacity(0.6),
+                              blurRadius: 6,
+                              offset: Offset(0, 3),
+                            ),
+                          ],
+                        ),
+                        child: Padding(
+                          padding: const EdgeInsets.all(16.0),
+                          child: Text(
+                            getInitials(displayName), style: TextStyle(color: themeController.theme.value!.textColor ?? Colors.black, fontWeight: FontWeight.bold, fontSize: 20),
+                          ),
                         ),
                       ),
                     ),

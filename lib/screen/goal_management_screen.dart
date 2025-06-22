@@ -471,15 +471,27 @@ Future<bool?> _showDeleteConfirmationDialog(BuildContext context, GoalManagement
                     ),
                     animationDuration: const Duration(milliseconds: 300),
                     onChanged: (value) {
-                      // handle input change if needed
-                      if (value.length == 6) {
-                        if (otp == "049332") {
-                          Navigator.of(context).pop(true);
-                        } else {
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(content: Text("Invalid OTP")),
-                          );
-                        }
+                      if (value.trim().length == 6) {
+                        final capturedContext = context; // ✅ capture context safely
+
+                        // Defer async work to avoid async in onChanged directly
+                        Future.microtask(() async {
+                          final otp = value.trim();
+                          final isValid = await controller.verifyOTP(otp);
+
+                          if (!capturedContext.mounted) return; // ✅ safe check
+
+                          if (isValid) {
+                            Navigator.of(capturedContext).pop(true);
+                          } else {
+                            ScaffoldMessenger.of(capturedContext).showSnackBar(
+                              const SnackBar(
+                                content: Text("❌ Invalid OTP"),
+                                backgroundColor: Colors.red,
+                              ),
+                            );
+                          }
+                        });
                       }
                     },
                   ),
@@ -492,16 +504,29 @@ Future<bool?> _showDeleteConfirmationDialog(BuildContext context, GoalManagement
                   onTap: () {
                     if (!showOtpField) {
                       setState(() => showOtpField = true);
-                        print('call to send OTP .............');
                       controller.sendVerifyOTP();
                     } else {
                       otp = otpController.text.trim();
-                      if (otp == "049332") {
-                        Navigator.of(context).pop(true);
-                      } else {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(content: Text("Invalid OTP")),
-                        );
+                      if (otp.length == 6) {
+                        final capturedContext = context; // ✅ capture context safely
+
+                        // Defer async work to avoid async in onChanged directly
+                        Future.microtask(() async {
+                          final isValid = await controller.verifyOTP(otp);
+
+                          if (!capturedContext.mounted) return; // ✅ safe check
+
+                          if (isValid) {
+                            Navigator.of(capturedContext).pop(true);
+                          } else {
+                            ScaffoldMessenger.of(capturedContext).showSnackBar(
+                              const SnackBar(
+                                content: Text("❌ Invalid OTP"),
+                                backgroundColor: Colors.red,
+                              ),
+                            );
+                          }
+                        });
                       }
                     }
                   },
