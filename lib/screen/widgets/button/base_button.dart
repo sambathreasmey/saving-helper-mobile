@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:saving_helper/controllers/theme_controller.dart';
 
 class BaseButtonWidget extends StatelessWidget {
   final String label;
@@ -9,7 +10,6 @@ class BaseButtonWidget extends StatelessWidget {
   final double height;
   final double weight;
   final double fontSize;
-  final List<Color> backgroundColors;
   final String fontFamily;
 
   const BaseButtonWidget({
@@ -21,24 +21,27 @@ class BaseButtonWidget extends StatelessWidget {
     this.height = 0,
     this.fontSize = 16,
     this.weight = 0,
-    this.backgroundColors = const [Colors.blue, Colors.green],
     this.fontFamily = 'MyBaseFont',
   });
 
   @override
   Widget build(BuildContext context) {
+    final themeController = Get.find<ThemeController>();
     return Container(
       padding: EdgeInsets.symmetric(vertical: height, horizontal: weight),
       decoration: BoxDecoration(
         gradient: LinearGradient(
-          colors: backgroundColors,
+          colors: [
+            themeController.theme.value?.firstControlColor ?? Colors.black,
+            themeController.theme.value?.secondControlColor ?? Colors.black,
+          ],
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
         ),
         borderRadius: BorderRadius.circular(16),
         boxShadow: [
           BoxShadow(
-            color: backgroundColors.last.withOpacity(0.3),
+            color: themeController.theme.value?.secondControlColor?.withOpacity(0.3) ?? Colors.black,
             blurRadius: 3,
             offset: Offset(0, 3),
           )

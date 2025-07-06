@@ -15,6 +15,7 @@ import 'package:saving_helper/screen/login_screen.dart';
 import 'package:saving_helper/screen/member_screen.dart';
 import 'package:saving_helper/screen/report_repay_screen.dart';
 import 'package:saving_helper/screen/saving_plan_calculate_screen.dart';
+import 'package:saving_helper/screen/shop/ProductFeedScreen.dart';
 import 'package:saving_helper/screen/widgets/menu_grid/MenuGrid.dart';
 import 'package:saving_helper/screen/widgets/menu_grid/MenuItem.dart';
 import 'package:saving_helper/services/api_provider.dart';
@@ -116,11 +117,11 @@ class _HomeScreenState extends State<HomeScreen> {
                           menuItems: [
                             SavingPlanCalculateScreen(),
                             MenuItem(
-                              icon: Icons.supervised_user_circle_outlined,
-                              label: 'ដៃគូសន្សំ',
+                              icon: Icons.shopify,
+                              label: 'ទិញទំនិញ',
                               onTap: () {
                                 // Handle navigation to Home Screen
-                                Get.to(() => MemberScreen());
+                                Get.to(() => ProductFeedScreen());
                               },
                               firstControlColor: themeController.theme.value?.firstControlColor,
                               secondControlColor: themeController.theme.value?.secondControlColor,
@@ -141,6 +142,17 @@ class _HomeScreenState extends State<HomeScreen> {
                               label: 'កម្ចី',
                               onTap: () {
                                 Get.to(() => ReportRepayScreen());
+                              },
+                              firstControlColor: themeController.theme.value?.firstControlColor,
+                              secondControlColor: themeController.theme.value?.secondControlColor,
+                              textColor: themeController.theme.value?.textColor,
+                            ),
+                            MenuItem(
+                              icon: Icons.supervised_user_circle_outlined,
+                              label: 'ដៃគូសន្សំ',
+                              onTap: () {
+                                // Handle navigation to Home Screen
+                                Get.to(() => MemberScreen());
                               },
                               firstControlColor: themeController.theme.value?.firstControlColor,
                               secondControlColor: themeController.theme.value?.secondControlColor,

@@ -7,6 +7,7 @@ import 'package:saving_helper/controllers/theme_controller.dart';
 import 'package:saving_helper/repository/goal_management_repository.dart';
 import 'package:saving_helper/screen/animated_Invite_banner.dart';
 import 'package:saving_helper/screen/create_goal_screen.dart';
+import 'package:saving_helper/screen/widgets/EmptyState.dart';
 import 'package:saving_helper/screen/widgets/bread_crumb/DynamicBreadcrumbWidget.dart';
 import 'package:saving_helper/screen/widgets/button/base_button.dart';
 import 'package:saving_helper/screen/header.dart';
@@ -15,7 +16,6 @@ import 'package:saving_helper/screen/widgets/progress/LineProgressComponent.dart
 import 'package:saving_helper/services/api_provider.dart';
 import 'package:saving_helper/theme_screen.dart';
 
-import '../constants/app_color.dart' as app_colors;
 import '../models/responses/get_goal_response.dart' as GetGoalResponse;
 
 class GoalManagementScreen extends StatefulWidget {
@@ -77,10 +77,6 @@ class _GoalManagementScreenState extends State<GoalManagementScreen> {
                         spacing: 8,
                         children: [
                           BaseButtonWidget(
-                            backgroundColors: [
-                              themeController.theme.value?.firstControlColor ?? Colors.white,
-                              themeController.theme.value?.secondControlColor ?? Colors.white
-                            ],
                             label: 'បន្ថែម',
                             icon: Icons.add,
                             height: 10,
@@ -91,10 +87,6 @@ class _GoalManagementScreenState extends State<GoalManagementScreen> {
                             },
                           ),
                           BaseButtonWidget(
-                            backgroundColors: [
-                              themeController.theme.value?.firstControlColor ?? Colors.white,
-                              themeController.theme.value?.secondControlColor ?? Colors.white
-                            ],
                             label: 'Assign',
                             icon: Icons.add_link_sharp,
                             height: 10,
@@ -106,10 +98,6 @@ class _GoalManagementScreenState extends State<GoalManagementScreen> {
                             },
                           ),
                           BaseButtonWidget(
-                            backgroundColors: [
-                              themeController.theme.value?.firstControlColor ?? Colors.white,
-                              themeController.theme.value?.secondControlColor ?? Colors.white
-                            ],
                             label: 'កែប្រែ',
                             icon: Icons.edit_road_rounded,
                             height: 10,
@@ -120,10 +108,6 @@ class _GoalManagementScreenState extends State<GoalManagementScreen> {
                             },
                           ),
                           BaseButtonWidget(
-                            backgroundColors: [
-                              themeController.theme.value?.firstControlColor ?? Colors.white,
-                              themeController.theme.value?.secondControlColor ?? Colors.white
-                            ],
                             label: 'View',
                             icon: Icons.visibility,
                             height: 10,
@@ -152,7 +136,7 @@ class _GoalManagementScreenState extends State<GoalManagementScreen> {
                       return const LoadingIndicator();
                     }
                     if (controller.data.isEmpty) {
-                      return EmptyState();
+                      return EmptyState(message: 'មិនមានប្រតិបត្តិការ');
                     }
 
                     final data = controller.data;
@@ -596,23 +580,6 @@ class LoadingIndicator extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return const Center(child: CircularProgressIndicator(color: Colors.grey,));
-  }
-}
-
-class EmptyState extends StatelessWidget {
-  const EmptyState({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return Center(
-      child: Text(
-        'មិនមានប្រតិបត្តិការ',
-        style: TextStyle(
-          fontFamily: 'MyBaseFont',
-          color: app_colors.subTitleText,
-        ),
-      ),
-    );
   }
 }
 
