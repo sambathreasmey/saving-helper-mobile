@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import '../../models/responses/get_goal_response.dart' as GetSummaryReportResponse;
+import '../../models/shop/product_new_feed.dart' as product_new_feed;
 
 class ProductCard extends StatelessWidget {
-  final GetSummaryReportResponse.Data product;
+  final product_new_feed.Data product;
   final VoidCallback onTap;
 
   const ProductCard({
@@ -37,7 +37,7 @@ class ProductCard extends StatelessWidget {
               child: AspectRatio(
                 aspectRatio: 1,
                 child: Image.network(
-                  'https://img.alicdn.com/bao/uploaded/i2/1870919581/O1CN01kYGZJs2Ke9lEQnBoi_!!1870919581.jpg_460x460q90.jpg_.webp', // Replace with actual image URL
+                  product.image ?? '', // Replace with actual image URL
                   fit: BoxFit.cover,
                   errorBuilder: (context, error, stackTrace) => Container(
                     color: Colors.grey[200],
@@ -50,7 +50,7 @@ class ProductCard extends StatelessWidget {
             Padding(
               padding: const EdgeInsets.fromLTRB(8, 8, 8, 4),
               child: Text(
-                product.groupName ?? 'Unknown Product',
+                product.name ?? 'Unknown Product',
                 maxLines: 2,
                 overflow: TextOverflow.ellipsis,
                 style: const TextStyle(
@@ -65,7 +65,7 @@ class ProductCard extends StatelessWidget {
               child: Row(
                 children: [
                   Text(
-                    "\$${product.goalAmount?.toStringAsFixed(2)}",
+                    "\$${product.price}",
                     style: const TextStyle(
                       fontSize: 16,
                       fontWeight: FontWeight.bold,

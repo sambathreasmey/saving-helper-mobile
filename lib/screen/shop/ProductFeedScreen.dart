@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:saving_helper/controllers/shop/ProductFeedController.dart';
+import 'package:saving_helper/controllers/shop/product_controller.dart';
 import 'package:saving_helper/controllers/theme_controller.dart';
-import 'package:saving_helper/repository/goal_management_repository.dart';
+import 'package:saving_helper/repository/shop/product_repository.dart';
 import 'package:saving_helper/screen/shop/ProductCard.dart';
 import 'package:saving_helper/screen/shop/ProductDetailScreen.dart';
 import 'package:saving_helper/screen/shop/widgets/ShimmerGridLoader.dart';
@@ -18,8 +18,8 @@ class ProductFeedScreen extends StatefulWidget {
 }
 
 class _ProductFeedScreenState extends State<ProductFeedScreen> {
-  final ProductFeedController controller = Get.put(
-      ProductFeedController(GoalManagementRepository(ApiProvider()))
+  final ProductController controller = Get.put(
+      ProductController(ProductRepository(ApiProvider()))
   );
   final ThemeController themeController = Get.put(ThemeController());
   final ScrollController _scrollController = ScrollController();

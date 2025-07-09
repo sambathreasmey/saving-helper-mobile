@@ -1,16 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:saving_helper/models/requests/get_goal_request.dart';
-import 'package:saving_helper/repository/goal_management_repository.dart';
+import 'package:saving_helper/models/requests/product_new_feed_request.dart';
+import 'package:saving_helper/repository/shop/product_repository.dart';
 import '../../constants/app_color.dart' as app_color;
-import '../../models/responses/get_goal_response.dart' as GetSummaryReportResponse;
+import '../../models/shop/product_new_feed.dart' as product_new_feed;
 import '../../services/share_storage.dart';
 
-class ProductFeedController extends GetxController {
-  final GoalManagementRepository goalManagementRepository;
-  ProductFeedController(this.goalManagementRepository);
+class ProductController extends GetxController {
+  final ProductRepository productRepository;
+  ProductController(this.productRepository);
 
-  RxList<GetSummaryReportResponse.Data> data = RxList<GetSummaryReportResponse.Data>([]);
+  RxList<product_new_feed.Data> data = RxList<product_new_feed.Data>([]);
   var isLoading = false.obs;
   RxBool hasMore = true.obs;
   int pageNum = 1;
@@ -37,13 +37,13 @@ class ProductFeedController extends GetxController {
       final ShareStorage shareStorage = ShareStorage();
       final userId = await shareStorage.getUserCredential();
 
-      var request = GetGoalRequest(
+      var request = ProductNewFeedRequest(
         userId: userId!,
         pageNum: pageNum,
         pageSize: pageSize,
       );
 
-      final response = await goalManagementRepository.getGoals(request);
+      final response = await productRepository.fetchProductNewFeed(request);
 
       if (response.status == 0) {
         final newReports = response.data ?? [];
