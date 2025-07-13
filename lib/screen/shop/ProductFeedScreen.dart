@@ -55,6 +55,12 @@ class _ProductFeedScreenState extends State<ProductFeedScreen> {
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.only(topLeft: Radius.circular(30), topRight: Radius.circular(30)),
                   color: Colors.white,
+                  // gradient: LinearGradient(
+                  //   colors: [
+                  //     themeController.theme.value?.firstControlColor?.withOpacity(0.5) ?? Colors.white,
+                  //     themeController.theme.value?.secondControlColor?.withOpacity(0.5) ?? Colors.white,
+                  //   ]
+                  // ),
                 ),
                 child: Obx(() {
                   if (controller.isLoading.value && controller.data.isEmpty) {

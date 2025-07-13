@@ -20,6 +20,7 @@ class LoanController extends GetxController {
   RxString selectedCurrency = 'USD'.obs;
   RxList<String> currencyList = ['USD', 'KHR'].obs;
   RxString selectedDate = ''.obs;
+  var isLoading = false.obs;
 
   final TextEditingController amountController = TextEditingController();
   final TextEditingController transactionDescController = TextEditingController();
@@ -48,17 +49,22 @@ class LoanController extends GetxController {
   }
 
   Future<void> saveLoan() async {
+    if (isLoading.value) return; // prevent duplicate tap
+    isLoading.value = true; // Start loading
     // Validate input
     if (selectedCurrency.value == 'KHR') {
+      isLoading.value = false;
       Get.snackbar("ព័ត៍មានមិនត្រឹមត្រូវ", 'ប្រភេទប្រាក់រៀលមិនទាន់កំណត់នៅឡើយ សូមជ្រើសរើសដុល្លារជំនួស', colorText: app_color.background, icon: Icon(Icons.sentiment_dissatisfied_outlined, color: app_color.baseWhiteColor));
       return;
     }
 
     if (amount.value.isEmpty) {
+      isLoading.value = false;
       Get.snackbar("ព័ត៍មានមិនត្រឹមត្រូវ", 'សូមបញ្ចូលចំនួនទឹកប្រាក់', colorText: app_color.background, icon: Icon(Icons.sentiment_dissatisfied_outlined, color: app_color.baseWhiteColor));
       return;
     }
     if (selectedCurrency.value.isEmpty || selectedDate.value.isEmpty) {
+      isLoading.value = false;
       Get.snackbar('Error', 'Please fill in all fields', snackPosition: SnackPosition.TOP);
       return;
     }
@@ -87,6 +93,8 @@ class LoanController extends GetxController {
       }
     } catch (e) {
       Get.snackbar("ប្រព័ន្ធមានបញ្ហា", e.toString(), colorText: app_color.background, icon: Icon(Icons.warning_amber_sharp, color: app_color.baseWhiteColor));
+    } finally {
+      isLoading.value = false;
     }
   }
 

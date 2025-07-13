@@ -22,6 +22,7 @@ class DepositSavingController extends GetxController {
   RxString selectedDate = ''.obs;
   RxBool isSavingMore = false.obs;
   RxBool isUploading = false.obs;
+  var isLoading = false.obs;
 
   final TextEditingController amountController = TextEditingController();
   final TextEditingController transactionDescController = TextEditingController();
@@ -77,7 +78,10 @@ class DepositSavingController extends GetxController {
   }
 
   Future<void> saveDeposit() async {
+    if (isLoading.value) return; // prevent duplicate tap
+    isLoading.value = true; // Start loading
     if (selectedCurrency.value == 'KHR') {
+      isLoading.value = false;
       Get.snackbar(
         "ព័ត៍មានមិនត្រឹមត្រូវ",
         'ប្រភេទប្រាក់រៀលមិនទាន់កំណត់នៅឡើយ សូមជ្រើសរើសដុល្លារជំនួស',
@@ -88,6 +92,7 @@ class DepositSavingController extends GetxController {
     }
 
     if (amount.value.isEmpty) {
+      isLoading.value = false;
       Get.snackbar(
         "ព័ត៍មានមិនត្រឹមត្រូវ",
         'សូមបញ្ចូលចំនួនទឹកប្រាក់',
@@ -98,6 +103,7 @@ class DepositSavingController extends GetxController {
     }
 
     if (selectedCurrency.value.isEmpty || selectedDate.value.isEmpty) {
+      isLoading.value = false;
       Get.snackbar('Error', 'Please fill in all fields', snackPosition: SnackPosition.TOP);
       return;
     }
@@ -139,6 +145,8 @@ class DepositSavingController extends GetxController {
       Get.snackbar("ប្រព័ន្ធមានបញ្ហា", e.toString(),
           colorText: app_color.background,
           icon: Icon(Icons.warning_amber_sharp, color: app_color.baseWhiteColor));
+    } finally {
+      isLoading.value = false;
     }
   }
 }

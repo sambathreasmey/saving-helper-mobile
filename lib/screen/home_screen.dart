@@ -1,5 +1,6 @@
 
 import 'dart:math';
+import 'dart:ui';
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -181,268 +182,268 @@ Widget _buildSavingComponent(HomeController controller, ThemeController themeCon
       // Saving Component Start
       Center(
         child: ClipRRect(
-          child: Container(
-            decoration: BoxDecoration(
-              // boxShadow: [
-              //   BoxShadow(
-              //     color: Colors.black.withOpacity(0.3),
-              //   ),
-              // ],
-              borderRadius: BorderRadius.circular(20),
-              // ignore: deprecated_member_use
-              color: themeController.theme.value?.textColor?.withOpacity(0.02),
-              border: Border.all(
-                color: themeController.theme.value?.textColor?.withOpacity(0.9) ?? Colors.white,
+          borderRadius: BorderRadius.circular(20),
+          child: BackdropFilter(
+            filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10), // Glass blur effect
+            child: Container(
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(20),
+                // ignore: deprecated_member_use
+                color: themeController.theme.value?.textColor?.withOpacity(0.05),
+                border: Border.all(
+                  color: themeController.theme.value?.textColor?.withOpacity(0.1) ?? Colors.white,
+                  width: 0.5,
+                ),
               ),
-            ),
-            child: Column(
-              children: [
-                Container(
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.only(
-                      topLeft: Radius.circular(20),
-                      topRight: Radius.circular(20),
+              child: Column(
+                children: [
+                  Container(
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.only(
+                        topLeft: Radius.circular(20),
+                        topRight: Radius.circular(20),
+                      ),
+                      gradient: LinearGradient(
+                        colors: [
+                          themeController.theme.value?.firstControlColor?.withOpacity(0.5) ?? Colors.white.withOpacity(0.08),
+                          themeController.theme.value?.secondControlColor?.withOpacity(0.3) ?? Colors.black.withOpacity(0.04)
+                        ],
+                        begin: Alignment.topRight,
+                        end: Alignment.bottomCenter,
+                      ),
+                      // boxShadow: [
+                      //   BoxShadow(
+                      //     color: themeController.theme.value?.textColor?.withOpacity(0.15) ?? Colors.black.withOpacity(0.15),
+                      //     blurRadius: 6,
+                      //     offset: Offset(0, 4),
+                      //   ),
+                      // ],
                     ),
-                    gradient: LinearGradient(
-                      colors: [
-                        themeController.theme.value?.textColor?.withOpacity(0.08) ?? Colors.white.withOpacity(0.08),
-                        themeController.theme.value?.textColor?.withOpacity(0.04) ?? Colors.black.withOpacity(0.04)
-                      ],
-                      begin: Alignment.topRight,
-                      end: Alignment.bottomCenter,
+                    child: Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Row(
+                            children: [
+                              Text('សន្សំ ',
+                                style: TextStyle(
+                                  color: themeController.theme.value?.textColor,
+                                  fontSize: 12,
+                                  fontWeight: FontWeight.bold,
+                                  fontFamily: 'MyBaseFont',
+                                ),),
+                              Text('| សង្ខេប',
+                                style: TextStyle(
+                                  color: themeController.theme.value?.textColor,
+                                  fontSize: 12,
+                                  fontFamily: 'MyBaseFont',
+                                ),),
+                            ],
+                          ),
+                        ],
+                      ),
                     ),
-                    // boxShadow: [
-                    //   BoxShadow(
-                    //     color: themeController.theme.value?.textColor?.withOpacity(0.15) ?? Colors.black.withOpacity(0.15),
-                    //     blurRadius: 6,
-                    //     offset: Offset(0, 4),
-                    //   ),
-                    // ],
                   ),
-                  child: Padding(
+                  Padding(
                     padding: const EdgeInsets.all(8.0),
                     child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      mainAxisAlignment: MainAxisAlignment.start,
                       children: [
-                        Row(
-                          children: [
-                            Text('សន្សំ ',
-                              style: TextStyle(
-                                color: themeController.theme.value?.textColor,
-                                fontSize: 12,
-                                fontWeight: FontWeight.bold,
-                                fontFamily: 'MyBaseFont',
-                              ),),
-                            Text('| សង្ខេប',
-                              style: TextStyle(
-                                color: themeController.theme.value?.textColor,
-                                fontSize: 12,
-                                fontFamily: 'MyBaseFont',
-                              ),),
-                          ],
+                        SizedBox(width: 20,),
+                        Expanded(
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Obx(() {
+                                    final value = parseCurrency(controller.dashboard.value?.totalSavingDeposit);
+
+                                    return TweenAnimationBuilder<double>(
+                                    key: ValueKey(value),
+                                    tween: Tween(begin: 0.0, end: value),
+                                    duration: Duration(milliseconds: 800),
+                                    builder: (context, animatedValue, child) {
+                                      return Text(
+                                        formatCurrency(animatedValue),
+                                        style: TextStyle(
+                                          color: themeController.theme.value?.textColor,
+                                          fontSize: 28,
+                                          fontWeight: FontWeight.bold,
+                                          shadows: [
+                                            Shadow(
+                                              color: themeController.theme.value?.secondControlColor?.withOpacity(0.3) ?? Colors.deepPurpleAccent,
+                                              blurRadius: 8,
+                                            ),
+                                          ],
+                                          fontFamily: 'MyBaseEnFont',
+                                        ),);
+                                    });
+                                  }),
+                                ],
+                              ),
+                              Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Row(
+                                    children: [
+                                      Obx(() {
+                                        final value = parseCurrency(controller.dashboard.value?.savingToday);
+
+                                        return TweenAnimationBuilder<double>(
+                                            key: ValueKey(value),
+                                            tween: Tween(begin: 0.0, end: value),
+                                            duration: Duration(milliseconds: 800),
+                                            builder: (context, animatedValue, child) {
+                                              return Row(
+                                                children: [
+                                                  Icon(Icons.trending_up, size: 14, color: Colors.greenAccent),
+                                                  const SizedBox(width: 4),
+                                                  Text(
+                                                  formatCurrency(animatedValue),
+                                                    style: TextStyle(
+                                                      color: Colors.greenAccent,
+                                                      fontSize: 10,
+                                                      fontWeight: FontWeight.bold,
+                                                      fontFamily: 'MyBaseEnFont',
+                                                      shadows: [
+                                                        Shadow(
+                                                          color: Colors.deepPurpleAccent,
+                                                          blurRadius: 8,
+                                                        ),
+                                                      ],
+                                                    ),
+                                                  ),
+                                                ],
+                                              );
+                                            });
+                                      }),
+                                      SizedBox(width: 8,),
+                                      Text('ថ្ងៃនេះ',
+                                        style: TextStyle(
+                                          color: Colors.white,
+                                          fontSize: 10,
+                                          fontWeight: FontWeight.bold,
+                                          fontFamily: 'MyBaseFont',
+                                          shadows: [
+                                            Shadow(
+                                              color: Colors.deepPurpleAccent,
+                                              blurRadius: 8,
+                                            ),
+                                          ],
+                                        ),),
+                                    ],
+                                  ),
+                                  Row(
+                                    children: [
+                                      Obx(() {
+                                        final value = parseCurrency(controller.dashboard.value?.savingYesterday);
+
+                                        return TweenAnimationBuilder<double>(
+                                            key: ValueKey(value),
+                                            tween: Tween(begin: 0.0, end: value),
+                                            duration: Duration(milliseconds: 800),
+                                            builder: (context, animatedValue, child) {
+                                              return Row(
+                                                children: [
+                                                  Icon(Icons.trending_up, size: 14, color: Colors.greenAccent),
+                                                  const SizedBox(width: 4),
+                                                  Text(
+                                                    formatCurrency(animatedValue),
+                                                    style: TextStyle(
+                                                      color: Colors.greenAccent,
+                                                      fontSize: 10,
+                                                      fontWeight: FontWeight.bold,
+                                                      fontFamily: 'MyBaseEnFont',
+                                                      shadows: [
+                                                        Shadow(
+                                                          color: Colors.deepPurpleAccent,
+                                                          blurRadius: 8,
+                                                        ),
+                                                      ],
+                                                    ),
+                                                  ),
+                                                ],
+                                              );
+                                            });
+                                      }),
+                                      SizedBox(width: 8,),
+                                      Text('ម្សិលមិញ',
+                                        style: TextStyle(
+                                          color: Colors.white,
+                                          fontSize: 10,
+                                          fontWeight: FontWeight.bold,
+                                          fontFamily: 'MyBaseFont',
+                                          shadows: [
+                                            Shadow(
+                                              color: Colors.deepPurpleAccent,
+                                              blurRadius: 8,
+                                            ),
+                                          ],
+                                        ),),
+                                    ],
+                                  ),
+                                  Row(
+                                    children: [
+                                      Obx(() {
+                                        final value = parseCurrency(controller.dashboard.value?.savingThisMonth);
+
+                                        return TweenAnimationBuilder<double>(
+                                            key: ValueKey(value),
+                                            tween: Tween(begin: 0.0, end: value),
+                                            duration: Duration(milliseconds: 800),
+                                            builder: (context, animatedValue, child) {
+                                              return Row(
+                                                children: [
+                                                  Icon(Icons.trending_up, size: 14, color: Colors.greenAccent),
+                                                  const SizedBox(width: 4),
+                                                  Text(
+                                                    formatCurrency(animatedValue),
+                                                    style: TextStyle(
+                                                      color: Colors.greenAccent,
+                                                      fontSize: 10,
+                                                      fontWeight: FontWeight.bold,
+                                                      fontFamily: 'MyBaseEnFont',
+                                                      shadows: [
+                                                        Shadow(
+                                                          color: Colors.deepPurpleAccent,
+                                                          blurRadius: 8,
+                                                        ),
+                                                      ],
+                                                    ),
+                                                  ),
+                                                ],
+                                              );
+                                            });
+                                      }),
+                                      SizedBox(width: 8,),
+                                      Text('១ខែចុងក្រោយ',
+                                        style: TextStyle(
+                                          color: Colors.white,
+                                          fontSize: 10,
+                                          fontWeight: FontWeight.bold,
+                                          fontFamily: 'MyBaseFont',
+                                          shadows: [
+                                            Shadow(
+                                              color: Colors.deepPurpleAccent,
+                                              blurRadius: 8,
+                                            ),
+                                          ],
+                                        ),),
+                                    ],
+                                  ),
+                                ],
+                              ),
+                            ],
+                          ),
                         ),
                       ],
                     ),
-                  ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    children: [
-                      SizedBox(width: 20,),
-                      Expanded(
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Obx(() {
-                                  final value = parseCurrency(controller.dashboard.value?.totalSavingDeposit);
-
-                                  return TweenAnimationBuilder<double>(
-                                  key: ValueKey(value),
-                                  tween: Tween(begin: 0.0, end: value),
-                                  duration: Duration(milliseconds: 800),
-                                  builder: (context, animatedValue, child) {
-                                    return Text(
-                                      formatCurrency(animatedValue),
-                                      style: TextStyle(
-                                        color: themeController.theme.value?.textColor,
-                                        fontSize: 28,
-                                        fontWeight: FontWeight.bold,
-                                        shadows: [
-                                          Shadow(
-                                            color: themeController.theme.value?.secondControlColor?.withOpacity(0.3) ?? Colors.deepPurpleAccent,
-                                            blurRadius: 8,
-                                          ),
-                                        ],
-                                        fontFamily: 'MyBaseEnFont',
-                                      ),);
-                                  });
-                                }),
-                              ],
-                            ),
-                            Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Row(
-                                  children: [
-                                    Obx(() {
-                                      final value = parseCurrency(controller.dashboard.value?.savingToday);
-
-                                      return TweenAnimationBuilder<double>(
-                                          key: ValueKey(value),
-                                          tween: Tween(begin: 0.0, end: value),
-                                          duration: Duration(milliseconds: 800),
-                                          builder: (context, animatedValue, child) {
-                                            return Row(
-                                              children: [
-                                                Icon(Icons.trending_up, size: 14, color: Colors.greenAccent),
-                                                const SizedBox(width: 4),
-                                                Text(
-                                                formatCurrency(animatedValue),
-                                                  style: TextStyle(
-                                                    color: Colors.greenAccent,
-                                                    fontSize: 10,
-                                                    fontWeight: FontWeight.bold,
-                                                    fontFamily: 'MyBaseEnFont',
-                                                    shadows: [
-                                                      Shadow(
-                                                        color: Colors.deepPurpleAccent,
-                                                        blurRadius: 8,
-                                                      ),
-                                                    ],
-                                                  ),
-                                                ),
-                                              ],
-                                            );
-                                          });
-                                    }),
-                                    SizedBox(width: 8,),
-                                    Text('ថ្ងៃនេះ',
-                                      style: TextStyle(
-                                        color: Colors.white,
-                                        fontSize: 10,
-                                        fontWeight: FontWeight.bold,
-                                        fontFamily: 'MyBaseFont',
-                                        shadows: [
-                                          Shadow(
-                                            color: Colors.deepPurpleAccent,
-                                            blurRadius: 8,
-                                          ),
-                                        ],
-                                      ),),
-                                  ],
-                                ),
-                                Row(
-                                  children: [
-                                    Obx(() {
-                                      final value = parseCurrency(controller.dashboard.value?.savingYesterday);
-
-                                      return TweenAnimationBuilder<double>(
-                                          key: ValueKey(value),
-                                          tween: Tween(begin: 0.0, end: value),
-                                          duration: Duration(milliseconds: 800),
-                                          builder: (context, animatedValue, child) {
-                                            return Row(
-                                              children: [
-                                                Icon(Icons.trending_up, size: 14, color: Colors.greenAccent),
-                                                const SizedBox(width: 4),
-                                                Text(
-                                                  formatCurrency(animatedValue),
-                                                  style: TextStyle(
-                                                    color: Colors.greenAccent,
-                                                    fontSize: 10,
-                                                    fontWeight: FontWeight.bold,
-                                                    fontFamily: 'MyBaseEnFont',
-                                                    shadows: [
-                                                      Shadow(
-                                                        color: Colors.deepPurpleAccent,
-                                                        blurRadius: 8,
-                                                      ),
-                                                    ],
-                                                  ),
-                                                ),
-                                              ],
-                                            );
-                                          });
-                                    }),
-                                    SizedBox(width: 8,),
-                                    Text('ម្សិលមិញ',
-                                      style: TextStyle(
-                                        color: Colors.white,
-                                        fontSize: 10,
-                                        fontWeight: FontWeight.bold,
-                                        fontFamily: 'MyBaseFont',
-                                        shadows: [
-                                          Shadow(
-                                            color: Colors.deepPurpleAccent,
-                                            blurRadius: 8,
-                                          ),
-                                        ],
-                                      ),),
-                                  ],
-                                ),
-                                Row(
-                                  children: [
-                                    Obx(() {
-                                      final value = parseCurrency(controller.dashboard.value?.savingThisMonth);
-
-                                      return TweenAnimationBuilder<double>(
-                                          key: ValueKey(value),
-                                          tween: Tween(begin: 0.0, end: value),
-                                          duration: Duration(milliseconds: 800),
-                                          builder: (context, animatedValue, child) {
-                                            return Row(
-                                              children: [
-                                                Icon(Icons.trending_up, size: 14, color: Colors.greenAccent),
-                                                const SizedBox(width: 4),
-                                                Text(
-                                                  formatCurrency(animatedValue),
-                                                  style: TextStyle(
-                                                    color: Colors.greenAccent,
-                                                    fontSize: 10,
-                                                    fontWeight: FontWeight.bold,
-                                                    fontFamily: 'MyBaseEnFont',
-                                                    shadows: [
-                                                      Shadow(
-                                                        color: Colors.deepPurpleAccent,
-                                                        blurRadius: 8,
-                                                      ),
-                                                    ],
-                                                  ),
-                                                ),
-                                              ],
-                                            );
-                                          });
-                                    }),
-                                    SizedBox(width: 8,),
-                                    Text('១ខែចុងក្រោយ',
-                                      style: TextStyle(
-                                        color: Colors.white,
-                                        fontSize: 10,
-                                        fontWeight: FontWeight.bold,
-                                        fontFamily: 'MyBaseFont',
-                                        shadows: [
-                                          Shadow(
-                                            color: Colors.deepPurpleAccent,
-                                            blurRadius: 8,
-                                          ),
-                                        ],
-                                      ),),
-                                  ],
-                                ),
-                              ],
-                            ),
-                          ],
-                        ),
-                      ),
-                    ],
-                  ),
-                )
-              ],
+                  )
+                ],
+              ),
             ),
           ),
         ),
@@ -460,115 +461,126 @@ Widget _buildLoanComponent(HomeController controller, ThemeController themeContr
           onTap: () {
             Get.to(() => ReportRepayScreen());
           },
-          child: Container(
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(20),
-              gradient: LinearGradient(
-                colors: [
-                  themeController.theme.value?.firstControlColor ?? Colors.black,
-                  themeController.theme.value?.secondControlColor?.withOpacity(0.9) ?? Colors.black.withOpacity(0.9),
-                ],
-                begin: Alignment.topLeft,
-                end: Alignment.bottomCenter,
-              ),
-              boxShadow: [
-                BoxShadow(
-                  color: themeController.theme.value?.secondControlColor?.withOpacity(0.25) ?? Colors.blueAccent.withOpacity(0.25),
-                  blurRadius: 2,
-                  offset: Offset(0, 2),
-                ),
-              ],
-            ),
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  // Title Row
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text(
-                        'កម្ចី',
-                        style: TextStyle(
-                          fontSize: 14,
-                          color: themeController.theme.value?.textColor ?? Colors.white,
-                          fontFamily: 'MyBaseFont',
-                          fontWeight: FontWeight.w600,
-                        ),
-                      ),
-                      Text(
-                        '| ទាំងអស់',
-                        style: TextStyle(
-                          fontSize: 12,
-                          color: themeController.theme.value?.textColor ?? Colors.white,
-                          fontFamily: 'MyBaseFont',
-                        ),
-                      ),
+          child: ClipRRect(
+            borderRadius: BorderRadius.circular(20),
+            child: BackdropFilter(
+              filter: ImageFilter.blur(sigmaX: 5, sigmaY: 5), // Glass blur effect
+              child: Container(
+                decoration: BoxDecoration(
+                  // borderRadius: BorderRadius.circular(20),
+                  gradient: LinearGradient(
+                    colors: [
+                      themeController.theme.value?.firstControlColor?.withOpacity(0.3) ?? Colors.black,
+                      themeController.theme.value?.secondControlColor?.withOpacity(0.3) ?? Colors.black.withOpacity(0.9),
                     ],
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomCenter,
                   ),
-                  const SizedBox(height: 4),
-                  // Content Row
-                  Row(
+                  borderRadius: BorderRadius.circular(20),
+                  border: Border.all(
+                    color: themeController.theme.value?.textColor?.withOpacity(0.1) ?? Colors.white.withOpacity(0.2), // subtle border
+                    width: 0.5,
+                  ),
+                  // boxShadow: [
+                  //   BoxShadow(
+                  //     color: themeController.theme.value?.secondControlColor?.withOpacity(0.25) ?? Colors.blueAccent.withOpacity(0.25),
+                  //     blurRadius: 2,
+                  //     offset: Offset(0, 2),
+                  //   ),
+                  // ],
+                ),
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Container(
-                        decoration: BoxDecoration(
-                          color: themeController.theme.value?.textColor?.withOpacity(0.15) ?? Colors.white.withOpacity(0.15),
-                          borderRadius: BorderRadius.circular(50),
-                        ),
-                        padding: const EdgeInsets.all(12),
-                        child: Icon(
-                          Icons.currency_exchange_outlined,
-                          color: Colors.white,
-                          size: 28,
-                        ),
+                      // Title Row
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(
+                            'កម្ចី',
+                            style: TextStyle(
+                              fontSize: 14,
+                              color: themeController.theme.value?.textColor ?? Colors.white,
+                              fontFamily: 'MyBaseFont',
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                          Text(
+                            '| ទាំងអស់',
+                            style: TextStyle(
+                              fontSize: 12,
+                              color: themeController.theme.value?.textColor ?? Colors.white,
+                              fontFamily: 'MyBaseFont',
+                            ),
+                          ),
+                        ],
                       ),
-                      const SizedBox(width: 8),
-                      Expanded(
-                        child: Obx(() {
-                          final balance = parseCurrency(controller.dashboard.value?.loanBalance);
+                      const SizedBox(height: 4),
+                      // Content Row
+                      Row(
+                        children: [
+                          Container(
+                            decoration: BoxDecoration(
+                              color: themeController.theme.value?.textColor?.withOpacity(0.15) ?? Colors.white.withOpacity(0.15),
+                              borderRadius: BorderRadius.circular(50),
+                            ),
+                            padding: const EdgeInsets.all(12),
+                            child: Icon(
+                              Icons.currency_exchange_outlined,
+                              color: Colors.white,
+                              size: 28,
+                            ),
+                          ),
+                          const SizedBox(width: 8),
+                          Expanded(
+                            child: Obx(() {
+                              final balance = parseCurrency(controller.dashboard.value?.loanBalance);
 
-                          return TweenAnimationBuilder<double>(
-                            key: ValueKey(balance),
-                            tween: Tween(begin: 0, end: balance),
-                            duration: const Duration(milliseconds: 800),
-                            builder: (context, animatedValue, child) {
-                              return Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(
-                                    formatCurrency(animatedValue),
-                                    style: TextStyle(
-                                      fontSize: 22,
-                                      fontWeight: FontWeight.bold,
-                                      fontFamily: 'MyBaseEnFont',
-                                      color: themeController.theme.value?.textColor ?? Colors.white,
-                                    ),
-                                  ),
-                                  const SizedBox(height: 4),
-                                  Row(
+                              return TweenAnimationBuilder<double>(
+                                key: ValueKey(balance),
+                                tween: Tween(begin: 0, end: balance),
+                                duration: const Duration(milliseconds: 800),
+                                builder: (context, animatedValue, child) {
+                                  return Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
                                     children: [
-                                      Icon(Icons.trending_up, size: 14, color: Colors.greenAccent,),
-                                      const SizedBox(width: 4),
                                       Text(
-                                        '25% increase',
+                                        formatCurrency(animatedValue),
                                         style: TextStyle(
-                                          fontSize: 12,
+                                          fontSize: 22,
+                                          fontWeight: FontWeight.bold,
                                           fontFamily: 'MyBaseEnFont',
-                                          color: Colors.greenAccent,
+                                          color: themeController.theme.value?.textColor ?? Colors.white,
                                         ),
                                       ),
+                                      const SizedBox(height: 4),
+                                      Row(
+                                        children: [
+                                          Icon(Icons.trending_up, size: 14, color: Colors.greenAccent,),
+                                          const SizedBox(width: 4),
+                                          Text(
+                                            '25% increase',
+                                            style: TextStyle(
+                                              fontSize: 12,
+                                              fontFamily: 'MyBaseEnFont',
+                                              color: Colors.greenAccent,
+                                            ),
+                                          ),
+                                        ],
+                                      ),
                                     ],
-                                  ),
-                                ],
+                                  );
+                                },
                               );
-                            },
-                          );
-                        }),
+                            }),
+                          ),
+                        ],
                       ),
                     ],
                   ),
-                ],
+                ),
               ),
             ),
           ),
@@ -582,115 +594,126 @@ Widget _buildBalanceComponent(HomeController controller, ThemeController themeCo
   return Column(
     children: [
       Center(
-        child: Container(
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(20),
-            gradient: LinearGradient(
-              colors: [
-                themeController.theme.value?.firstControlColor ?? Colors.black,
-                themeController.theme.value?.secondControlColor?.withOpacity(0.9) ?? Colors.black.withOpacity(0.9),
-              ],
-              begin: Alignment.topLeft,
-              end: Alignment.bottomCenter,
-            ),
-            boxShadow: [
-              BoxShadow(
-                color: themeController.theme.value?.secondControlColor?.withOpacity(0.25) ?? Colors.blueAccent.withOpacity(0.25),
-                blurRadius: 2,
-                offset: Offset(0, 2),
-              ),
-            ],
-          ),
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                // Title Row
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text(
-                      'សមតុល្យ',
-                      style: TextStyle(
-                        fontSize: 14,
-                        color: themeController.theme.value?.textColor ?? Colors.white,
-                        fontFamily: 'MyBaseFont',
-                        fontWeight: FontWeight.w600,
-                      ),
-                    ),
-                    Text(
-                      '| ទាំងអស់',
-                      style: TextStyle(
-                        fontSize: 12,
-                        color: themeController.theme.value?.textColor ?? Colors.white,
-                        fontFamily: 'MyBaseFont',
-                      ),
-                    ),
+        child: ClipRRect(
+          borderRadius: BorderRadius.circular(20),
+          child: BackdropFilter(
+            filter: ImageFilter.blur(sigmaX: 5, sigmaY: 5), // Glass blur effect
+            child: Container(
+              decoration: BoxDecoration(
+                // borderRadius: BorderRadius.circular(20),
+                gradient: LinearGradient(
+                  colors: [
+                    themeController.theme.value?.firstControlColor?.withOpacity(0.3) ?? Colors.black,
+                    themeController.theme.value?.secondControlColor?.withOpacity(0.3) ?? Colors.black.withOpacity(0.9),
                   ],
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomCenter,
                 ),
-                const SizedBox(height: 4),
-                // Content Row
-                Row(
+                borderRadius: BorderRadius.circular(20),
+                border: Border.all(
+                  color: themeController.theme.value?.textColor?.withOpacity(0.1) ?? Colors.white.withOpacity(0.2), // subtle border
+                  width: 0.5,
+                ),
+                // boxShadow: [
+                //   BoxShadow(
+                //     color: themeController.theme.value?.secondControlColor?.withOpacity(0.25) ?? Colors.blueAccent.withOpacity(0.25),
+                //     blurRadius: 2,
+                //     offset: Offset(0, 2),
+                //   ),
+                // ],
+              ),
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Container(
-                      decoration: BoxDecoration(
-                        color: themeController.theme.value?.textColor?.withOpacity(0.15) ?? Colors.white.withOpacity(0.15),
-                        borderRadius: BorderRadius.circular(50),
-                      ),
-                      padding: const EdgeInsets.all(12),
-                      child: Icon(
-                        Icons.account_balance_wallet_rounded,
-                        color: Colors.white,
-                        size: 28,
-                      ),
+                    // Title Row
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          'សមតុល្យ',
+                          style: TextStyle(
+                            fontSize: 14,
+                            color: themeController.theme.value?.textColor ?? Colors.white,
+                            fontFamily: 'MyBaseFont',
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                        Text(
+                          '| ទាំងអស់',
+                          style: TextStyle(
+                            fontSize: 12,
+                            color: themeController.theme.value?.textColor ?? Colors.white,
+                            fontFamily: 'MyBaseFont',
+                          ),
+                        ),
+                      ],
                     ),
-                    const SizedBox(width: 8),
-                    Expanded(
-                      child: Obx(() {
-                        final balance = parseCurrency(controller.dashboard.value?.balance);
+                    const SizedBox(height: 4),
+                    // Content Row
+                    Row(
+                      children: [
+                        Container(
+                          decoration: BoxDecoration(
+                            color: themeController.theme.value?.textColor?.withOpacity(0.15) ?? Colors.white.withOpacity(0.15),
+                            borderRadius: BorderRadius.circular(50),
+                          ),
+                          padding: const EdgeInsets.all(12),
+                          child: Icon(
+                            Icons.account_balance_wallet_rounded,
+                            color: Colors.white,
+                            size: 28,
+                          ),
+                        ),
+                        const SizedBox(width: 8),
+                        Expanded(
+                          child: Obx(() {
+                            final balance = parseCurrency(controller.dashboard.value?.balance);
 
-                        return TweenAnimationBuilder<double>(
-                          key: ValueKey(balance),
-                          tween: Tween(begin: 0, end: balance),
-                          duration: const Duration(milliseconds: 800),
-                          builder: (context, animatedValue, child) {
-                            return Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  formatCurrency(animatedValue),
-                                  style: TextStyle(
-                                    fontSize: 22,
-                                    fontWeight: FontWeight.bold,
-                                    fontFamily: 'MyBaseEnFont',
-                                    color: themeController.theme.value?.textColor ?? Colors.white,
-                                  ),
-                                ),
-                                const SizedBox(height: 4),
-                                Row(
+                            return TweenAnimationBuilder<double>(
+                              key: ValueKey(balance),
+                              tween: Tween(begin: 0, end: balance),
+                              duration: const Duration(milliseconds: 800),
+                              builder: (context, animatedValue, child) {
+                                return Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
-                                    Icon(Icons.trending_up, size: 14, color: Colors.greenAccent),
-                                    const SizedBox(width: 4),
                                     Text(
-                                      '5% increase',
+                                      formatCurrency(animatedValue),
                                       style: TextStyle(
-                                        fontSize: 12,
+                                        fontSize: 22,
+                                        fontWeight: FontWeight.bold,
                                         fontFamily: 'MyBaseEnFont',
-                                        color: Colors.greenAccent,
+                                        color: themeController.theme.value?.textColor ?? Colors.white,
                                       ),
                                     ),
+                                    const SizedBox(height: 4),
+                                    Row(
+                                      children: [
+                                        Icon(Icons.trending_up, size: 14, color: Colors.greenAccent),
+                                        const SizedBox(width: 4),
+                                        Text(
+                                          '5% increase',
+                                          style: TextStyle(
+                                            fontSize: 12,
+                                            fontFamily: 'MyBaseEnFont',
+                                            color: Colors.greenAccent,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
                                   ],
-                                ),
-                              ],
+                                );
+                              },
                             );
-                          },
-                        );
-                      }),
+                          }),
+                        ),
+                      ],
                     ),
                   ],
                 ),
-              ],
+              ),
             ),
           ),
         ),

@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:flutter/material.dart';
 
 class MenuItem extends StatefulWidget {
@@ -55,39 +57,49 @@ class _MenuItemState extends State<MenuItem> with SingleTickerProviderStateMixin
           SizedBox(
             width: 60,
             height: 60,
-            child: Container(
-              decoration: BoxDecoration(
-                gradient: LinearGradient(
-                  colors: [
-                    widget.firstControlColor ?? Colors.black,
-                    widget.secondControlColor ?? Colors.black,
-                  ],
-                  begin: Alignment.topLeft,
-                  end: Alignment.bottomRight,
-                ),
-                borderRadius: BorderRadius.circular(21),
-                boxShadow: [
-                  BoxShadow(
-                    color: widget.secondControlColor?.withOpacity(0.3) ?? Colors.white.withOpacity(0.3),
-                    blurRadius: 3,
-                    offset: Offset(0, 3),
-                  ),
-                ],
-              ),
-              child: AnimatedBuilder(
-                animation: _controller,
-                builder: (context, child) {
-                  return Transform.rotate(
-                      angle: _iconRotationAnimation.value,
-                    child: Center(
-                      child: Icon(
-                        widget.icon,
-                        size: 35,
-                        color: widget.textColor ?? Colors.white,
-                      ),
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(21),
+              child: BackdropFilter(
+                filter: ImageFilter.blur(sigmaX: 5, sigmaY: 5), // Glass blur effect
+                child: Container(
+                  decoration: BoxDecoration(
+                    gradient: LinearGradient(
+                      colors: [
+                        widget.firstControlColor?.withOpacity(0.1) ?? Colors.black,
+                        widget.secondControlColor?.withOpacity(0.1) ?? Colors.black,
+                      ],
+                      begin: Alignment.topLeft,
+                      end: Alignment.bottomRight,
                     ),
-                  );
-                }
+                    borderRadius: BorderRadius.circular(21),
+                    border: Border.all(
+                      color: widget.textColor?.withOpacity(0.1) ?? Colors.white.withOpacity(0.2), // subtle border
+                      width: 0.5,
+                    ),
+                    // boxShadow: [
+                    //   BoxShadow(
+                    //     color: widget.secondControlColor?.withOpacity(0.3) ?? Colors.white.withOpacity(0.3),
+                    //     blurRadius: 3,
+                    //     offset: Offset(0, 3),
+                    //   ),
+                    // ],
+                  ),
+                  child: AnimatedBuilder(
+                    animation: _controller,
+                    builder: (context, child) {
+                      return Transform.rotate(
+                          angle: _iconRotationAnimation.value,
+                        child: Center(
+                          child: Icon(
+                            widget.icon,
+                            size: 35,
+                            color: widget.textColor ?? Colors.white,
+                          ),
+                        ),
+                      );
+                    }
+                  ),
+                ),
               ),
             ),
           ),

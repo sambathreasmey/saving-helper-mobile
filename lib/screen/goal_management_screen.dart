@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
@@ -173,78 +175,85 @@ class _GoalManagementScreenState extends State<GoalManagementScreen> {
     final totalGoal = 1000.0;
     final currentProgress = 700.0;
 
-    return Container(
-      width: double.infinity,
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(20),
-        border: Border.all(
-          color: themeController.theme.value?.textColor ?? Colors.white.withOpacity(0.9),
-        ),
-        color: themeController.theme.value?.textColor?.withOpacity(0.1) ?? Colors.white.withOpacity(0.5),
-      ),
-      padding: EdgeInsets.all(12),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Column(
-            spacing: 8,
-            crossAxisAlignment: CrossAxisAlignment.start,
+    return ClipRRect(
+      borderRadius: BorderRadius.circular(20), // Rounded corners
+      child: BackdropFilter(
+        filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10), // Glass blur effect
+        child: Container(
+          width: double.infinity,
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(20),
+            border: Border.all(
+              color: Colors.white.withOpacity(0.2), // subtle border
+              width: 0.5,
+            ),
+            color: themeController.theme.value?.textColor?.withOpacity(0.05) ?? Colors.black54.withOpacity(0.1), // glass background
+          ),
+          padding: const EdgeInsets.all(12),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              ShaderMask(
-                shaderCallback: (bounds) => LinearGradient(
-                  colors: [
-                    themeController.theme.value?.firstControlColor ?? Colors.white,
-                    themeController.theme.value?.secondControlColor ?? Colors.white
-                  ],
-                  begin: Alignment.topLeft,
-                  end: Alignment.bottomRight,
-                ).createShader(Rect.fromLTWH(0, 0, bounds.width, bounds.height)),
-                blendMode: BlendMode.srcIn,
-                child: Text(
-                  'Goal Analysis',
-                  style: TextStyle(
-                    fontSize: 18,
-                    fontWeight: FontWeight.bold,
-                    fontFamily: 'MyBaseEnFont',
-                    foreground: Paint(),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  ShaderMask(
+                    shaderCallback: (bounds) => LinearGradient(
+                      colors: [
+                        themeController.theme.value?.firstControlColor ?? Colors.white,
+                        themeController.theme.value?.secondControlColor ?? Colors.white
+                      ],
+                      begin: Alignment.topLeft,
+                      end: Alignment.bottomRight,
+                    ).createShader(Rect.fromLTWH(0, 0, bounds.width, bounds.height)),
+                    blendMode: BlendMode.srcIn,
+                    child: const Text(
+                      'Goal Analysis',
+                      style: TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                        fontFamily: 'MyBaseEnFont',
+                      ),
+                    ),
                   ),
-                ),
+                  const SizedBox(height: 8),
+                  LineProgressComponent(
+                    totalGoal: totalGoal,
+                    currentProgress: currentProgress,
+                    progressColors: [
+                      themeController.theme.value?.firstControlColor ?? Colors.black,
+                      themeController.theme.value?.secondControlColor ?? Colors.black,
+                    ],
+                    backgroundColor: Colors.white,
+                    width: 220,
+                    progressTitleColor: Colors.white,
+                  ),
+                  const SizedBox(height: 8),
+                  LineProgressComponent(
+                    totalGoal: totalGoal + 1100,
+                    currentProgress: currentProgress,
+                    progressColors: [
+                      Colors.pinkAccent,
+                      Colors.orangeAccent,
+                    ],
+                    backgroundColor: Colors.white,
+                    width: 220,
+                    progressTitleColor: Colors.white,
+                  ),
+                ],
               ),
-              LineProgressComponent(
-                totalGoal: totalGoal,
+              CircleProgressComponent(
+                progressTitleColor: Colors.white,
+                totalGoal: totalGoal + 1100,
                 currentProgress: currentProgress,
                 progressColors: [
                   themeController.theme.value?.firstControlColor ?? Colors.black,
                   themeController.theme.value?.secondControlColor ?? Colors.black,
                 ],
-                backgroundColor: Colors.white,
-                width: 220,
-                progressTitleColor: Colors.white,
-              ),
-              LineProgressComponent(
-                totalGoal: totalGoal + 1100,
-                currentProgress: currentProgress,
-                progressColors: [
-                  Colors.pinkAccent,
-                  Colors.orangeAccent,
-                ],
-                backgroundColor: Colors.white,
-                width: 220,
-                progressTitleColor: Colors.white,
+                size: 80,
               ),
             ],
           ),
-          CircleProgressComponent(
-            progressTitleColor: Colors.white,
-            totalGoal: totalGoal + 1100,
-            currentProgress: currentProgress,
-            progressColors: [
-              themeController.theme.value?.firstControlColor ?? Colors.black,
-              themeController.theme.value?.secondControlColor ?? Colors.black,
-            ],
-            size: 80,
-          ),
-        ],
+        ),
       ),
     );
   }

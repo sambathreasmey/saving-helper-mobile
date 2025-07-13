@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:flutter/material.dart';
 import 'package:saving_helper/controllers/header_controller.dart';
 import 'package:saving_helper/controllers/theme_controller.dart';
@@ -120,7 +122,7 @@ class _CustomHeaderState extends State<CustomHeader> {
               ],
             ),
             Row(
-              spacing: 2,
+              spacing: 4,
               children: [
                 Obx(() {
                   return _buildMoneyBox(themeController, Icons.mode_night_outlined, themeController.theme.value!.firstControlColor!, themeController.theme.value!.secondControlColor!, height: 30,
@@ -128,27 +130,33 @@ class _CustomHeaderState extends State<CustomHeader> {
                       themeController.changeBackground();
                     },);
                 }),
-                Container(
-                  height: 32,
-                  width: 32,
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.all(Radius.circular(100)),
-                    // ignore: deprecated_member_use
-                    color: themeController.theme.value?.firstControlColor?.withOpacity(0.2) ?? Colors.blue.withOpacity(0.2),
-                    boxShadow: [
-                      BoxShadow(
-                        color: themeController.theme.value?.secondControlColor?.withOpacity(0.1) ?? Colors.blueAccent.withOpacity(0.1),
-                        blurRadius: 3,
-                        offset: Offset(0, 2),
+                ClipRRect(
+                  borderRadius: BorderRadius.all(Radius.circular(100)),
+                  child: BackdropFilter(
+                    filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10), // Glass blur effect
+                    child: Container(
+                      height: 32,
+                      width: 32,
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.all(Radius.circular(100)),
+                        // ignore: deprecated_member_use
+                        color: themeController.theme.value?.firstControlColor?.withOpacity(0.1) ?? Colors.blue.withOpacity(0.2),
+                        boxShadow: [
+                          BoxShadow(
+                            color: themeController.theme.value?.secondControlColor?.withOpacity(0.1) ?? Colors.blueAccent.withOpacity(0.1),
+                            blurRadius: 3,
+                            offset: Offset(0, 2),
+                          ),
+                        ],
                       ),
-                    ],
-                  ),
-                  child: IconButton(
-                      icon: Icon(Icons.notifications_active, color: themeController.theme.value?.textColor ?? Colors.white, size: 16,),
-                      onPressed: () {
-                        controller.getNotification();
-                        _showNotificationDialog(context, controller, themeController);
-                      }
+                      child: IconButton(
+                          icon: Icon(Icons.notifications_active, color: themeController.theme.value?.textColor ?? Colors.white, size: 16,),
+                          onPressed: () {
+                            controller.getNotification();
+                            _showNotificationDialog(context, controller, themeController);
+                          }
+                      ),
+                    ),
                   ),
                 ),
                 // Container(

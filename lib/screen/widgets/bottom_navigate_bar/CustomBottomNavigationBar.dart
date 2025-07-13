@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:saving_helper/controllers/theme_controller.dart';
@@ -28,38 +30,40 @@ class CustomBottomNavigationBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      padding: EdgeInsets.symmetric(horizontal: 20, vertical: 20),
-      decoration: BoxDecoration(
-        gradient: LinearGradient(
-          colors: [
-            themeController.theme.value!.firstControlColor!,
-            themeController.theme.value!.secondControlColor!
-          ],
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-        ),
-        // borderRadius: BorderRadius.only(
-        //   topLeft: Radius.circular(30),
-        //   topRight: Radius.circular(30),
-        // ),
-        boxShadow: [
-          BoxShadow(
-            color: themeController.theme.value!.secondControlColor!.withOpacity(0.1),
-            blurRadius: 3,
-            offset: Offset(0, -3),
+    return ClipRRect(
+      child: BackdropFilter(
+        filter: ImageFilter.blur(sigmaX: 25, sigmaY: 25), // Glass blur effect
+        child: Container(
+          padding: EdgeInsets.fromLTRB(20, 10, 20, 20),
+          decoration: BoxDecoration(
+            // gradient: LinearGradient(
+            //   colors: [
+            //     themeController.theme.value!.firstControlColor!,
+            //     themeController.theme.value!.secondControlColor!
+            //   ],
+            //   begin: Alignment.topLeft,
+            //   end: Alignment.bottomRight,
+            // ),
+            color: Colors.black.withOpacity(0.8),
+            // boxShadow: [
+            //   BoxShadow(
+            //     color: themeController.theme.value!.secondControlColor!.withOpacity(0.1),
+            //     blurRadius: 3,
+            //     offset: Offset(0, -3),
+            //   ),
+            // ],
           ),
-        ],
-      ),
-      child: Obx(
-            () => Row(
-          mainAxisAlignment: MainAxisAlignment.spaceAround,
-          children: [
-            _buildNavItem(Icons.home, 'លំនាំដើម', 0),
-            _buildNavItem(Icons.history, 'ប្រវត្តិ', 1),
-            _buildNavItem(Icons.savings_outlined, 'បញ្ចលសន្សំ', 2),
-            _buildNavItem(Icons.grass_outlined, 'គម្រោង', 3),
-          ],
+          child: Obx(
+                () => Row(
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              children: [
+                _buildNavItem(Icons.home, 'លំនាំដើម', 0),
+                _buildNavItem(Icons.history, 'ប្រវត្តិ', 1),
+                _buildNavItem(Icons.savings_outlined, 'បញ្ចលសន្សំ', 2),
+                _buildNavItem(Icons.grass_outlined, 'គម្រោង', 3),
+              ],
+            ),
+          ),
         ),
       ),
     );
