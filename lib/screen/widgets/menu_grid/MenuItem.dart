@@ -1,6 +1,7 @@
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
+import 'package:glass_kit/glass_kit.dart';
 
 class MenuItem extends StatefulWidget {
   final VoidCallback onTap;
@@ -9,6 +10,7 @@ class MenuItem extends StatefulWidget {
   final Color? firstControlColor;
   final Color? secondControlColor;
   final Color? textColor;
+  final bool isRotate;
 
   const MenuItem({
     required this.onTap,
@@ -17,6 +19,7 @@ class MenuItem extends StatefulWidget {
     this.firstControlColor,
     this.secondControlColor,
     this.textColor,
+    this.isRotate = false,
     super.key,
   });
 
@@ -39,7 +42,8 @@ class _MenuItemState extends State<MenuItem> with SingleTickerProviderStateMixin
     );
 
     // Rotation animation from 0 to 2π (360 degrees)
-    _iconRotationAnimation = Tween<double>(begin: 0.0, end: 2 * 3.14159).animate(
+    int speed = widget.isRotate ? 2 : 0;
+    _iconRotationAnimation = Tween<double>(begin: 0.0, end: speed * 3.14159).animate(
       CurvedAnimation(parent: _controller, curve: Curves.linear),
     );
 
@@ -57,49 +61,47 @@ class _MenuItemState extends State<MenuItem> with SingleTickerProviderStateMixin
           SizedBox(
             width: 60,
             height: 60,
-            child: ClipRRect(
-              borderRadius: BorderRadius.circular(21),
-              child: BackdropFilter(
-                filter: ImageFilter.blur(sigmaX: 5, sigmaY: 5), // Glass blur effect
-                child: Container(
-                  decoration: BoxDecoration(
-                    gradient: LinearGradient(
-                      colors: [
-                        widget.firstControlColor?.withOpacity(0.1) ?? Colors.black,
-                        widget.secondControlColor?.withOpacity(0.1) ?? Colors.black,
-                      ],
-                      begin: Alignment.topLeft,
-                      end: Alignment.bottomRight,
+            child: GlassContainer(
+              height: 60,
+              alignment: Alignment.center,
+              gradient: LinearGradient(
+                colors: [
+                  widget.firstControlColor?.withOpacity(0.40) ?? Colors.black,
+                  widget.secondControlColor?.withOpacity(0.10) ?? Colors.black.withOpacity(0.9),
+                ],
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
+              ),
+              borderGradient: LinearGradient(
+                colors: [
+                  widget.firstControlColor?.withOpacity(0.60) ?? Colors.white.withOpacity(0.60),
+                  widget.firstControlColor?.withOpacity(0.10) ?? Colors.white.withOpacity(0.60),
+                  widget.secondControlColor?.withOpacity(0.05) ?? Colors.white.withOpacity(0.05),
+                  widget.secondControlColor?.withOpacity(0.60) ?? Colors.white.withOpacity(0.60),
+                ],
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
+                stops: [0.0, 0.39, 0.40, 1.0],
+              ),
+              blur: 20,
+              borderRadius: BorderRadius.circular(20.0),
+              borderWidth: 0.95,
+              elevation: 4.0,
+              shadowColor: widget.secondControlColor?.withOpacity(0.20) ?? Colors.purple.withOpacity(0.20),
+              child: AnimatedBuilder(
+                animation: _controller,
+                builder: (context, child) {
+                  return Transform.rotate(
+                      angle: _iconRotationAnimation.value,
+                    child: Center(
+                      child: Icon(
+                        widget.icon,
+                        size: 35,
+                        color: widget.textColor ?? Colors.white,
+                      ),
                     ),
-                    borderRadius: BorderRadius.circular(21),
-                    border: Border.all(
-                      color: widget.textColor?.withOpacity(0.1) ?? Colors.white.withOpacity(0.2), // subtle border
-                      width: 0.5,
-                    ),
-                    // boxShadow: [
-                    //   BoxShadow(
-                    //     color: widget.secondControlColor?.withOpacity(0.3) ?? Colors.white.withOpacity(0.3),
-                    //     blurRadius: 3,
-                    //     offset: Offset(0, 3),
-                    //   ),
-                    // ],
-                  ),
-                  child: AnimatedBuilder(
-                    animation: _controller,
-                    builder: (context, child) {
-                      return Transform.rotate(
-                          angle: _iconRotationAnimation.value,
-                        child: Center(
-                          child: Icon(
-                            widget.icon,
-                            size: 35,
-                            color: widget.textColor ?? Colors.white,
-                          ),
-                        ),
-                      );
-                    }
-                  ),
-                ),
+                  );
+                }
               ),
             ),
           ),

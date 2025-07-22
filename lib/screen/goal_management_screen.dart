@@ -2,6 +2,7 @@ import 'dart:ui';
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:glass_kit/glass_kit.dart';
 import 'package:intl/intl.dart';
 import 'package:pin_code_fields/pin_code_fields.dart';
 import 'package:saving_helper/controllers/goal_management_controller.dart';
@@ -85,6 +86,7 @@ class _GoalManagementScreenState extends State<GoalManagementScreen> {
                             weight: 20,
                             fontSize: 14,
                             onPressed: () {
+                              controller.clear();
                               Get.to(() => CreateGoalScreen());
                             },
                           ),
@@ -175,84 +177,97 @@ class _GoalManagementScreenState extends State<GoalManagementScreen> {
     final totalGoal = 1000.0;
     final currentProgress = 700.0;
 
-    return ClipRRect(
-      borderRadius: BorderRadius.circular(20), // Rounded corners
-      child: BackdropFilter(
-        filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10), // Glass blur effect
-        child: Container(
-          width: double.infinity,
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(20),
-            border: Border.all(
-              color: Colors.white.withOpacity(0.2), // subtle border
-              width: 0.5,
-            ),
-            color: themeController.theme.value?.textColor?.withOpacity(0.05) ?? Colors.black54.withOpacity(0.1), // glass background
-          ),
-          padding: const EdgeInsets.all(12),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  ShaderMask(
-                    shaderCallback: (bounds) => LinearGradient(
-                      colors: [
-                        themeController.theme.value?.firstControlColor ?? Colors.white,
-                        themeController.theme.value?.secondControlColor ?? Colors.white
-                      ],
-                      begin: Alignment.topLeft,
-                      end: Alignment.bottomRight,
-                    ).createShader(Rect.fromLTWH(0, 0, bounds.width, bounds.height)),
-                    blendMode: BlendMode.srcIn,
-                    child: const Text(
-                      'Goal Analysis',
-                      style: TextStyle(
-                        fontSize: 18,
-                        fontWeight: FontWeight.bold,
-                        fontFamily: 'MyBaseEnFont',
-                      ),
+    return GlassContainer(
+      height: 110,
+      alignment: Alignment.center,
+      gradient: LinearGradient(
+        colors: [
+          themeController.theme.value?.firstControlColor?.withOpacity(0.40) ?? Colors.black,
+          themeController.theme.value?.secondControlColor?.withOpacity(0.10) ?? Colors.black.withOpacity(0.9),
+        ],
+        begin: Alignment.topLeft,
+        end: Alignment.bottomRight,
+      ),
+      borderGradient: LinearGradient(
+        colors: [
+          themeController.theme.value?.firstControlColor?.withOpacity(0.60) ?? Colors.white.withOpacity(0.60),
+          themeController.theme.value?.firstControlColor?.withOpacity(0.10) ?? Colors.white.withOpacity(0.60),
+          themeController.theme.value?.secondControlColor?.withOpacity(0.05) ?? Colors.white.withOpacity(0.05),
+          themeController.theme.value?.secondControlColor?.withOpacity(0.60) ?? Colors.white.withOpacity(0.60),
+        ],
+        begin: Alignment.topLeft,
+        end: Alignment.bottomRight,
+        stops: [0.0, 0.39, 0.40, 1.0],
+      ),
+      blur: 20,
+      borderRadius: BorderRadius.circular(24.0),
+      borderWidth: 0.95,
+      elevation: 4.0,
+      shadowColor: themeController.theme.value?.secondControlColor?.withOpacity(0.20) ?? Colors.purple.withOpacity(0.20),
+      child: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                ShaderMask(
+                  shaderCallback: (bounds) => LinearGradient(
+                    colors: [
+                      themeController.theme.value?.firstControlColor ?? Colors.white,
+                      themeController.theme.value?.secondControlColor ?? Colors.white
+                    ],
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
+                  ).createShader(Rect.fromLTWH(0, 0, bounds.width, bounds.height)),
+                  blendMode: BlendMode.srcIn,
+                  child: const Text(
+                    'Goal Analysis',
+                    style: TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                      fontFamily: 'MyBaseEnFont',
                     ),
                   ),
-                  const SizedBox(height: 8),
-                  LineProgressComponent(
-                    totalGoal: totalGoal,
-                    currentProgress: currentProgress,
-                    progressColors: [
-                      themeController.theme.value?.firstControlColor ?? Colors.black,
-                      themeController.theme.value?.secondControlColor ?? Colors.black,
-                    ],
-                    backgroundColor: Colors.white,
-                    width: 220,
-                    progressTitleColor: Colors.white,
-                  ),
-                  const SizedBox(height: 8),
-                  LineProgressComponent(
-                    totalGoal: totalGoal + 1100,
-                    currentProgress: currentProgress,
-                    progressColors: [
-                      Colors.pinkAccent,
-                      Colors.orangeAccent,
-                    ],
-                    backgroundColor: Colors.white,
-                    width: 220,
-                    progressTitleColor: Colors.white,
-                  ),
-                ],
-              ),
-              CircleProgressComponent(
-                progressTitleColor: Colors.white,
-                totalGoal: totalGoal + 1100,
-                currentProgress: currentProgress,
-                progressColors: [
-                  themeController.theme.value?.firstControlColor ?? Colors.black,
-                  themeController.theme.value?.secondControlColor ?? Colors.black,
-                ],
-                size: 80,
-              ),
-            ],
-          ),
+                ),
+                const SizedBox(height: 8),
+                LineProgressComponent(
+                  totalGoal: totalGoal,
+                  currentProgress: currentProgress,
+                  progressColors: [
+                    themeController.theme.value?.firstControlColor ?? Colors.black,
+                    themeController.theme.value?.secondControlColor ?? Colors.black,
+                  ],
+                  backgroundColor: Colors.white,
+                  width: 220,
+                  progressTitleColor: Colors.white,
+                ),
+                const SizedBox(height: 8),
+                LineProgressComponent(
+                  totalGoal: totalGoal + 1100,
+                  currentProgress: currentProgress,
+                  progressColors: [
+                    Colors.pinkAccent,
+                    Colors.orangeAccent,
+                  ],
+                  backgroundColor: Colors.white,
+                  width: 220,
+                  progressTitleColor: Colors.white,
+                ),
+              ],
+            ),
+            CircleProgressComponent(
+              progressTitleColor: Colors.white,
+              totalGoal: totalGoal + 1100,
+              currentProgress: currentProgress,
+              progressColors: [
+                themeController.theme.value?.firstControlColor ?? Colors.black,
+                themeController.theme.value?.secondControlColor ?? Colors.black,
+              ],
+              size: 80,
+            ),
+          ],
         ),
       ),
     );

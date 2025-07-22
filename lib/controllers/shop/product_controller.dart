@@ -16,6 +16,16 @@ class ProductController extends GetxController {
   int pageNum = 1;
   final int pageSize = 10;
 
+  //edit and create prop
+  final TextEditingController priceController = TextEditingController();
+  final TextEditingController nameController = TextEditingController();
+  final TextEditingController imageController = TextEditingController();
+  final TextEditingController descController = TextEditingController();
+  RxString selectedCurrency = 'USD'.obs;
+  RxList<String> currencyList = ['USD', 'KHR'].obs;
+  bool isEditMode = false;
+  String? editingProdId;
+
   @override
   void onInit() {
     super.onInit();
@@ -76,4 +86,24 @@ class ProductController extends GetxController {
       isLoading.value = false;
     }
   }
+
+  // product management
+  void clear() {
+    priceController.clear();
+    nameController.clear();
+    descController.clear();
+    imageController.clear();
+    editingProdId = null;
+    isEditMode = false;
+  }
+
+  void initializeWithGoal(product_new_feed.Data goal) {
+    nameController.text = goal.name ?? '';
+    priceController.text = goal.price?.toString() ?? '';
+    imageController.text = goal.image?.toString() ?? '';
+    descController.text = goal.description?.toString() ?? '';
+    isEditMode = true;
+    editingProdId = goal.productId.toString() ?? "";
+  }
+
 }
