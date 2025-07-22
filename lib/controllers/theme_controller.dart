@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:saving_helper/constants/application_variable.dart';
 import 'package:saving_helper/models/ThemeData.dart';
 import 'package:saving_helper/splash_screen.dart';
 
@@ -62,6 +63,14 @@ class ThemeController extends GetxController {
     final newTheme = themes[_currentIndex];
     theme.value = newTheme;
     saveTheme(newTheme);
+
+    //assign to application variable
+    ApplicationVariable.themeTextColor = newTheme.textColor!;
+    ApplicationVariable.themeFirstBorderColor = newTheme.firstControlColor!;
+    ApplicationVariable.themeSecondBorderColor = newTheme.secondControlColor!;
+    ApplicationVariable.themeFirstGradientColor = newTheme.firstControlColor!;
+    ApplicationVariable.themeSecondGradientColor = newTheme.secondControlColor!;
+
     Get.off(() => SplashScreen());
   }
 
@@ -75,6 +84,14 @@ class ThemeController extends GetxController {
     final savedTheme = await shareStorage.getTheme();
     if (savedTheme != null && themes.contains(savedTheme)) {
       theme.value = savedTheme;
+
+      //assign to application variable
+      ApplicationVariable.themeTextColor = savedTheme.textColor!;
+      ApplicationVariable.themeFirstBorderColor = savedTheme.firstControlColor!;
+      ApplicationVariable.themeSecondBorderColor = savedTheme.secondControlColor!;
+      ApplicationVariable.themeFirstGradientColor = savedTheme.firstControlColor!;
+      ApplicationVariable.themeSecondGradientColor = savedTheme.secondControlColor!;
+
       _currentIndex = themes.indexOf(savedTheme);
     }
   }

@@ -10,6 +10,8 @@ import 'package:saving_helper/repository/saving_plan_calculate_repository.dart';
 import 'package:saving_helper/screen/widgets/input_field/DatePickerWidget.dart';
 import 'package:saving_helper/services/api_provider.dart';
 
+import '../constants/application_variable.dart';
+
 class SavingPlanCalculateScreen extends StatefulWidget {
   const SavingPlanCalculateScreen({super.key});
 
@@ -19,7 +21,6 @@ class SavingPlanCalculateScreen extends StatefulWidget {
 
 class _SavingPlanCalculateScreenState extends State<SavingPlanCalculateScreen> with SingleTickerProviderStateMixin {
   final SavingPlanCalculateController controller = Get.put(SavingPlanCalculateController(SavingPlanCalculateRepository(ApiProvider())));
-  final ThemeController themeController = Get.put(ThemeController());
 
   final List<List<Color>> _gradientPairs = [
     [Colors.deepPurpleAccent, Colors.purpleAccent],
@@ -95,15 +96,15 @@ class _SavingPlanCalculateScreenState extends State<SavingPlanCalculateScreen> w
                 borderRadius: BorderRadius.circular(12),
                 gradient: LinearGradient(
                   colors: [
-                    themeController.theme.value?.firstControlColor ?? Colors.black,
-                    themeController.theme.value?.secondControlColor ?? Colors.black,
+                    ApplicationVariable.themeFirstGradientColor,
+                    ApplicationVariable.themeSecondGradientColor,
                   ],
                   begin: Alignment.topLeft,
                   end: Alignment.bottomRight,
                 ),
                 boxShadow: [
                   BoxShadow(
-                    color: themeController.theme.value?.secondControlColor?.withOpacity(0.5) ?? Colors.black.withOpacity(0.3),
+                    color: ApplicationVariable.themeShadowColor.withOpacity(0.5),
                     blurRadius: 6,
                     offset: const Offset(0, 3),
                   ),
@@ -137,7 +138,7 @@ class _SavingPlanCalculateScreenState extends State<SavingPlanCalculateScreen> w
                                   fontFamily: 'MyBaseFont',
                                   fontWeight: FontWeight.bold,
                                   fontSize: 18,
-                                  color: themeController.theme.value?.textColor ?? Colors.black,
+                                  color: ApplicationVariable.themeTextColor,
                                 ),
                               ),
                               const SizedBox(height: 12),
@@ -146,7 +147,7 @@ class _SavingPlanCalculateScreenState extends State<SavingPlanCalculateScreen> w
                                 style: TextStyle(
                                   fontFamily: 'MyBaseFont',
                                   fontSize: 14,
-                                  color: themeController.theme.value?.textColor ?? Colors.black,
+                                  color: ApplicationVariable.themeTextColor,
                                 ),
                                 textAlign: TextAlign.center,
                               ),
@@ -158,17 +159,17 @@ class _SavingPlanCalculateScreenState extends State<SavingPlanCalculateScreen> w
                               DatePickerWidget(
                                 label: 'ចាប់ពីថ្ងៃ',
                                 selectedDate: controller.selectedStartDate,
-                                firstControlColor: themeController.theme.value?.firstControlColor ?? Colors.black,
-                                secondControlColor: themeController.theme.value?.secondControlColor ?? Colors.black,
-                                textColor: themeController.theme.value?.textColor ?? Colors.white,
+                                firstControlColor: ApplicationVariable.themeFirstGradientColor,
+                                secondControlColor: ApplicationVariable.themeSecondGradientColor,
+                                textColor: ApplicationVariable.themeTextColor,
                               ),
                               const SizedBox(height: 12),
                               DatePickerWidget(
                                 label: 'ដល់ថ្ងៃ',
                                 selectedDate: controller.selectedEndDate,
-                                firstControlColor: themeController.theme.value?.firstControlColor ?? Colors.black,
-                                secondControlColor: themeController.theme.value?.secondControlColor ?? Colors.black,
-                                textColor: themeController.theme.value?.textColor ?? Colors.white,
+                                firstControlColor: ApplicationVariable.themeFirstGradientColor,
+                                secondControlColor: ApplicationVariable.themeSecondGradientColor,
+                                textColor: ApplicationVariable.themeTextColor,
                               ),
                               const SizedBox(height: 24),
 
@@ -193,7 +194,7 @@ class _SavingPlanCalculateScreenState extends State<SavingPlanCalculateScreen> w
                                       style: TextStyle(
                                         fontFamily: 'MyBaseFont',
                                         fontWeight: FontWeight.bold,
-                                        color: themeController.theme.value?.textColor ?? Colors.black,
+                                        color: ApplicationVariable.themeTextColor,
                                       ),
                                     ),
                                   ),
@@ -201,8 +202,8 @@ class _SavingPlanCalculateScreenState extends State<SavingPlanCalculateScreen> w
                                     decoration: BoxDecoration(
                                       gradient: LinearGradient(
                                         colors: [
-                                          themeController.theme.value?.firstControlColor ?? Colors.black,
-                                          themeController.theme.value?.secondControlColor ?? Colors.black,
+                                          ApplicationVariable.themeFirstGradientColor,
+                                          ApplicationVariable.themeSecondGradientColor,
                                         ],
                                         begin: Alignment.topLeft,
                                         end: Alignment.bottomRight,
@@ -210,7 +211,7 @@ class _SavingPlanCalculateScreenState extends State<SavingPlanCalculateScreen> w
                                       borderRadius: BorderRadius.circular(16),
                                       boxShadow: [
                                         BoxShadow(
-                                          color: themeController.theme.value?.secondControlColor?.withOpacity(0.3) ?? Colors.white.withOpacity(0.3),
+                                          color: ApplicationVariable.themeShadowColor.withOpacity(0.3),
                                           blurRadius: 3,
                                           offset: Offset(0, 2),
                                         ),
@@ -219,7 +220,7 @@ class _SavingPlanCalculateScreenState extends State<SavingPlanCalculateScreen> w
                                     child: InkWell(
                                       onTap: () {
                                         controller.calculate(); // wait for calculation to complete
-                                        showResultDialog(context, controller, themeController);
+                                        showResultDialog(context, controller);
                                       },
                                       child: Padding(
                                         padding: const EdgeInsets.symmetric(vertical: 12.0, horizontal: 24.0),
@@ -228,7 +229,7 @@ class _SavingPlanCalculateScreenState extends State<SavingPlanCalculateScreen> w
                                           style: TextStyle(
                                             fontFamily: 'MyBaseFont',
                                             fontWeight: FontWeight.bold,
-                                            color: themeController.theme.value?.textColor ?? Colors.black,
+                                            color: ApplicationVariable.themeTextColor,
                                           ),
                                         ),
                                       ),
@@ -475,7 +476,7 @@ class _SavingPlanCalculateScreenState extends State<SavingPlanCalculateScreen> w
 
 }
 
-void showResultDialog(BuildContext context, SavingPlanCalculateController controller, ThemeController themeController) {
+void showResultDialog(BuildContext context, SavingPlanCalculateController controller) {
   Get.dialog(
     Dialog(
       backgroundColor: Colors.transparent,
@@ -484,8 +485,8 @@ void showResultDialog(BuildContext context, SavingPlanCalculateController contro
         decoration: BoxDecoration(
           gradient: LinearGradient(
             colors: [
-              themeController.theme.value?.firstControlColor ?? Colors.black,
-              themeController.theme.value?.secondControlColor?.withOpacity(0.9) ?? Colors.black.withOpacity(0.9),
+              ApplicationVariable.themeFirstGradientColor,
+              ApplicationVariable.themeSecondGradientColor.withOpacity(0.9),
             ],
           ),
           borderRadius: BorderRadius.circular(20),
@@ -510,8 +511,8 @@ void showResultDialog(BuildContext context, SavingPlanCalculateController contro
                       decoration: BoxDecoration(
                         gradient: LinearGradient(
                           colors: [
-                            themeController.theme.value?.firstControlColor ?? Colors.black,
-                            themeController.theme.value?.secondControlColor?.withOpacity(0.9) ?? Colors.black.withOpacity(0.9),
+                            ApplicationVariable.themeFirstGradientColor,
+                            ApplicationVariable.themeSecondGradientColor.withOpacity(0.9),
                           ],
                           begin: Alignment.topLeft,
                           end: Alignment.bottomRight,
@@ -519,7 +520,7 @@ void showResultDialog(BuildContext context, SavingPlanCalculateController contro
                         borderRadius: const BorderRadius.all(Radius.circular(100)),
                         boxShadow: [
                           BoxShadow(
-                            color: themeController.theme.value?.secondControlColor?.withOpacity(0.3) ?? Colors.white.withOpacity(0.3),
+                            color: ApplicationVariable.themeShadowColor.withOpacity(0.3),
                             blurRadius: 6,
                             offset: const Offset(0, 3),
                           ),
@@ -531,7 +532,7 @@ void showResultDialog(BuildContext context, SavingPlanCalculateController contro
                           backgroundColor: Colors.transparent,
                           child: Icon(
                             Icons.currency_exchange_outlined,
-                            color: themeController.theme.value?.textColor ?? Colors.white,
+                            color: ApplicationVariable.themeTextColor,
                             size: 30,
                           ),
                         ),
@@ -544,7 +545,7 @@ void showResultDialog(BuildContext context, SavingPlanCalculateController contro
                         fontFamily: 'MyBaseFont',
                         fontSize: 18,
                         fontWeight: FontWeight.bold,
-                        color: themeController.theme.value?.textColor ?? Colors.white,
+                        color: ApplicationVariable.themeTextColor,
                       ),
                     ),
                   ],
@@ -574,11 +575,11 @@ void showResultDialog(BuildContext context, SavingPlanCalculateController contro
 
                   return Column(
                     children: [
-                      _resultRow("ប្រចាំថ្ងៃ", data.daily ?? 0.0, themeController),
+                      _resultRow("ប្រចាំថ្ងៃ", data.daily ?? 0.0),
                       const Divider(color: Colors.black26, thickness: 1, height: 24),
-                      _resultRow("ប្រចាំអាទិត្យ", data.weekly ?? 0.0, themeController),
+                      _resultRow("ប្រចាំអាទិត្យ", data.weekly ?? 0.0),
                       const Divider(color: Colors.black26, thickness: 1, height: 24),
-                      _resultRow("ប្រចាំខែ", data.monthly ?? 0.0, themeController),
+                      _resultRow("ប្រចាំខែ", data.monthly ?? 0.0),
                     ],
                   );
                 }),
@@ -593,8 +594,8 @@ void showResultDialog(BuildContext context, SavingPlanCalculateController contro
                     decoration: BoxDecoration(
                       gradient: LinearGradient(
                         colors: [
-                          themeController.theme.value?.firstControlColor ?? Colors.black,
-                          themeController.theme.value?.secondControlColor?.withOpacity(0.9) ?? Colors.black.withOpacity(0.9),
+                          ApplicationVariable.themeFirstGradientColor,
+                          ApplicationVariable.themeSecondGradientColor.withOpacity(0.9),
                         ],
                         begin: Alignment.topLeft,
                         end: Alignment.bottomRight,
@@ -602,7 +603,7 @@ void showResultDialog(BuildContext context, SavingPlanCalculateController contro
                       borderRadius: BorderRadius.circular(20),
                       boxShadow: [
                         BoxShadow(
-                          color: themeController.theme.value?.secondControlColor?.withOpacity(0.3) ?? Colors.white.withOpacity(0.3),
+                          color: ApplicationVariable.themeShadowColor.withOpacity(0.3),
                           blurRadius: 6,
                           offset: const Offset(0, 2),
                         ),
@@ -613,12 +614,12 @@ void showResultDialog(BuildContext context, SavingPlanCalculateController contro
                       icon: Icon(
                         Icons.close,
                         size: 18,
-                        color: themeController.theme.value?.textColor ?? Colors.white,
+                        color: ApplicationVariable.themeTextColor,
                       ),
                       label: Text(
                         "បិទ",
                         style: TextStyle(
-                          color: themeController.theme.value?.textColor ?? Colors.white,
+                          color: ApplicationVariable.themeTextColor,
                           fontFamily: 'MyBaseFont',
                         ),
                       ),
@@ -644,7 +645,7 @@ void showResultDialog(BuildContext context, SavingPlanCalculateController contro
 
 final _numberFormatter = NumberFormat('#,##0.00');
 
-Widget _resultRow(String label, double value, ThemeController themeController) {
+Widget _resultRow(String label, double value) {
   final color = Colors.green.withOpacity(0.9);
 
   return Row(

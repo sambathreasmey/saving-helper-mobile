@@ -18,7 +18,7 @@ import 'package:saving_helper/services/api_provider.dart';
 import 'package:saving_helper/services/share_storage.dart';
 import 'package:saving_helper/splash_screen.dart';
 
-import '../constants/app_color.dart' as app_colors;
+import '../constants/application_variable.dart';
 import 'animated_Invite_banner.dart';
 
 class CustomHeader extends StatefulWidget {
@@ -551,8 +551,8 @@ void _showModalBottomSheet(BuildContext context, HeaderController controller, Sh
                 },
               ),
 
-              ManagementSubMenu(themeController: themeController,),
-              ReportSubMenu(themeController: themeController,),
+              ManagementSubMenu(),
+              ReportSubMenu(),
 
               // Logout
               SizedBox(height: 24),
@@ -602,9 +602,8 @@ void _showModalBottomSheet(BuildContext context, HeaderController controller, Sh
 }
 
 class ManagementSubMenu extends StatefulWidget {
-  final ThemeController themeController;
 
-  const ManagementSubMenu({super.key, required this.themeController});
+  const ManagementSubMenu({super.key});
 
   @override
   _ManagementSubMenuState createState() => _ManagementSubMenuState();
@@ -615,7 +614,6 @@ class _ManagementSubMenuState extends State<ManagementSubMenu> {
 
   @override
   Widget build(BuildContext context) {
-    final themeController = widget.themeController;
     return Column(
       children: [
         ListTile(
@@ -623,8 +621,8 @@ class _ManagementSubMenuState extends State<ManagementSubMenu> {
             shaderCallback: (Rect bounds) {
               return LinearGradient(
                 colors: [
-                  themeController.theme.value?.firstControlColor ?? Colors.black,
-                  themeController.theme.value?.secondControlColor ?? Colors.black,
+                  ApplicationVariable.themeFirstGradientColor,
+                  ApplicationVariable.themeSecondGradientColor,
                 ],
                 begin: Alignment.topLeft,
                 end: Alignment.bottomRight,
@@ -639,14 +637,14 @@ class _ManagementSubMenuState extends State<ManagementSubMenu> {
           title: Text(
             'គ្រប់គ្រង',
             style: TextStyle(
-              color: themeController.theme.value?.textColor ?? Colors.white,
+              color: ApplicationVariable.themeTextColor,
               fontWeight: FontWeight.bold,
               fontFamily: 'MyBaseFont',
             ),
           ),
           trailing: Icon(
             _isExpanded ? Icons.arrow_drop_up : Icons.arrow_drop_down,
-            color: themeController.theme.value?.textColor ?? Colors.white,
+            color: ApplicationVariable.themeTextColor,
           ),
           onTap: () {
             setState(() {
@@ -668,8 +666,8 @@ class _ManagementSubMenuState extends State<ManagementSubMenu> {
                         shaderCallback: (Rect bounds) {
                           return LinearGradient(
                             colors: [
-                              themeController.theme.value?.firstControlColor ?? Colors.black,
-                              themeController.theme.value?.secondControlColor ?? Colors.black,
+                              ApplicationVariable.themeFirstGradientColor,
+                              ApplicationVariable.themeSecondGradientColor,
                             ],
                             begin: Alignment.topLeft,
                             end: Alignment.bottomRight,
@@ -684,7 +682,7 @@ class _ManagementSubMenuState extends State<ManagementSubMenu> {
                       title: Text(
                         'បញ្ចូលប្រាក់សន្សំ',
                         style: TextStyle(
-                          color: themeController.theme.value?.textColor ?? Colors.white,
+                          color: ApplicationVariable.themeTextColor,
                           fontWeight: FontWeight.bold,
                           fontFamily: 'MyBaseFont',
                         ),
@@ -699,8 +697,8 @@ class _ManagementSubMenuState extends State<ManagementSubMenu> {
                         shaderCallback: (Rect bounds) {
                           return LinearGradient(
                             colors: [
-                              themeController.theme.value?.firstControlColor ?? Colors.black,
-                              themeController.theme.value?.secondControlColor ?? Colors.black,
+                              ApplicationVariable.themeFirstGradientColor,
+                              ApplicationVariable.themeSecondGradientColor,
                             ],
                             begin: Alignment.topLeft,
                             end: Alignment.bottomRight,
@@ -715,7 +713,7 @@ class _ManagementSubMenuState extends State<ManagementSubMenu> {
                       title: Text(
                         'បញ្ចូលប្រាក់កម្ចី',
                         style: TextStyle(
-                          color: themeController.theme.value?.textColor ?? Colors.white,
+                          color: ApplicationVariable.themeTextColor,
                           fontWeight: FontWeight.bold,
                           fontFamily: 'MyBaseFont',
                         ),
@@ -730,8 +728,8 @@ class _ManagementSubMenuState extends State<ManagementSubMenu> {
                         shaderCallback: (Rect bounds) {
                           return LinearGradient(
                             colors: [
-                              themeController.theme.value?.firstControlColor ?? Colors.black,
-                              themeController.theme.value?.secondControlColor ?? Colors.black,
+                              ApplicationVariable.themeFirstGradientColor,
+                              ApplicationVariable.themeSecondGradientColor,
                             ],
                             begin: Alignment.topLeft,
                             end: Alignment.bottomRight,
@@ -746,7 +744,7 @@ class _ManagementSubMenuState extends State<ManagementSubMenu> {
                       title: Text(
                         'សមាជិក',
                         style: TextStyle(
-                          color: themeController.theme.value?.textColor ?? Colors.white,
+                          color: ApplicationVariable.themeTextColor,
                           fontWeight: FontWeight.bold,
                           fontFamily: 'MyBaseFont',
                         ),
@@ -761,8 +759,8 @@ class _ManagementSubMenuState extends State<ManagementSubMenu> {
                         shaderCallback: (Rect bounds) {
                           return LinearGradient(
                             colors: [
-                              themeController.theme.value?.firstControlColor ?? Colors.black,
-                              themeController.theme.value?.secondControlColor ?? Colors.black,
+                              ApplicationVariable.themeFirstGradientColor,
+                              ApplicationVariable.themeSecondGradientColor,
                             ],
                             begin: Alignment.topLeft,
                             end: Alignment.bottomRight,
@@ -777,7 +775,7 @@ class _ManagementSubMenuState extends State<ManagementSubMenu> {
                       title: Text(
                         'គម្រោងសន្សំប្រាក់',
                         style: TextStyle(
-                          color: themeController.theme.value?.textColor ?? Colors.white,
+                          color: ApplicationVariable.themeTextColor,
                           fontWeight: FontWeight.bold,
                           fontFamily: 'MyBaseFont',
                         ),
@@ -800,9 +798,8 @@ class _ManagementSubMenuState extends State<ManagementSubMenu> {
 
 //|||||||||||||||||||| report |||||||||||||||||||||
 class ReportSubMenu extends StatefulWidget {
-  final ThemeController themeController;
 
-  const ReportSubMenu({super.key, required this.themeController});
+  const ReportSubMenu({super.key});
 
   @override
   // ignore: library_private_types_in_public_api
@@ -814,7 +811,6 @@ class _ReportSubMenuState extends State<ReportSubMenu> {
 
   @override
   Widget build(BuildContext context) {
-    final themeController = widget.themeController;
     return Column(
       children: [
         ListTile(
@@ -822,8 +818,8 @@ class _ReportSubMenuState extends State<ReportSubMenu> {
             shaderCallback: (Rect bounds) {
               return LinearGradient(
                 colors: [
-                  themeController.theme.value?.firstControlColor ?? Colors.black,
-                  themeController.theme.value?.secondControlColor ?? Colors.black,
+                  ApplicationVariable.themeFirstGradientColor,
+                  ApplicationVariable.themeSecondGradientColor,
                 ],
                 begin: Alignment.topLeft,
                 end: Alignment.bottomRight,
@@ -835,10 +831,10 @@ class _ReportSubMenuState extends State<ReportSubMenu> {
               size: 24,
             ),
           ),
-          title: Text('របាយការណ៍', style: TextStyle(color: themeController.theme.value?.textColor ?? Colors.white, fontWeight: FontWeight.bold, fontFamily: 'MyBaseFont',)),
+          title: Text('របាយការណ៍', style: TextStyle(color: ApplicationVariable.themeTextColor, fontWeight: FontWeight.bold, fontFamily: 'MyBaseFont',)),
           trailing: Icon(
             _isExpanded ? Icons.arrow_drop_up : Icons.arrow_drop_down,
-            color: themeController.theme.value?.textColor ?? Colors.white,
+            color: ApplicationVariable.themeTextColor,
           ),
           onTap: () {
             setState(() {
@@ -860,8 +856,8 @@ class _ReportSubMenuState extends State<ReportSubMenu> {
                         shaderCallback: (Rect bounds) {
                           return LinearGradient(
                             colors: [
-                              themeController.theme.value?.firstControlColor ?? Colors.black,
-                              themeController.theme.value?.secondControlColor ?? Colors.black,
+                              ApplicationVariable.themeFirstGradientColor,
+                              ApplicationVariable.themeSecondGradientColor,
                             ],
                             begin: Alignment.topLeft,
                             end: Alignment.bottomRight,
@@ -874,7 +870,7 @@ class _ReportSubMenuState extends State<ReportSubMenu> {
                           color: Colors.white,
                         ),
                       ),
-                      title: Text('របាយការណ៍ទូទៅ', style: TextStyle(color: themeController.theme.value?.textColor ?? Colors.white, fontWeight: FontWeight.bold, fontFamily: 'MyBaseFont',)),
+                      title: Text('របាយការណ៍ទូទៅ', style: TextStyle(color: ApplicationVariable.themeTextColor, fontWeight: FontWeight.bold, fontFamily: 'MyBaseFont',)),
                       onTap: () {
                         Get.delete<HeaderController>();
                         Get.to(() => ReportScreen());
@@ -885,8 +881,8 @@ class _ReportSubMenuState extends State<ReportSubMenu> {
                         shaderCallback: (Rect bounds) {
                           return LinearGradient(
                             colors: [
-                              themeController.theme.value?.firstControlColor ?? Colors.black,
-                              themeController.theme.value?.secondControlColor ?? Colors.black,
+                              ApplicationVariable.themeFirstGradientColor,
+                              ApplicationVariable.themeSecondGradientColor,
                             ],
                             begin: Alignment.topLeft,
                             end: Alignment.bottomRight,
@@ -899,7 +895,7 @@ class _ReportSubMenuState extends State<ReportSubMenu> {
                           color: Colors.white,
                         ),
                       ),
-                      title: Text('របាយការណ៍សង្ខេបប្រចាំខែ', style: TextStyle(color: themeController.theme.value?.textColor ?? Colors.white, fontWeight: FontWeight.bold, fontFamily: 'MyBaseFont',)),
+                      title: Text('របាយការណ៍សង្ខេបប្រចាំខែ', style: TextStyle(color: ApplicationVariable.themeTextColor, fontWeight: FontWeight.bold, fontFamily: 'MyBaseFont',)),
                       onTap: () {
                         Get.delete<HeaderController>();
                         Get.to(() => SummaryReportScreen());

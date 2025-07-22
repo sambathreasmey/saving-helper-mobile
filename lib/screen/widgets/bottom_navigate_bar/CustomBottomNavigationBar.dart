@@ -2,6 +2,7 @@ import 'dart:ui';
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:glass_kit/glass_kit.dart';
 import 'package:saving_helper/controllers/theme_controller.dart';
 import 'package:saving_helper/screen/deposit_saving_screen.dart';
 import 'package:saving_helper/screen/goal_management_screen.dart';
@@ -30,40 +31,42 @@ class CustomBottomNavigationBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ClipRRect(
-      child: BackdropFilter(
-        filter: ImageFilter.blur(sigmaX: 25, sigmaY: 25), // Glass blur effect
-        child: Container(
-          padding: EdgeInsets.fromLTRB(20, 10, 20, 20),
-          decoration: BoxDecoration(
-            // gradient: LinearGradient(
-            //   colors: [
-            //     themeController.theme.value!.firstControlColor!,
-            //     themeController.theme.value!.secondControlColor!
-            //   ],
-            //   begin: Alignment.topLeft,
-            //   end: Alignment.bottomRight,
-            // ),
-            color: Colors.black.withOpacity(0.8),
-            // boxShadow: [
-            //   BoxShadow(
-            //     color: themeController.theme.value!.secondControlColor!.withOpacity(0.1),
-            //     blurRadius: 3,
-            //     offset: Offset(0, -3),
-            //   ),
-            // ],
-          ),
-          child: Obx(
-                () => Row(
-              mainAxisAlignment: MainAxisAlignment.spaceAround,
-              children: [
-                _buildNavItem(Icons.home, 'លំនាំដើម', 0),
-                _buildNavItem(Icons.history, 'ប្រវត្តិ', 1),
-                _buildNavItem(Icons.savings_outlined, 'បញ្ចលសន្សំ', 2),
-                _buildNavItem(Icons.grass_outlined, 'គម្រោង', 3),
-              ],
-            ),
-          ),
+    return GlassContainer(
+      height: 90,
+      alignment: Alignment.center,
+      gradient: LinearGradient(
+        colors: [
+          themeController.theme.value?.firstControlColor?.withOpacity(0.40) ?? Colors.black,
+          themeController.theme.value?.secondControlColor?.withOpacity(0.10) ?? Colors.black.withOpacity(0.9),
+        ],
+        begin: Alignment.topLeft,
+        end: Alignment.bottomRight,
+      ),
+      borderGradient: LinearGradient(
+        colors: [
+          themeController.theme.value?.firstControlColor?.withOpacity(0.60) ?? Colors.white.withOpacity(0.60),
+          themeController.theme.value?.firstControlColor?.withOpacity(0.10) ?? Colors.white.withOpacity(0.60),
+          themeController.theme.value?.secondControlColor?.withOpacity(0.05) ?? Colors.white.withOpacity(0.05),
+          themeController.theme.value?.secondControlColor?.withOpacity(0.60) ?? Colors.white.withOpacity(0.60),
+        ],
+        begin: Alignment.topLeft,
+        end: Alignment.bottomRight,
+        stops: [0.0, 0.39, 0.40, 1.0],
+      ),
+      blur: 20,
+      padding: EdgeInsets.fromLTRB(15, 10, 15, 20),
+      borderWidth: 0.95,
+      elevation: 4.0,
+      shadowColor: themeController.theme.value?.secondControlColor?.withOpacity(0.20) ?? Colors.purple.withOpacity(0.20),
+      child: Obx(
+            () => Row(
+          mainAxisAlignment: MainAxisAlignment.spaceAround,
+          children: [
+            _buildNavItem(Icons.home, 'លំនាំដើម', 0),
+            _buildNavItem(Icons.history, 'ប្រវត្តិ', 1),
+            _buildNavItem(Icons.savings_outlined, 'បញ្ចលសន្សំ', 2),
+            _buildNavItem(Icons.grass_outlined, 'គម្រោង', 3),
+          ],
         ),
       ),
     );

@@ -19,6 +19,7 @@ import 'package:saving_helper/screen/widgets/progress/LineProgressComponent.dart
 import 'package:saving_helper/services/api_provider.dart';
 import 'package:saving_helper/theme_screen.dart';
 
+import '../constants/application_variable.dart';
 import '../models/responses/get_goal_response.dart' as GetGoalResponse;
 
 class GoalManagementScreen extends StatefulWidget {
@@ -30,7 +31,6 @@ class GoalManagementScreen extends StatefulWidget {
 
 class _GoalManagementScreenState extends State<GoalManagementScreen> {
   final GoalManagementController controller = Get.put(GoalManagementController(GoalManagementRepository(ApiProvider())));
-  final ThemeController themeController = Get.put(ThemeController());
   final ScrollController _scrollController = ScrollController();
 
   @override
@@ -69,7 +69,7 @@ class _GoalManagementScreenState extends State<GoalManagementScreen> {
                       title: 'គម្រោងសន្សំប្រាក់',
                       subTitle: 'គ្រប់គ្រង',
                       path: 'គម្រោងសន្សំប្រាក់',
-                      textColor: themeController.theme.value?.textColor ?? Colors.white,
+                      textColor: ApplicationVariable.themeTextColor,
                     ),
                     const SizedBox(height: 16),
                     totalGroupComponent(context),
@@ -159,7 +159,7 @@ class _GoalManagementScreenState extends State<GoalManagementScreen> {
                           }
 
                           final item = controller.data[index];
-                          return _buildTransactionTile(context, controller, item, themeController, index);
+                          return _buildTransactionTile(context, controller, item, index);
                         },
                       ),
                     );
@@ -182,18 +182,18 @@ class _GoalManagementScreenState extends State<GoalManagementScreen> {
       alignment: Alignment.center,
       gradient: LinearGradient(
         colors: [
-          themeController.theme.value?.firstControlColor?.withOpacity(0.40) ?? Colors.black,
-          themeController.theme.value?.secondControlColor?.withOpacity(0.10) ?? Colors.black.withOpacity(0.9),
+          ApplicationVariable.themeFirstGradientColor.withOpacity(0.40),
+          ApplicationVariable.themeSecondGradientColor.withOpacity(0.10),
         ],
         begin: Alignment.topLeft,
         end: Alignment.bottomRight,
       ),
       borderGradient: LinearGradient(
         colors: [
-          themeController.theme.value?.firstControlColor?.withOpacity(0.60) ?? Colors.white.withOpacity(0.60),
-          themeController.theme.value?.firstControlColor?.withOpacity(0.10) ?? Colors.white.withOpacity(0.60),
-          themeController.theme.value?.secondControlColor?.withOpacity(0.05) ?? Colors.white.withOpacity(0.05),
-          themeController.theme.value?.secondControlColor?.withOpacity(0.60) ?? Colors.white.withOpacity(0.60),
+          ApplicationVariable.themeFirstBorderColor.withOpacity(0.60),
+          ApplicationVariable.themeFirstBorderColor.withOpacity(0.10),
+          ApplicationVariable.themeSecondBorderColor.withOpacity(0.05),
+          ApplicationVariable.themeSecondBorderColor.withOpacity(0.60),
         ],
         begin: Alignment.topLeft,
         end: Alignment.bottomRight,
@@ -201,9 +201,9 @@ class _GoalManagementScreenState extends State<GoalManagementScreen> {
       ),
       blur: 20,
       borderRadius: BorderRadius.circular(24.0),
-      borderWidth: 0.95,
+      borderWidth: 1.0,
       elevation: 4.0,
-      shadowColor: themeController.theme.value?.secondControlColor?.withOpacity(0.20) ?? Colors.purple.withOpacity(0.20),
+      shadowColor: ApplicationVariable.themeShadowColor.withOpacity(0.20),
       child: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Row(
@@ -215,8 +215,8 @@ class _GoalManagementScreenState extends State<GoalManagementScreen> {
                 ShaderMask(
                   shaderCallback: (bounds) => LinearGradient(
                     colors: [
-                      themeController.theme.value?.firstControlColor ?? Colors.white,
-                      themeController.theme.value?.secondControlColor ?? Colors.white
+                      ApplicationVariable.themeFirstGradientColor,
+                      ApplicationVariable.themeSecondGradientColor
                     ],
                     begin: Alignment.topLeft,
                     end: Alignment.bottomRight,
@@ -236,8 +236,8 @@ class _GoalManagementScreenState extends State<GoalManagementScreen> {
                   totalGoal: totalGoal,
                   currentProgress: currentProgress,
                   progressColors: [
-                    themeController.theme.value?.firstControlColor ?? Colors.black,
-                    themeController.theme.value?.secondControlColor ?? Colors.black,
+                    ApplicationVariable.themeFirstGradientColor,
+                    ApplicationVariable.themeSecondGradientColor
                   ],
                   backgroundColor: Colors.white,
                   width: 220,
@@ -262,8 +262,8 @@ class _GoalManagementScreenState extends State<GoalManagementScreen> {
               totalGoal: totalGoal + 1100,
               currentProgress: currentProgress,
               progressColors: [
-                themeController.theme.value?.firstControlColor ?? Colors.black,
-                themeController.theme.value?.secondControlColor ?? Colors.black,
+                ApplicationVariable.themeFirstGradientColor,
+                ApplicationVariable.themeSecondGradientColor
               ],
               size: 80,
             ),
@@ -277,7 +277,6 @@ class _GoalManagementScreenState extends State<GoalManagementScreen> {
       BuildContext context,
       GoalManagementController controller,
       GetGoalResponse.Data txn,
-      ThemeController themeController,
       int index,
       ) {
     return Dismissible(
@@ -334,14 +333,14 @@ class _GoalManagementScreenState extends State<GoalManagementScreen> {
                 ),
                 gradient: LinearGradient(
                   colors: [
-                    themeController.theme.value?.firstControlColor ?? Colors.black,
-                    themeController.theme.value?.secondControlColor ?? Colors.black,
+                    ApplicationVariable.themeFirstGradientColor,
+                    ApplicationVariable.themeSecondGradientColor
                   ],
                 ),
               ),
               child: Icon(
                 Icons.grass_outlined,
-                color: themeController.theme.value?.textColor ?? Colors.white,
+                color: ApplicationVariable.themeTextColor,
               ),
             ),
             const SizedBox(width: 8),

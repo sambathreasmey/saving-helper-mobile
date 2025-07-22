@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:glass_kit/glass_kit.dart';
 import 'package:intl/intl.dart';
+import 'package:saving_helper/constants/application_variable.dart';
 import 'package:saving_helper/controllers/header_controller.dart';
 import 'package:saving_helper/controllers/home_screen_controller.dart';
 import 'package:saving_helper/controllers/theme_controller.dart';
@@ -25,7 +26,6 @@ import 'package:saving_helper/services/api_provider.dart';
 import 'package:saving_helper/screen/header.dart';
 import 'package:saving_helper/services/share_storage.dart';
 
-import '../constants/app_color.dart' as app_colors;
 import '../splash_screen.dart';
 import '../theme_screen.dart';
 
@@ -40,7 +40,7 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
 
   final HomeController controller = Get.put(HomeController(HomeRepository(ApiProvider())));
-  final ThemeController themeController = Get.put(ThemeController());
+  // final ThemeController themeController = Get.put(ThemeController());
 
   @override
   void initState() {
@@ -74,7 +74,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         Text(
                           'Dashboard',  // Use null-aware operator to safely access userName
                           style: TextStyle(
-                            color: themeController.theme.value?.textColor ?? Colors.white,
+                            color: ApplicationVariable.themeTextColor,
                             fontSize: 16,
                             fontWeight: FontWeight.bold,
                             fontFamily: 'MyBaseEnFont',
@@ -84,12 +84,12 @@ class _HomeScreenState extends State<HomeScreen> {
                           children: [
                             Text('Home /',
                               style: TextStyle(
-                                color: themeController.theme.value?.textColor ?? Colors.white,
+                                color: ApplicationVariable.themeTextColor,
                                 fontSize: 9,
                               ),),
                             Text(' Dashboard',
                               style: TextStyle(
-                                color: themeController.theme.value?.textColor ?? Colors.white,
+                                color: ApplicationVariable.themeTextColor,
                                 fontSize: 9,
                                 fontFamily: 'MyBaseEnFont',
                               ),),
@@ -104,16 +104,16 @@ class _HomeScreenState extends State<HomeScreen> {
                       children: [
                         SizedBox(height: 10,),
                         // New Component
-                        _buildNewComponent(controller, themeController),
+                        _buildNewComponent(controller),
                         SizedBox(height: 20,),
                         // Saving Component
-                        _buildSavingComponent(controller, themeController),
+                        _buildSavingComponent(controller),
                         SizedBox(height: 20,),
                         // Loan Component
-                        _buildLoanComponent(controller, themeController),
+                        _buildLoanComponent(controller),
                         SizedBox(height: 20,),
                         // Balance Component
-                        _buildBalanceComponent(controller, themeController),
+                        _buildBalanceComponent(controller),
                         SizedBox(height: 20,),
                         // AnimatedInviteBanner(),
                         MenuGrid(
@@ -126,20 +126,20 @@ class _HomeScreenState extends State<HomeScreen> {
                                 // Handle navigation to Home Screen
                                 Get.to(() => ProductFeedScreen());
                               },
-                              firstControlColor: themeController.theme.value?.firstControlColor,
-                              secondControlColor: themeController.theme.value?.secondControlColor,
-                              textColor: themeController.theme.value?.textColor,
+                              firstControlColor: ApplicationVariable.themeFirstGradientColor,
+                              secondControlColor: ApplicationVariable.themeSecondGradientColor,
+                              textColor: ApplicationVariable.themeTextColor,
                             ),
                             MenuItem(
                               icon: Icons.settings_outlined,
                               label: 'គ្រប់គ្រង',
                               isRotate: true,
                               onTap: () {
-                                _showModalBottomSheet(context, headerController, shareStorage, themeController);
+                                _showModalBottomSheet(context, headerController, shareStorage);
                               },
-                              firstControlColor: themeController.theme.value?.firstControlColor,
-                              secondControlColor: themeController.theme.value?.secondControlColor,
-                              textColor: themeController.theme.value?.textColor,
+                              firstControlColor: ApplicationVariable.themeFirstGradientColor,
+                              secondControlColor: ApplicationVariable.themeSecondGradientColor,
+                              textColor: ApplicationVariable.themeTextColor,
                             ),
                             MenuItem(
                               icon: Icons.balance,
@@ -147,9 +147,9 @@ class _HomeScreenState extends State<HomeScreen> {
                               onTap: () {
                                 Get.to(() => ReportRepayScreen());
                               },
-                              firstControlColor: themeController.theme.value?.firstControlColor,
-                              secondControlColor: themeController.theme.value?.secondControlColor,
-                              textColor: themeController.theme.value?.textColor,
+                              firstControlColor: ApplicationVariable.themeFirstGradientColor,
+                              secondControlColor: ApplicationVariable.themeSecondGradientColor,
+                              textColor: ApplicationVariable.themeTextColor,
                             ),
                             MenuItem(
                               icon: Icons.supervised_user_circle_outlined,
@@ -159,9 +159,9 @@ class _HomeScreenState extends State<HomeScreen> {
                                 // Handle navigation to Home Screen
                                 Get.to(() => MemberScreen());
                               },
-                              firstControlColor: themeController.theme.value?.firstControlColor,
-                              secondControlColor: themeController.theme.value?.secondControlColor,
-                              textColor: themeController.theme.value?.textColor,
+                              firstControlColor: ApplicationVariable.themeFirstGradientColor,
+                              secondControlColor: ApplicationVariable.themeSecondGradientColor,
+                              textColor: ApplicationVariable.themeTextColor,
                             ),
                             MenuItem(
                               onTap: () {
@@ -170,9 +170,9 @@ class _HomeScreenState extends State<HomeScreen> {
                               },
                               icon: Icons.add_business,
                               label: 'គ្រប់គ្រងទំនិញ',
-                              firstControlColor: themeController.theme.value?.firstControlColor,
-                              secondControlColor: themeController.theme.value?.secondControlColor,
-                              textColor: themeController.theme.value?.textColor,
+                              firstControlColor: ApplicationVariable.themeFirstGradientColor,
+                              secondControlColor: ApplicationVariable.themeSecondGradientColor,
+                              textColor: ApplicationVariable.themeTextColor,
                             )
                           ],
                         ),
@@ -191,7 +191,7 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 }
 
-Widget _buildSavingComponent(HomeController controller, ThemeController themeController) {
+Widget _buildSavingComponent(HomeController controller) {
   return Column(
     children: [
       // Saving Component Start
@@ -201,18 +201,18 @@ Widget _buildSavingComponent(HomeController controller, ThemeController themeCon
           alignment: Alignment.center,
           gradient: LinearGradient(
             colors: [
-              themeController.theme.value?.firstControlColor?.withOpacity(0.40) ?? Colors.black,
-              themeController.theme.value?.secondControlColor?.withOpacity(0.10) ?? Colors.black.withOpacity(0.9),
+              ApplicationVariable.themeFirstGradientColor.withOpacity(0.40),
+              ApplicationVariable.themeSecondGradientColor.withOpacity(0.10),
             ],
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
           ),
           borderGradient: LinearGradient(
             colors: [
-              themeController.theme.value?.firstControlColor?.withOpacity(0.60) ?? Colors.white.withOpacity(0.60),
-              themeController.theme.value?.firstControlColor?.withOpacity(0.10) ?? Colors.white.withOpacity(0.60),
-              themeController.theme.value?.secondControlColor?.withOpacity(0.05) ?? Colors.white.withOpacity(0.05),
-              themeController.theme.value?.secondControlColor?.withOpacity(0.60) ?? Colors.white.withOpacity(0.60),
+              ApplicationVariable.themeFirstBorderColor.withOpacity(0.60),
+              ApplicationVariable.themeFirstBorderColor.withOpacity(0.10),
+              ApplicationVariable.themeSecondBorderColor.withOpacity(0.05),
+              ApplicationVariable.themeSecondBorderColor.withOpacity(0.60),
             ],
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
@@ -222,7 +222,7 @@ Widget _buildSavingComponent(HomeController controller, ThemeController themeCon
           borderRadius: BorderRadius.circular(24.0),
           borderWidth: 0.95,
           elevation: 4.0,
-          shadowColor: themeController.theme.value?.secondControlColor?.withOpacity(0.20) ?? Colors.purple.withOpacity(0.20),
+          shadowColor: ApplicationVariable.themeShadowColor.withOpacity(0.20),
           child: Column(
             children: [
               Container(
@@ -233,8 +233,8 @@ Widget _buildSavingComponent(HomeController controller, ThemeController themeCon
                   ),
                   gradient: LinearGradient(
                     colors: [
-                      themeController.theme.value?.firstControlColor?.withOpacity(0.5) ?? Colors.white.withOpacity(0.08),
-                      themeController.theme.value?.secondControlColor?.withOpacity(0.3) ?? Colors.black.withOpacity(0.04)
+                      ApplicationVariable.themeFirstGradientColor.withOpacity(0.5),
+                      ApplicationVariable.themeSecondGradientColor.withOpacity(0.3)
                     ],
                     begin: Alignment.topRight,
                     end: Alignment.bottomCenter,
@@ -252,22 +252,25 @@ Widget _buildSavingComponent(HomeController controller, ThemeController themeCon
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Row(
-                        children: [
-                          Text('សន្សំ ',
-                            style: TextStyle(
-                              color: themeController.theme.value?.textColor,
-                              fontSize: 12,
-                              fontWeight: FontWeight.bold,
-                              fontFamily: 'MyBaseFont',
-                            ),),
-                          Text('| សង្ខេប',
-                            style: TextStyle(
-                              color: themeController.theme.value?.textColor,
-                              fontSize: 12,
-                              fontFamily: 'MyBaseFont',
-                            ),),
-                        ],
+                      Padding(
+                        padding: const EdgeInsets.only(left: 8),
+                        child: Row(
+                          children: [
+                            Text('សន្សំ ',
+                              style: TextStyle(
+                                color: ApplicationVariable.themeTextColor,
+                                fontSize: 12,
+                                fontWeight: FontWeight.bold,
+                                fontFamily: 'MyBaseFont',
+                              ),),
+                            Text('| សង្ខេប',
+                              style: TextStyle(
+                                color: ApplicationVariable.themeTextColor,
+                                fontSize: 12,
+                                fontFamily: 'MyBaseFont',
+                              ),),
+                          ],
+                        ),
                       ),
                     ],
                   ),
@@ -297,12 +300,12 @@ Widget _buildSavingComponent(HomeController controller, ThemeController themeCon
                                   return Text(
                                     formatCurrency(animatedValue),
                                     style: TextStyle(
-                                      color: themeController.theme.value?.textColor,
+                                      color: ApplicationVariable.themeTextColor,
                                       fontSize: 28,
                                       fontWeight: FontWeight.bold,
                                       shadows: [
                                         Shadow(
-                                          color: themeController.theme.value?.secondControlColor?.withOpacity(0.3) ?? Colors.deepPurpleAccent,
+                                          color: ApplicationVariable.themeShadowColor,
                                           blurRadius: 8,
                                         ),
                                       ],
@@ -482,7 +485,7 @@ Widget _buildSavingComponent(HomeController controller, ThemeController themeCon
   );
 }
 
-Widget _buildLoanComponent(HomeController controller, ThemeController themeController) {
+Widget _buildLoanComponent(HomeController controller) {
   return Column(
     children: [
       Center(
@@ -495,18 +498,18 @@ Widget _buildLoanComponent(HomeController controller, ThemeController themeContr
             alignment: Alignment.center,
             gradient: LinearGradient(
               colors: [
-                themeController.theme.value?.firstControlColor?.withOpacity(0.40) ?? Colors.black,
-                themeController.theme.value?.secondControlColor?.withOpacity(0.10) ?? Colors.black.withOpacity(0.9),
+                ApplicationVariable.themeFirstGradientColor.withOpacity(0.40),
+                ApplicationVariable.themeSecondGradientColor.withOpacity(0.10),
               ],
               begin: Alignment.topLeft,
               end: Alignment.bottomRight,
             ),
             borderGradient: LinearGradient(
               colors: [
-                themeController.theme.value?.firstControlColor?.withOpacity(0.60) ?? Colors.white.withOpacity(0.60),
-                themeController.theme.value?.firstControlColor?.withOpacity(0.10) ?? Colors.white.withOpacity(0.60),
-                themeController.theme.value?.secondControlColor?.withOpacity(0.05) ?? Colors.white.withOpacity(0.05),
-                themeController.theme.value?.secondControlColor?.withOpacity(0.60) ?? Colors.white.withOpacity(0.60),
+                ApplicationVariable.themeFirstBorderColor.withOpacity(0.60),
+                ApplicationVariable.themeFirstBorderColor.withOpacity(0.10),
+                ApplicationVariable.themeSecondBorderColor.withOpacity(0.05),
+                ApplicationVariable.themeSecondBorderColor.withOpacity(0.60),
               ],
               begin: Alignment.topLeft,
               end: Alignment.bottomRight,
@@ -516,7 +519,7 @@ Widget _buildLoanComponent(HomeController controller, ThemeController themeContr
             borderRadius: BorderRadius.circular(24.0),
             borderWidth: 0.95,
             elevation: 4.0,
-            shadowColor: themeController.theme.value?.secondControlColor?.withOpacity(0.20) ?? Colors.purple.withOpacity(0.20),
+            shadowColor: ApplicationVariable.themeShadowColor.withOpacity(0.20),
             child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
               child: Column(
@@ -530,7 +533,7 @@ Widget _buildLoanComponent(HomeController controller, ThemeController themeContr
                         'កម្ចី',
                         style: TextStyle(
                           fontSize: 14,
-                          color: themeController.theme.value?.textColor ?? Colors.white,
+                          color: ApplicationVariable.themeTextColor,
                           fontFamily: 'MyBaseFont',
                           fontWeight: FontWeight.w600,
                         ),
@@ -539,7 +542,7 @@ Widget _buildLoanComponent(HomeController controller, ThemeController themeContr
                         '| ទាំងអស់',
                         style: TextStyle(
                           fontSize: 12,
-                          color: themeController.theme.value?.textColor ?? Colors.white,
+                          color: ApplicationVariable.themeTextColor,
                           fontFamily: 'MyBaseFont',
                         ),
                       ),
@@ -551,7 +554,7 @@ Widget _buildLoanComponent(HomeController controller, ThemeController themeContr
                     children: [
                       Container(
                         decoration: BoxDecoration(
-                          color: themeController.theme.value?.textColor?.withOpacity(0.15) ?? Colors.white.withOpacity(0.15),
+                          color: ApplicationVariable.themeTextColor.withOpacity(0.15),
                           borderRadius: BorderRadius.circular(50),
                         ),
                         padding: const EdgeInsets.all(12),
@@ -580,7 +583,7 @@ Widget _buildLoanComponent(HomeController controller, ThemeController themeContr
                                       fontSize: 22,
                                       fontWeight: FontWeight.bold,
                                       fontFamily: 'MyBaseEnFont',
-                                      color: themeController.theme.value?.textColor ?? Colors.white,
+                                      color: ApplicationVariable.themeTextColor,
                                     ),
                                   ),
                                   const SizedBox(height: 4),
@@ -616,7 +619,7 @@ Widget _buildLoanComponent(HomeController controller, ThemeController themeContr
   );
 }
 
-Widget _buildBalanceComponent(HomeController controller, ThemeController themeController) {
+Widget _buildBalanceComponent(HomeController controller) {
   return Column(
     children: [
       Center(
@@ -625,18 +628,18 @@ Widget _buildBalanceComponent(HomeController controller, ThemeController themeCo
           alignment: Alignment.center,
           gradient: LinearGradient(
             colors: [
-              themeController.theme.value?.firstControlColor?.withOpacity(0.40) ?? Colors.black,
-              themeController.theme.value?.secondControlColor?.withOpacity(0.10) ?? Colors.black.withOpacity(0.9),
+              ApplicationVariable.themeFirstGradientColor.withOpacity(0.40),
+              ApplicationVariable.themeSecondGradientColor.withOpacity(0.10),
             ],
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
           ),
           borderGradient: LinearGradient(
             colors: [
-              themeController.theme.value?.firstControlColor?.withOpacity(0.60) ?? Colors.white.withOpacity(0.60),
-              themeController.theme.value?.firstControlColor?.withOpacity(0.10) ?? Colors.white.withOpacity(0.60),
-              themeController.theme.value?.secondControlColor?.withOpacity(0.05) ?? Colors.white.withOpacity(0.05),
-              themeController.theme.value?.secondControlColor?.withOpacity(0.60) ?? Colors.white.withOpacity(0.60),
+              ApplicationVariable.themeFirstBorderColor.withOpacity(0.60),
+              ApplicationVariable.themeFirstBorderColor.withOpacity(0.10),
+              ApplicationVariable.themeSecondBorderColor.withOpacity(0.05),
+              ApplicationVariable.themeSecondBorderColor.withOpacity(0.60),
             ],
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
@@ -646,7 +649,7 @@ Widget _buildBalanceComponent(HomeController controller, ThemeController themeCo
           borderRadius: BorderRadius.circular(24.0),
           borderWidth: 0.95,
           elevation: 4.0,
-          shadowColor: themeController.theme.value?.secondControlColor?.withOpacity(0.20) ?? Colors.purple.withOpacity(0.20),
+          shadowColor: ApplicationVariable.themeShadowColor.withOpacity(0.20),
           child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
             child: Column(
@@ -660,7 +663,7 @@ Widget _buildBalanceComponent(HomeController controller, ThemeController themeCo
                       'សមតុល្យ',
                       style: TextStyle(
                         fontSize: 14,
-                        color: themeController.theme.value?.textColor ?? Colors.white,
+                        color: ApplicationVariable.themeTextColor,
                         fontFamily: 'MyBaseFont',
                         fontWeight: FontWeight.w600,
                       ),
@@ -669,7 +672,7 @@ Widget _buildBalanceComponent(HomeController controller, ThemeController themeCo
                       '| ទាំងអស់',
                       style: TextStyle(
                         fontSize: 12,
-                        color: themeController.theme.value?.textColor ?? Colors.white,
+                        color: ApplicationVariable.themeTextColor,
                         fontFamily: 'MyBaseFont',
                       ),
                     ),
@@ -681,7 +684,7 @@ Widget _buildBalanceComponent(HomeController controller, ThemeController themeCo
                   children: [
                     Container(
                       decoration: BoxDecoration(
-                        color: themeController.theme.value?.textColor?.withOpacity(0.15) ?? Colors.white.withOpacity(0.15),
+                        color: ApplicationVariable.themeTextColor.withOpacity(0.15),
                         borderRadius: BorderRadius.circular(50),
                       ),
                       padding: const EdgeInsets.all(12),
@@ -710,7 +713,7 @@ Widget _buildBalanceComponent(HomeController controller, ThemeController themeCo
                                     fontSize: 22,
                                     fontWeight: FontWeight.bold,
                                     fontFamily: 'MyBaseEnFont',
-                                    color: themeController.theme.value?.textColor ?? Colors.white,
+                                    color: ApplicationVariable.themeTextColor,
                                   ),
                                 ),
                                 const SizedBox(height: 4),
@@ -746,7 +749,7 @@ Widget _buildBalanceComponent(HomeController controller, ThemeController themeCo
 }
 
 
-Widget _buildNewComponent(HomeController controller, ThemeController themeController) {
+Widget _buildNewComponent(HomeController controller) {
   return Column(
     children: [
       Row(
@@ -761,8 +764,8 @@ Widget _buildNewComponent(HomeController controller, ThemeController themeContro
                 shape: BoxShape.circle,
                 gradient: LinearGradient(
                   colors: [
-                    themeController.theme.value?.firstControlColor?.withOpacity(0.1) ?? Colors.black,
-                    themeController.theme.value?.secondControlColor?.withOpacity(0.2) ?? Colors.black.withOpacity(0.9),
+                    ApplicationVariable.themeFirstGradientColor.withOpacity(0.1),
+                    ApplicationVariable.themeFirstGradientColor.withOpacity(0.2),
                   ],
                   begin: Alignment.topLeft,
                   end: Alignment.bottomRight,
@@ -780,14 +783,14 @@ Widget _buildNewComponent(HomeController controller, ThemeController themeContro
                     return CustomPaint(
                       painter: _GlassRingPainter(
                           animatedValue,
-                          themeController.theme.value?.firstControlColor,
-                          themeController.theme.value?.secondControlColor
+                          ApplicationVariable.themeFirstGradientColor,
+                          ApplicationVariable.themeFirstGradientColor,
                       ),
                       child: Center(
                         child: Text(
                           '${(animatedValue * 100).toStringAsFixed(2)}%',
                           style: TextStyle(
-                            color: themeController.theme.value?.textColor ?? Colors.white,
+                            color: ApplicationVariable.themeTextColor,
                             fontSize: 16,
                             fontWeight: FontWeight.bold,
                             fontFamily: 'MyBaseEnFont',
@@ -946,7 +949,7 @@ Widget _buildMoneyBox(double value, Color color1, Color color2, {double height =
   );
 }
 
-void _showModalBottomSheet(BuildContext context, HeaderController controller, ShareStorage shareStorage, ThemeController themeController) {
+void _showModalBottomSheet(BuildContext context, HeaderController controller, ShareStorage shareStorage) {
   showModalBottomSheet(
     context: context,
     shape: RoundedRectangleBorder(
@@ -975,14 +978,14 @@ void _showModalBottomSheet(BuildContext context, HeaderController controller, Sh
           padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 16.0),
           decoration: BoxDecoration(
             gradient: LinearGradient(
-              colors: [Colors.black, themeController.theme.value?.secondControlColor?.withOpacity(0.9) ?? Colors.black.withOpacity(0.9),],
+              colors: [Colors.black, ApplicationVariable.themeSecondGradientColor.withOpacity(0.9),],
               begin: Alignment.topLeft,
               end: Alignment.bottomRight,
             ),
             borderRadius: BorderRadius.all(Radius.circular(20)),
             boxShadow: [
               BoxShadow(
-                color: themeController.theme.value?.secondControlColor?.withOpacity(0.3) ?? Colors.blueAccent.withOpacity(0.3),
+                color: ApplicationVariable.themeShadowColor.withOpacity(0.3),
                 blurRadius: 6,
                 offset: Offset(0, 3),
               ),
@@ -1001,8 +1004,8 @@ void _showModalBottomSheet(BuildContext context, HeaderController controller, Sh
                 decoration: BoxDecoration(
                   gradient: LinearGradient(
                     colors: [
-                      themeController.theme.value?.firstControlColor ?? Colors.black,
-                      themeController.theme.value?.secondControlColor?.withOpacity(0.9) ?? Colors.black.withOpacity(0.9),
+                      ApplicationVariable.themeFirstGradientColor,
+                      ApplicationVariable.themeSecondGradientColor.withOpacity(0.9),
                     ],
                     begin: Alignment.topLeft,
                     end: Alignment.bottomRight,
@@ -1027,14 +1030,14 @@ void _showModalBottomSheet(BuildContext context, HeaderController controller, Sh
                         decoration: BoxDecoration(
                           gradient: LinearGradient(
                             colors: [
-                              themeController.theme.value?.firstControlColor ?? Colors.black,
-                              themeController.theme.value?.secondControlColor?.withOpacity(0.9) ?? Colors.black.withOpacity(0.9),
+                              ApplicationVariable.themeFirstGradientColor,
+                              ApplicationVariable.themeSecondGradientColor.withOpacity(0.9),
                             ],
                             begin: Alignment.topLeft,
                             end: Alignment.bottomRight,
                           ),
                           border: Border.all(
-                            color: themeController.theme.value?.textColor ?? Colors.white, // Border color
+                            color: ApplicationVariable.themeTextColor,
                             width: 5.0,         // Border width
                           ),
                           borderRadius: BorderRadius.circular(100),
@@ -1049,7 +1052,11 @@ void _showModalBottomSheet(BuildContext context, HeaderController controller, Sh
                         child: Padding(
                           padding: const EdgeInsets.all(16.0),
                           child: Text(
-                            getInitials(displayName), style: TextStyle(color: themeController.theme.value!.textColor ?? Colors.black, fontWeight: FontWeight.bold, fontSize: 20),
+                            getInitials(displayName), style: TextStyle(
+                              color: ApplicationVariable.themeTextColor,
+                              fontWeight: FontWeight.bold,
+                              fontSize: 20
+                          ),
                           ),
                         ),
                       ),
@@ -1068,7 +1075,7 @@ void _showModalBottomSheet(BuildContext context, HeaderController controller, Sh
                                   style: TextStyle(
                                     fontSize: 16,
                                     fontWeight: FontWeight.bold,
-                                    color: themeController.theme.value?.textColor ?? Colors.white,
+                                    color: ApplicationVariable.themeTextColor,
                                     fontFamily: 'MyBaseFont',
                                   ),
                                 ),
@@ -1076,7 +1083,7 @@ void _showModalBottomSheet(BuildContext context, HeaderController controller, Sh
                                   user?.emailAddress ?? 'N/A',
                                   style: TextStyle(
                                     fontSize: 13,
-                                    color: themeController.theme.value?.textColor ?? Colors.white,
+                                    color: ApplicationVariable.themeTextColor,
                                     fontFamily: 'MyBaseEnFont',
                                   ),
                                 ),
@@ -1088,8 +1095,8 @@ void _showModalBottomSheet(BuildContext context, HeaderController controller, Sh
                             decoration: BoxDecoration(
                               gradient: LinearGradient(
                                 colors: [
-                                  themeController.theme.value?.firstControlColor ?? Colors.black,
-                                  themeController.theme.value?.secondControlColor ?? Colors.black,
+                                  ApplicationVariable.themeFirstGradientColor,
+                                  ApplicationVariable.themeSecondGradientColor,
                                 ],
                                 begin: Alignment.topLeft,
                                 end: Alignment.bottomRight,
@@ -1108,7 +1115,7 @@ void _showModalBottomSheet(BuildContext context, HeaderController controller, Sh
                                 showDialog(
                                   context: context,
                                   builder: (BuildContext dialogContext) {
-                                    return _switchGroup(context, controller, themeController);
+                                    return _switchGroup(context, controller);
                                   },
                                 );
                               },
@@ -1118,7 +1125,7 @@ void _showModalBottomSheet(BuildContext context, HeaderController controller, Sh
                               ),
                               child: Icon(
                                 Icons.autorenew,
-                                color: themeController.theme.value?.textColor ?? Colors.white,
+                                color: ApplicationVariable.themeTextColor,
                                 size: 26,
                               ),
                             ),
@@ -1133,15 +1140,15 @@ void _showModalBottomSheet(BuildContext context, HeaderController controller, Sh
               SizedBox(height: 24),
 
               // Navigation Menu
-              Text("Navigation", style: TextStyle(fontSize: 14, color: themeController.theme.value?.textColor ?? Colors.white, fontWeight: FontWeight.bold, fontFamily: 'MyBaseEnFont')),
+              Text("Navigation", style: TextStyle(fontSize: 14, color: ApplicationVariable.themeTextColor, fontWeight: FontWeight.bold, fontFamily: 'MyBaseEnFont')),
               SizedBox(height: 8),
               ListTile(
                 leading: ShaderMask(
                   shaderCallback: (Rect bounds) {
                     return LinearGradient(
                       colors: [
-                        themeController.theme.value?.firstControlColor ?? Colors.black,
-                        themeController.theme.value?.secondControlColor ?? Colors.black,
+                        ApplicationVariable.themeFirstGradientColor,
+                        ApplicationVariable.themeSecondGradientColor,
                       ],
                       begin: Alignment.topLeft,
                       end: Alignment.bottomRight,
@@ -1153,15 +1160,15 @@ void _showModalBottomSheet(BuildContext context, HeaderController controller, Sh
                     size: 24,
                   ),
                 ),
-                title: Text('Dashboard', style: TextStyle(color:themeController.theme.value?.textColor ?? Colors.white, fontWeight: FontWeight.bold, fontFamily: 'MyBaseEnFont')),
+                title: Text('Dashboard', style: TextStyle(color: ApplicationVariable.themeTextColor, fontWeight: FontWeight.bold, fontFamily: 'MyBaseEnFont')),
                 onTap: () {
                   Get.delete<HeaderController>();
                   Get.to(() => HomeScreen());
                 },
               ),
 
-              ManagementSubMenu(themeController: themeController,),
-              ReportSubMenu(themeController: themeController,),
+              ManagementSubMenu(),
+              ReportSubMenu(),
 
               // Logout
               SizedBox(height: 24),
@@ -1171,8 +1178,8 @@ void _showModalBottomSheet(BuildContext context, HeaderController controller, Sh
                   shaderCallback: (Rect bounds) {
                     return LinearGradient(
                       colors: [
-                        themeController.theme.value?.firstControlColor ?? Colors.black,
-                        themeController.theme.value?.secondControlColor ?? Colors.black,
+                        ApplicationVariable.themeFirstGradientColor,
+                        ApplicationVariable.themeSecondGradientColor,
                       ],
                       begin: Alignment.topLeft,
                       end: Alignment.bottomRight,
@@ -1187,7 +1194,7 @@ void _showModalBottomSheet(BuildContext context, HeaderController controller, Sh
                 title: Text(
                   'Logout',
                   style: TextStyle(
-                    color: themeController.theme.value?.textColor ?? Colors.white,
+                    color: ApplicationVariable.themeTextColor,
                     fontWeight: FontWeight.bold,
                     fontFamily: 'MyBaseEnFont',
                   ),
@@ -1209,7 +1216,7 @@ void _showModalBottomSheet(BuildContext context, HeaderController controller, Sh
     },
   );
 }
-Widget _switchGroup(BuildContext context, HeaderController controller, ThemeController themeController) {
+Widget _switchGroup(BuildContext context, HeaderController controller) {
   return Obx(() {
     final groups = controller.groups.value?.groups ?? [];
     return AlertDialog(
@@ -1220,9 +1227,8 @@ Widget _switchGroup(BuildContext context, HeaderController controller, ThemeCont
         decoration: BoxDecoration(
           gradient: LinearGradient(
             colors: [
-              themeController.theme.value?.firstControlColor ?? Colors.black,
-              themeController.theme.value?.secondControlColor?.withOpacity(
-                  0.9) ?? Colors.black.withOpacity(0.9),
+              ApplicationVariable.themeFirstGradientColor,
+              ApplicationVariable.themeSecondGradientColor.withOpacity(0.9),
             ],
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
@@ -1233,8 +1239,7 @@ Widget _switchGroup(BuildContext context, HeaderController controller, ThemeCont
           ),
           boxShadow: [
             BoxShadow(
-              color: themeController.theme.value?.secondControlColor
-                  ?.withOpacity(0.3) ?? Colors.black.withOpacity(0.9),
+              color: ApplicationVariable.themeShadowColor.withOpacity(0.3),
               blurRadius: 6,
               offset: Offset(0, 3),
             ),
@@ -1246,13 +1251,13 @@ Widget _switchGroup(BuildContext context, HeaderController controller, ThemeCont
           child: Row(
             children: [
               Icon(Icons.groups,
-                  color: themeController.theme.value?.textColor ?? Colors.white,
+                  color: ApplicationVariable.themeTextColor,
                   size: 26), // Add an icon for the notification
               SizedBox(width: 10), // Space between the icon and text
               Text(
                 'សូមជ្រើសរើសក្រុម',
                 style: TextStyle(
-                  color: themeController.theme.value?.textColor ?? Colors.white,
+                  color: ApplicationVariable.themeTextColor,
                   fontSize: 18,
                   fontWeight: FontWeight.bold,
                   fontFamily: 'MyBaseFont',
@@ -1289,36 +1294,29 @@ Widget _switchGroup(BuildContext context, HeaderController controller, ThemeCont
                   borderRadius: BorderRadius.circular(16),
                   gradient: LinearGradient(
                     colors: [
-                      themeController.theme.value?.firstControlColor ??
-                          Colors.black,
-                      themeController.theme.value?.secondControlColor ??
-                          Colors.black,
+                      ApplicationVariable.themeFirstGradientColor,
+                      ApplicationVariable.themeSecondGradientColor,
                     ],
                     begin: Alignment.topLeft,
                     end: Alignment.bottomRight,
                   ),
                   boxShadow: [
                     BoxShadow(
-                      color: themeController.theme.value?.secondControlColor
-                          ?.withOpacity(0.3) ?? Colors.black.withOpacity(0.3),
+                      color: ApplicationVariable.themeShadowColor.withOpacity(0.3),
                       blurRadius: 6,
                       offset: Offset(0, 4),
                     ),
                   ],
-                  color: isSelected ? themeController.theme.value?.textColor
-                      ?.withOpacity(0.5) ?? Colors.white : themeController.theme
-                      .value?.textColor ?? Colors.white,
+                  color: isSelected ? ApplicationVariable.themeTextColor.withOpacity(0.5) : ApplicationVariable.themeTextColor,
                   border: isSelected
-                      ? Border.all(color: themeController.theme.value
-                      ?.textColor ?? Colors.white, width: 2)
+                      ? Border.all(color: ApplicationVariable.themeTextColor, width: 2)
                       : Border.all(color: Colors.grey[300]!),
                 ),
                 child: Row(
                   children: [
                     Icon(
                       Icons.group,
-                      color: themeController.theme.value?.textColor ??
-                          Colors.white,
+                      color: ApplicationVariable.themeTextColor,
                     ),
                     SizedBox(width: 12),
                     Expanded(
@@ -1329,14 +1327,12 @@ Widget _switchGroup(BuildContext context, HeaderController controller, ThemeCont
                           fontSize: 14,
                           fontWeight: isSelected ? FontWeight.bold : FontWeight
                               .normal,
-                          color: themeController.theme.value?.textColor ??
-                              Colors.white,
+                          color: ApplicationVariable.themeTextColor,
                         ),
                       ),
                     ),
                     if (isSelected)
-                      Icon(Icons.check_circle, color: themeController.theme
-                          .value?.textColor ?? Colors.white, size: 20),
+                      Icon(Icons.check_circle, color: ApplicationVariable.themeTextColor, size: 20),
                   ],
                 ),
               ),
@@ -1354,10 +1350,8 @@ Widget _switchGroup(BuildContext context, HeaderController controller, ThemeCont
             decoration: BoxDecoration(
               gradient: LinearGradient(
                 colors: [
-                  themeController.theme.value?.firstControlColor ??
-                      Colors.black,
-                  themeController.theme.value?.secondControlColor ??
-                      Colors.black,
+                  ApplicationVariable.themeFirstGradientColor,
+                  ApplicationVariable.themeSecondGradientColor,
                 ],
                 begin: Alignment.topLeft,
                 end: Alignment.bottomRight,
@@ -1365,8 +1359,7 @@ Widget _switchGroup(BuildContext context, HeaderController controller, ThemeCont
               borderRadius: BorderRadius.circular(8),
               boxShadow: [
                 BoxShadow(
-                  color: themeController.theme.value?.secondControlColor
-                      ?.withOpacity(0.1) ?? Colors.black.withOpacity(0.1),
+                  color: ApplicationVariable.themeShadowColor.withOpacity(0.1),
                   blurRadius: 6,
                   offset: Offset(0, 2),
                 ),
@@ -1379,7 +1372,7 @@ Widget _switchGroup(BuildContext context, HeaderController controller, ThemeCont
               child: Text(
                 'បោះបង់',
                 style: TextStyle(fontSize: 16,
-                  color: themeController.theme.value?.textColor ?? Colors.white,
+                  color: ApplicationVariable.themeTextColor,
                   fontFamily: 'MyBaseFont',
                   fontWeight: FontWeight.bold,),
               ),

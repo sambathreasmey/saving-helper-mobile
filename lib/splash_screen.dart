@@ -23,7 +23,7 @@ class _SplashScreenState extends State<SplashScreen> {
   void initState() {
     super.initState();
     // Background Image
-    Timer(Duration(seconds: 1), () {
+    Timer(Duration(milliseconds: 700), () {
       checkUserCredential(context);
     });
   }
