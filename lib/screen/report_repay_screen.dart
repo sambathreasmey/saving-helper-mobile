@@ -427,45 +427,142 @@ void _showTransactionDetailSheet(BuildContext context, ReportModel txn, ReportRe
                     Padding(
                       padding: const EdgeInsets.symmetric(vertical: 4),
                       child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
+                          Row(
+                            children: [
+                              Container(
+                                decoration: BoxDecoration(
+                                  gradient: LinearGradient(
+                                    colors: [
+                                      themeController.theme.value?.firstControlColor ?? Colors.black,
+                                      themeController.theme.value?.secondControlColor?.withOpacity(0.9) ?? Colors.black.withOpacity(0.9),
+                                    ],
+                                    begin: Alignment.topLeft,
+                                    end: Alignment.bottomRight,
+                                  ),
+                                  borderRadius: BorderRadius.all(Radius.circular(100)),
+                                  // boxShadow: [
+                                  //   BoxShadow(
+                                  //     color: themeController.theme.value?.secondControlColor?.withOpacity(0.3) ?? Colors.white.withOpacity(0.3),
+                                  //     blurRadius: 6,
+                                  //     offset: Offset(0, 3),
+                                  //   ),
+                                  // ],
+                                  // color: app_colors.menu3Color,
+                                ),
+                                child: CircleAvatar(
+                                    backgroundColor: Colors.transparent,
+                                    child: Icon(
+                                      txn.transactionType == "loan" ? Icons.currency_exchange_outlined : Icons.savings,
+                                      color: themeController.theme.value?.textColor ?? Colors.white,
+                                    )
+                                ),
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: Text(
+                                  'ប្រតិបត្តិការលំអិត',
+                                  style: TextStyle(
+                                    fontSize: 18,
+                                    fontWeight: FontWeight.bold,
+                                    fontFamily: 'MyBaseFont',
+                                    color: Colors.white,
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
                           Container(
+                            padding: EdgeInsets.all(8),
                             decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(12),
                               gradient: LinearGradient(
                                 colors: [
-                                  themeController.theme.value?.firstControlColor ?? Colors.black,
-                                  themeController.theme.value?.secondControlColor?.withOpacity(0.9) ?? Colors.black.withOpacity(0.9),
+                                  ApplicationVariable.themeFirstGradientColor,
+                                  ApplicationVariable.themeSecondGradientColor
                                 ],
                                 begin: Alignment.topLeft,
                                 end: Alignment.bottomRight,
                               ),
-                              borderRadius: BorderRadius.all(Radius.circular(100)),
-                              // boxShadow: [
-                              //   BoxShadow(
-                              //     color: themeController.theme.value?.secondControlColor?.withOpacity(0.3) ?? Colors.white.withOpacity(0.3),
-                              //     blurRadius: 6,
-                              //     offset: Offset(0, 3),
-                              //   ),
-                              // ],
-                              // color: app_colors.menu3Color,
                             ),
-                            child: CircleAvatar(
-                                backgroundColor: Colors.transparent,
-                                child: Icon(
-                                  txn.transactionType == "loan" ? Icons.currency_exchange_outlined : Icons.savings,
-                                  color: themeController.theme.value?.textColor ?? Colors.white,
-                                )
-                            ),
-                          ),
-                          Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: Text(
-                              'ប្រតិបត្តិការលំអិត',
-                              style: TextStyle(
-                                fontSize: 18,
-                                fontWeight: FontWeight.bold,
-                                fontFamily: 'MyBaseFont',
-                                color: Colors.white,
+                            child: InkWell(
+                              child: Row(
+                                spacing: 5,
+                                children: [
+                                  Icon(Icons.data_saver_off, color: ApplicationVariable.themeTextColor,),
+                                  Text('សងទាំងអស់', style: TextStyle(color: ApplicationVariable.themeTextColor),),
+                                ],
                               ),
+                              onTap: () {
+                                Get.dialog(
+                                  Dialog(
+                                    backgroundColor: Color(0xFF1E1E2E),
+                                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+                                    child: Padding(
+                                      padding: const EdgeInsets.all(20),
+                                      child: Column(
+                                        mainAxisSize: MainAxisSize.min,
+                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        children: [
+                                          Row(
+                                            children: [
+                                              Icon(Icons.warning_amber_rounded, color: Colors.amber, size: 28),
+                                              SizedBox(width: 10),
+                                              Text(
+                                                "បញ្ចាក់សងប្រាក់",
+                                                style: TextStyle(
+                                                  fontFamily: 'MyBaseFont',
+                                                  fontSize: 18,
+                                                  fontWeight: FontWeight.bold,
+                                                  color: Colors.white,
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                          SizedBox(height: 16),
+                                          Text(
+                                            "តើអ្នកប្រាកដជាចង់សងសរុប \$${txn.remainBalance} មែនទេ ?",
+                                            style: TextStyle(
+                                              fontFamily: 'MyBaseFont',
+                                              fontSize: 14,
+                                              color: Colors.white70,
+                                            ),
+                                          ),
+                                          SizedBox(height: 24),
+                                          Row(
+                                            mainAxisAlignment: MainAxisAlignment.end,
+                                            children: [
+                                              TextButton(
+                                                onPressed: () => Get.back(),
+                                                child: Text("ទេ", style: TextStyle(color: Colors.blueAccent)),
+                                              ),
+                                              SizedBox(width: 10),
+                                              ElevatedButton.icon(
+                                                icon: Icon(Icons.data_saver_off, color: Colors.white, size: 18),
+                                                label: Text("បាទ/ច់ា", style: TextStyle(fontWeight: FontWeight.w600, color: Colors.white)),
+                                                onPressed: () {
+                                                  controller.repayAmount.value = txn.remainBalance.toString();
+                                                  controller.repayDesc.value = 'សងផ្ដាច់';
+                                                  controller.repayLoan(txn.transactionId!);
+                                                  Get.back();
+                                                },
+                                                style: ElevatedButton.styleFrom(
+                                                  backgroundColor: Colors.greenAccent,
+                                                  padding: EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+                                                  shape: RoundedRectangleBorder(
+                                                    borderRadius: BorderRadius.circular(12),
+                                                  ),
+                                                ),
+                                              ),
+                                            ],
+                                          )
+                                        ],
+                                      ),
+                                    ),
+                                  ),
+                                );
+                              },
                             ),
                           ),
                         ],
@@ -507,111 +604,35 @@ void _showTransactionDetailSheet(BuildContext context, ReportModel txn, ReportRe
                             onTap: () {
                               // Show h detail dialog
                               Get.dialog(
-                                  Dialog(
-                                    backgroundColor: Colors.transparent, // <-- transparent background
-                                    child: Container(
-                                      decoration: BoxDecoration(
-                                        gradient: LinearGradient(
-                                          colors: [
-                                            themeController.theme.value?.firstControlColor ?? Colors.black,
-                                            themeController.theme.value?.secondControlColor?.withOpacity(0.9) ?? Colors.black.withOpacity(0.9),
-                                          ],
-                                        ),
-                                        borderRadius: BorderRadius.circular(20),
-                                        boxShadow: [
-                                          BoxShadow(
-                                            color: Colors.black26,
-                                            blurRadius: 20,
-                                            offset: Offset(0, 10),
-                                          ),
+                                Dialog(
+                                  backgroundColor: Colors.transparent, // <-- transparent background
+                                  child: Container(
+                                    decoration: BoxDecoration(
+                                      gradient: LinearGradient(
+                                        colors: [
+                                          themeController.theme.value?.firstControlColor ?? Colors.black,
+                                          themeController.theme.value?.secondControlColor?.withOpacity(0.9) ?? Colors.black.withOpacity(0.9),
                                         ],
                                       ),
-                                      child: Padding(
-                                        padding: const EdgeInsets.all(24),
-                                        child: Column(
-                                          mainAxisSize: MainAxisSize.min,
-                                          crossAxisAlignment: CrossAxisAlignment.start,
-                                          children: [
-                                            Center(
-                                              child: Column(
-                                                children: [
-                                                  Container(
-                                                    decoration: BoxDecoration(
-                                                      gradient: LinearGradient(
-                                                        colors: [
-                                                          themeController.theme.value?.firstControlColor ?? Colors.black,
-                                                          themeController.theme.value?.secondControlColor?.withOpacity(0.9) ?? Colors.black.withOpacity(0.9),
-                                                        ],
-                                                        begin: Alignment.topLeft,
-                                                        end: Alignment.bottomRight,
-                                                      ),
-                                                      borderRadius: BorderRadius.all(Radius.circular(100)),
-                                                      boxShadow: [
-                                                        BoxShadow(
-                                                          color: themeController.theme.value?.secondControlColor?.withOpacity(0.3) ?? Colors.white.withOpacity(0.3),
-                                                          blurRadius: 6,
-                                                          offset: Offset(0, 3),
-                                                        ),
-                                                      ],
-                                                      // color: app_colors.menu3Color,
-                                                    ),
-                                                    child: Padding(
-                                                      padding: const EdgeInsets.all(8.0),
-                                                      child: CircleAvatar(
-                                                          backgroundColor: Colors.transparent,
-                                                          child: Icon(
-                                                            Icons.currency_exchange_outlined,
-                                                            color: themeController.theme.value?.textColor ?? Colors.white,
-                                                            size: 30,
-                                                          )
-                                                      ),
-                                                    ),
-                                                  ),
-                                                  SizedBox(height: 10),
-                                                  Text(
-                                                    "សងដោយផ្នែកលំអិត",
-                                                    style: TextStyle(
-                                                      fontFamily: 'MyBaseFont',
-                                                      fontSize: 18,
-                                                      fontWeight: FontWeight.bold,
-                                                      color: themeController.theme.value?.textColor ?? Colors.white,
-                                                    ),
-                                                  ),
-                                                ],
-                                              ),
-                                            ),
-                                            SizedBox(height: 20),
-                                            Container(
-                                              decoration: BoxDecoration(
-                                                color: Colors.white,
-                                                borderRadius: BorderRadius.circular(16),
-                                              ),
-                                              padding: EdgeInsets.symmetric(horizontal: 16, vertical: 20),
-                                              child: Column(
-                                                children: [
-                                                  _receiptRow("ចំនួន", "\$${h.repayAmount}", color:Colors.green),
-                                                  Divider(color: Colors.black26, thickness: 1, height: 24),
-                                                  _receiptRow("ថ្ងៃសងប្រាក់", h.repayDate ?? "-"),
-                                                  if (h.repayDesc != null && h.repayDesc!.isNotEmpty) ...[
-                                                    Divider(color: Colors.black26, thickness: 1, height: 24),
-                                                    _receiptRow("ចំណាំ", h.repayDesc ?? "-"),
-                                                  ],
-                                                  if (h.repayId != null && h.repayId!.isNotEmpty) ...[
-                                                    Divider(color: Colors.black26, thickness: 1, height: 24),
-                                                    _receiptRow("លេខសំគាល់", h.repayId ?? "-", fontSize: 10),
-                                                  ],
-                                                  if (txn.transactionId != null && txn.transactionId!.isNotEmpty) ...[
-                                                    _receiptRow("លេខសំគាល់ដើម", txn.transactionId ?? "-", fontSize: 10),
-                                                  ],
-                                                ],
-                                              ),
-                                            ),
-                                            SizedBox(height: 24),
-                                            Align(
-                                              alignment: Alignment.center,
-                                              child: SizedBox(
-                                                width: double.infinity, // Make it 100% width
-                                                child: Container(
+                                      borderRadius: BorderRadius.circular(20),
+                                      boxShadow: [
+                                        BoxShadow(
+                                          color: Colors.black26,
+                                          blurRadius: 20,
+                                          offset: Offset(0, 10),
+                                        ),
+                                      ],
+                                    ),
+                                    child: Padding(
+                                      padding: const EdgeInsets.all(24),
+                                      child: Column(
+                                        mainAxisSize: MainAxisSize.min,
+                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        children: [
+                                          Center(
+                                            child: Column(
+                                              children: [
+                                                Container(
                                                   decoration: BoxDecoration(
                                                     gradient: LinearGradient(
                                                       colors: [
@@ -621,35 +642,111 @@ void _showTransactionDetailSheet(BuildContext context, ReportModel txn, ReportRe
                                                       begin: Alignment.topLeft,
                                                       end: Alignment.bottomRight,
                                                     ),
-                                                    borderRadius: BorderRadius.circular(20),
+                                                    borderRadius: BorderRadius.all(Radius.circular(100)),
                                                     boxShadow: [
                                                       BoxShadow(
                                                         color: themeController.theme.value?.secondControlColor?.withOpacity(0.3) ?? Colors.white.withOpacity(0.3),
                                                         blurRadius: 6,
-                                                        offset: Offset(0, 2),
+                                                        offset: Offset(0, 3),
                                                       ),
                                                     ],
+                                                    // color: app_colors.menu3Color,
                                                   ),
-                                                  child: ElevatedButton.icon(
-                                                    onPressed: () => Get.back(),
-                                                    icon: Icon(Icons.close, size: 18, color: themeController.theme.value?.textColor ?? Colors.white,),
-                                                    label: Text("បិទ", style: TextStyle(color: themeController.theme.value?.textColor ?? Colors.white,)),
-                                                    style: ElevatedButton.styleFrom(
-                                                      backgroundColor: Colors.transparent,
-                                                      padding: EdgeInsets.symmetric(horizontal: 24, vertical: 14),
-                                                      shape: RoundedRectangleBorder(
-                                                        borderRadius: BorderRadius.circular(16),
-                                                      ),
+                                                  child: Padding(
+                                                    padding: const EdgeInsets.all(8.0),
+                                                    child: CircleAvatar(
+                                                        backgroundColor: Colors.transparent,
+                                                        child: Icon(
+                                                          Icons.currency_exchange_outlined,
+                                                          color: themeController.theme.value?.textColor ?? Colors.white,
+                                                          size: 30,
+                                                        )
+                                                    ),
+                                                  ),
+                                                ),
+                                                SizedBox(height: 10),
+                                                Text(
+                                                  "សងដោយផ្នែកលំអិត",
+                                                  style: TextStyle(
+                                                    fontFamily: 'MyBaseFont',
+                                                    fontSize: 18,
+                                                    fontWeight: FontWeight.bold,
+                                                    color: themeController.theme.value?.textColor ?? Colors.white,
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                          ),
+                                          SizedBox(height: 20),
+                                          Container(
+                                            decoration: BoxDecoration(
+                                              color: Colors.white,
+                                              borderRadius: BorderRadius.circular(16),
+                                            ),
+                                            padding: EdgeInsets.symmetric(horizontal: 16, vertical: 20),
+                                            child: Column(
+                                              children: [
+                                                _receiptRow("ចំនួន", "\$${h.repayAmount}", color:Colors.green),
+                                                Divider(color: Colors.black26, thickness: 1, height: 24),
+                                                _receiptRow("ថ្ងៃសងប្រាក់", h.repayDate ?? "-"),
+                                                if (h.repayDesc != null && h.repayDesc!.isNotEmpty) ...[
+                                                  Divider(color: Colors.black26, thickness: 1, height: 24),
+                                                  _receiptRow("ចំណាំ", h.repayDesc ?? "-"),
+                                                ],
+                                                if (h.repayId != null && h.repayId!.isNotEmpty) ...[
+                                                  Divider(color: Colors.black26, thickness: 1, height: 24),
+                                                  _receiptRow("លេខសំគាល់", h.repayId ?? "-", fontSize: 10),
+                                                ],
+                                                if (txn.transactionId != null && txn.transactionId!.isNotEmpty) ...[
+                                                  _receiptRow("លេខសំគាល់ដើម", txn.transactionId ?? "-", fontSize: 10),
+                                                ],
+                                              ],
+                                            ),
+                                          ),
+                                          SizedBox(height: 24),
+                                          Align(
+                                            alignment: Alignment.center,
+                                            child: SizedBox(
+                                              width: double.infinity, // Make it 100% width
+                                              child: Container(
+                                                decoration: BoxDecoration(
+                                                  gradient: LinearGradient(
+                                                    colors: [
+                                                      themeController.theme.value?.firstControlColor ?? Colors.black,
+                                                      themeController.theme.value?.secondControlColor?.withOpacity(0.9) ?? Colors.black.withOpacity(0.9),
+                                                    ],
+                                                    begin: Alignment.topLeft,
+                                                    end: Alignment.bottomRight,
+                                                  ),
+                                                  borderRadius: BorderRadius.circular(20),
+                                                  boxShadow: [
+                                                    BoxShadow(
+                                                      color: themeController.theme.value?.secondControlColor?.withOpacity(0.3) ?? Colors.white.withOpacity(0.3),
+                                                      blurRadius: 6,
+                                                      offset: Offset(0, 2),
+                                                    ),
+                                                  ],
+                                                ),
+                                                child: ElevatedButton.icon(
+                                                  onPressed: () => Get.back(),
+                                                  icon: Icon(Icons.close, size: 18, color: themeController.theme.value?.textColor ?? Colors.white,),
+                                                  label: Text("បិទ", style: TextStyle(color: themeController.theme.value?.textColor ?? Colors.white,)),
+                                                  style: ElevatedButton.styleFrom(
+                                                    backgroundColor: Colors.transparent,
+                                                    padding: EdgeInsets.symmetric(horizontal: 24, vertical: 14),
+                                                    shape: RoundedRectangleBorder(
+                                                      borderRadius: BorderRadius.circular(16),
                                                     ),
                                                   ),
                                                 ),
                                               ),
-                                            )
-                                          ],
-                                        ),
+                                            ),
+                                          )
+                                        ],
                                       ),
                                     ),
-                                  )
+                                  ),
+                                )
                               );
                             },
                             child: Container(

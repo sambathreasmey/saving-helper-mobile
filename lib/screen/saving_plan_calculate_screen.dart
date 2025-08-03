@@ -104,9 +104,9 @@ class _SavingPlanCalculateScreenState extends State<SavingPlanCalculateScreen> w
                 ),
                 boxShadow: [
                   BoxShadow(
-                    color: ApplicationVariable.themeShadowColor.withOpacity(0.5),
-                    blurRadius: 6,
-                    offset: const Offset(0, 3),
+                    color: ApplicationVariable.themeShadowColor.withOpacity(0.2),
+                    blurRadius: 3,
+                    offset: const Offset(0, 2),
                   ),
                 ],
               ),
@@ -209,13 +209,13 @@ class _SavingPlanCalculateScreenState extends State<SavingPlanCalculateScreen> w
                                         end: Alignment.bottomRight,
                                       ),
                                       borderRadius: BorderRadius.circular(16),
-                                      boxShadow: [
-                                        BoxShadow(
-                                          color: ApplicationVariable.themeShadowColor.withOpacity(0.3),
-                                          blurRadius: 3,
-                                          offset: Offset(0, 2),
-                                        ),
-                                      ],
+                                      // boxShadow: [
+                                      //   BoxShadow(
+                                      //     color: ApplicationVariable.themeShadowColor.withOpacity(0.3),
+                                      //     blurRadius: 3,
+                                      //     offset: Offset(0, 2),
+                                      //   ),
+                                      // ],
                                     ),
                                     child: InkWell(
                                       onTap: () {
@@ -265,13 +265,13 @@ class _SavingPlanCalculateScreenState extends State<SavingPlanCalculateScreen> w
                   end: Alignment.bottomRight,
                 ),
                 borderRadius: BorderRadius.circular(21),
-                boxShadow: [
-                  BoxShadow(
-                    color: _currentColors.first.withOpacity(0.3),
-                    blurRadius: 3,
-                    offset: const Offset(0, 3),
-                  ),
-                ],
+                // boxShadow: [
+                //   BoxShadow(
+                //     color: _currentColors.first.withOpacity(0.3),
+                //     blurRadius: 3,
+                //     offset: const Offset(0, 3),
+                //   ),
+                // ],
               ),
               child: Center(
                 child: FadeTransition(
@@ -415,54 +415,6 @@ class _SavingPlanCalculateScreenState extends State<SavingPlanCalculateScreen> w
             ),
             decoration: InputDecoration(
               labelText: "ថ្ងៃចាប់ផ្ដើម",
-              prefixIcon: const Icon(Icons.calendar_month),
-              border: InputBorder.none,
-              contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
-            ),
-            style: const TextStyle(fontFamily: 'MyBaseFont', color: Colors.black87),
-          ),
-        ),
-      ),
-    ));
-  }
-
-  Widget _buildEndDatePicker() {
-    return Obx(() => GestureDetector(
-      onTap: () async {
-        final pickedDate = await showDatePicker(
-          context: context,
-          initialDate: controller.selectedEndDate.value.isNotEmpty
-              ? DateTime.parse(controller.selectedEndDate.value)
-              : DateTime.now(),
-          firstDate: DateTime(2000),
-          lastDate: DateTime(2101),
-        );
-        if (pickedDate != null) {
-          controller.selectedEndDate.value =
-              DateFormat('yyyy-MM-dd').format(pickedDate);
-        }
-      },
-      child: AbsorbPointer(
-        child: Container(
-          decoration: BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.circular(16),
-            boxShadow: [
-              BoxShadow(
-                color: Colors.deepPurple.withOpacity(0.1),
-                blurRadius: 8,
-                offset: const Offset(0, 4),
-              ),
-            ],
-          ),
-          child: TextField(
-            controller: TextEditingController(
-              text: controller.selectedEndDate.value.isEmpty
-                  ? ''
-                  : controller.selectedEndDate.value,
-            ),
-            decoration: InputDecoration(
-              labelText: "ថ្ងៃបញ្ចប់",
               prefixIcon: const Icon(Icons.calendar_month),
               border: InputBorder.none,
               contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
