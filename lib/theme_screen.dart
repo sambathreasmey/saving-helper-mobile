@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:saving_helper/constants/application_variable.dart';
 import 'package:saving_helper/screen/widgets/bottom_navigate_bar/CustomBottomNavigationBar.dart';
 import 'controllers/theme_controller.dart';
 import 'package:saving_helper/screen/widgets/bottom_navigate_bar/TabNavController.dart';
@@ -17,11 +18,9 @@ class _ThemedScaffoldState extends State<ThemedScaffold> {
 
   @override
   Widget build(BuildContext context) {
-    final themeController = Get.find<ThemeController>();
 
     return Scaffold(
       bottomNavigationBar: CustomBottomNavigationBar(
-        themeController: themeController,
         currentIndex: _tabController.currentIndex.value,
         onIndexChanged: (index) {
           // Update the current index reactively
@@ -29,13 +28,13 @@ class _ThemedScaffoldState extends State<ThemedScaffold> {
         },
       ),
       extendBody: true,
-      body: Obx(() => Stack(
+      body: Stack(
         children: [
           // Dynamic Background
           Container(
             decoration: BoxDecoration(
               image: DecorationImage(
-                image: AssetImage(themeController.theme.value!.themePath!),
+                image: AssetImage(ApplicationVariable.themeImage),
                 fit: BoxFit.cover,
               ),
             ),
@@ -57,7 +56,7 @@ class _ThemedScaffoldState extends State<ThemedScaffold> {
           // Main content
           widget.child,
         ],
-      )),
+      )
     );
   }
 }

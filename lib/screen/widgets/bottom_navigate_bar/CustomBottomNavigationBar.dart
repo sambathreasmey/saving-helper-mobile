@@ -1,25 +1,21 @@
-import 'dart:ui';
-
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:glass_kit/glass_kit.dart';
-import 'package:saving_helper/controllers/theme_controller.dart';
+import 'package:saving_helper/constants/application_variable.dart';
 import 'package:saving_helper/screen/deposit_saving_screen.dart';
 import 'package:saving_helper/screen/goal_management_screen.dart';
 import 'package:saving_helper/screen/home_screen.dart';
 import 'package:saving_helper/screen/report_screen.dart';
 
 class CustomBottomNavigationBar extends StatelessWidget {
-  final ThemeController themeController;
   final int currentIndex;
   final Function(int) onIndexChanged;
 
   CustomBottomNavigationBar({
-    required this.themeController,
-    required this.currentIndex,
+    required this.currentIndex, // Pass Rx<int> directly here
     required this.onIndexChanged,
-    Key? key,
-  }) : super(key: key);
+    super.key,
+  });
 
   // Screens for each tab
   final List<Widget> _screens = [
@@ -36,30 +32,29 @@ class CustomBottomNavigationBar extends StatelessWidget {
       alignment: Alignment.center,
       gradient: LinearGradient(
         colors: [
-          themeController.theme.value?.firstControlColor?.withOpacity(0.40) ?? Colors.black,
-          themeController.theme.value?.secondControlColor?.withOpacity(0.10) ?? Colors.black.withOpacity(0.9),
+          ApplicationVariable.themeFirstGradientColor.withOpacity(0.40),
+          ApplicationVariable.themeSecondGradientColor.withOpacity(0.10),
         ],
         begin: Alignment.topLeft,
         end: Alignment.bottomRight,
       ),
       borderGradient: LinearGradient(
         colors: [
-          themeController.theme.value?.firstControlColor?.withOpacity(0.60) ?? Colors.white.withOpacity(0.60),
-          themeController.theme.value?.firstControlColor?.withOpacity(0.10) ?? Colors.white.withOpacity(0.60),
-          themeController.theme.value?.secondControlColor?.withOpacity(0.05) ?? Colors.white.withOpacity(0.05),
-          themeController.theme.value?.secondControlColor?.withOpacity(0.60) ?? Colors.white.withOpacity(0.60),
+          ApplicationVariable.themeFirstBorderColor.withOpacity(0.60),
+          ApplicationVariable.themeFirstBorderColor.withOpacity(0.10),
+          ApplicationVariable.themeSecondBorderColor.withOpacity(0.05),
+          ApplicationVariable.themeSecondBorderColor.withOpacity(0.60),
         ],
         begin: Alignment.topLeft,
         end: Alignment.bottomRight,
         stops: [0.0, 0.39, 0.40, 1.0],
       ),
-      blur: 20,
+      blur: 30,
       padding: EdgeInsets.fromLTRB(15, 10, 15, 20),
-      borderWidth: 0.95,
+      borderWidth: 0.0,
       elevation: 4.0,
-      shadowColor: themeController.theme.value?.secondControlColor?.withOpacity(0.20) ?? Colors.purple.withOpacity(0.20),
-      child: Obx(
-            () => Row(
+      shadowColor: ApplicationVariable.themeSecondGradientColor.withOpacity(0.20),
+      child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceAround,
           children: [
             _buildNavItem(Icons.home, 'លំនាំដើម', 0),
@@ -68,15 +63,17 @@ class CustomBottomNavigationBar extends StatelessWidget {
             _buildNavItem(Icons.grass_outlined, 'គម្រោង', 3),
           ],
         ),
-      ),
     );
   }
 
   Widget _buildNavItem(IconData icon, String label, int index) {
     return GestureDetector(
       onTap: () {
-        onIndexChanged(index); // Update the current index reactively
-        _navigateToTab(index);
+        ApplicationVariable.vibrate();
+        if (currentIndex != index) {
+          onIndexChanged(index); // Update the index reactively
+          _navigateToTab(index); // Only navigate when it's a new tab
+        }
       },
       child: Column(
         mainAxisSize: MainAxisSize.min,
@@ -85,7 +82,7 @@ class CustomBottomNavigationBar extends StatelessWidget {
             icon,
             size: 30,
             color: currentIndex == index
-                ? themeController.theme.value!.textColor!
+                ? ApplicationVariable.themeTextColor
                 : Colors.grey,
           ),
           Text(
@@ -95,7 +92,7 @@ class CustomBottomNavigationBar extends StatelessWidget {
               fontFamily: 'MyBaseFont',
               fontSize: 10,
               color: currentIndex == index
-                  ? themeController.theme.value!.textColor!
+                  ? ApplicationVariable.themeTextColor
                   : Colors.grey,
             ),
           ),

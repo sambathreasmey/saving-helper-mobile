@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
+import 'package:saving_helper/constants/application_variable.dart';
 import 'package:saving_helper/controllers/goal_management_controller.dart';
 import 'package:saving_helper/controllers/theme_controller.dart';
 import 'package:saving_helper/repository/goal_management_repository.dart';
@@ -27,7 +28,6 @@ class CreateGoalScreen extends StatefulWidget {
 
 class _CreateGoalScreenState extends State<CreateGoalScreen> {
   final GoalManagementController controller = Get.put(GoalManagementController(GoalManagementRepository(ApiProvider())));
-  final ThemeController themeController = Get.put(ThemeController());
 
   bool _isInitialized = false;
 
@@ -69,7 +69,7 @@ class _CreateGoalScreenState extends State<CreateGoalScreen> {
                           title: screenTitle,
                           subTitle: 'គ្រប់គ្រង',
                           path: 'គម្រោងសន្សំប្រាក់',
-                          textColor: themeController.theme.value?.textColor ?? Colors.white,
+                          textColor: ApplicationVariable.themeTextColor,
                         ),
                       ],
                     ),
@@ -122,8 +122,8 @@ class _CreateGoalScreenState extends State<CreateGoalScreen> {
                                 decoration: BoxDecoration(
                                   gradient: LinearGradient(
                                     colors: [
-                                      themeController.theme.value?.firstControlColor ?? Colors.black,
-                                      themeController.theme.value?.secondControlColor ?? Colors.black,
+                                      ApplicationVariable.themeFirstGradientColor,
+                                      ApplicationVariable.themeSecondGradientColor
                                     ],
                                     begin: Alignment.topLeft,
                                     end: Alignment.bottomRight,
@@ -131,7 +131,7 @@ class _CreateGoalScreenState extends State<CreateGoalScreen> {
                                   borderRadius: BorderRadius.circular(20),
                                   boxShadow: [
                                     BoxShadow(
-                                      color: themeController.theme.value?.secondControlColor?.withOpacity(0.3) ?? Colors.white.withOpacity(0.3),
+                                      color: ApplicationVariable.themeSecondGradientColor.withOpacity(0.3),
                                       blurRadius: 6,
                                       offset: Offset(0, 2),
                                     ),
@@ -144,7 +144,7 @@ class _CreateGoalScreenState extends State<CreateGoalScreen> {
                                   child: Text(
                                       buttonLabel,
                                       style: TextStyle(
-                                        color: themeController.theme.value?.textColor ?? Colors.white,
+                                        color: ApplicationVariable.themeTextColor,
                                         fontSize: 16,
                                         fontFamily: 'MyBaseFont',
                                         fontWeight: FontWeight.bold,
@@ -166,8 +166,9 @@ class _CreateGoalScreenState extends State<CreateGoalScreen> {
               isLoading: controller.isLoading.value,
               loadingText: 'សូមមេត្តារងចាំ',
               glowColors: [
-                themeController.theme.value?.firstControlColor ?? Colors.black,
-                themeController.theme.value?.secondControlColor ?? Colors.black],
+                ApplicationVariable.themeFirstGradientColor,
+                ApplicationVariable.themeSecondGradientColor
+              ],
             )),
           ]
         ),

@@ -2,8 +2,8 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
+import 'package:saving_helper/constants/application_variable.dart';
 import 'package:saving_helper/controllers/deposit_saving_controller.dart';
-import 'package:saving_helper/controllers/theme_controller.dart';
 import 'package:saving_helper/repository/deposit_saving_repository.dart';
 import 'package:saving_helper/screen/widgets/FullScreenLoader.dart';
 import 'package:saving_helper/screen/widgets/bread_crumb/DynamicBreadcrumbWidget.dart';
@@ -25,14 +25,17 @@ class DepositSavingScreen extends StatefulWidget {
 class _DepositSavingScreenState extends State<DepositSavingScreen> {
   final DepositSavingController controller =
   Get.put(DepositSavingController(DepositSavingRepository(ApiProvider())));
-  final ThemeController themeController = Get.put(ThemeController());
 
   @override
   Widget build(BuildContext context) {
     return ThemedScaffold(
       child: Scaffold(
         backgroundColor: Colors.transparent,
-        body: Stack(
+        body: GestureDetector(
+            onTap: () {
+          FocusScope.of(context).unfocus(); // Dismiss the keyboard when tapping outside of text fields
+        },
+        child: Stack(
           children: [
             SafeArea(
               child: Column(
@@ -48,7 +51,7 @@ class _DepositSavingScreenState extends State<DepositSavingScreen> {
                           title: 'គ្រប់គ្រង',
                           subTitle: 'គ្រប់គ្រង',
                           path: 'បញ្ចូលប្រាក់សន្សំ',
-                          textColor: themeController.theme.value?.textColor ?? Colors.white,
+                          textColor: ApplicationVariable.themeTextColor,
                         )
                       ],
                     ),
@@ -79,9 +82,9 @@ class _DepositSavingScreenState extends State<DepositSavingScreen> {
                           const SizedBox(height: 16),
                           DatePickerWidget(
                             selectedDate: controller.selectedDate,
-                            firstControlColor: themeController.theme.value?.firstControlColor ?? Colors.black,
-                            secondControlColor: themeController.theme.value?.secondControlColor ?? Colors.black,
-                            textColor: themeController.theme.value?.textColor ?? Colors.white,
+                            firstControlColor: ApplicationVariable.themeFirstGradientColor,
+                            secondControlColor: ApplicationVariable.themeSecondGradientColor,
+                            textColor: ApplicationVariable.themeTextColor,
                           ),
                           const SizedBox(height: 16),
                           TextFieldWidget(
@@ -110,8 +113,8 @@ class _DepositSavingScreenState extends State<DepositSavingScreen> {
                         decoration: BoxDecoration(
                           gradient: LinearGradient(
                             colors: [
-                              themeController.theme.value?.firstControlColor ?? Colors.black,
-                              themeController.theme.value?.secondControlColor ?? Colors.black,
+                              ApplicationVariable.themeFirstGradientColor,
+                              ApplicationVariable.themeSecondGradientColor
                             ],
                             begin: Alignment.topLeft,
                             end: Alignment.bottomRight,
@@ -119,7 +122,7 @@ class _DepositSavingScreenState extends State<DepositSavingScreen> {
                           borderRadius: BorderRadius.circular(20),
                           boxShadow: [
                             BoxShadow(
-                              color: themeController.theme.value?.secondControlColor?.withOpacity(0.3) ?? Colors.white.withOpacity(0.3),
+                              color: ApplicationVariable.themeSecondGradientColor.withOpacity(0.3),
                               blurRadius: 6,
                               offset: Offset(0, 2),
                             ),
@@ -127,7 +130,7 @@ class _DepositSavingScreenState extends State<DepositSavingScreen> {
                         ),
                         child: TextButton(
                           onPressed: controller.saveDeposit,
-                          child: Text('បញ្ចូល', style: TextStyle(color: themeController.theme.value?.textColor ?? Colors.white, fontSize: 16, fontFamily: 'MyBaseFont', fontWeight: FontWeight.bold,)),
+                          child: Text('បញ្ចូល', style: TextStyle(color: ApplicationVariable.themeTextColor, fontSize: 16, fontFamily: 'MyBaseFont', fontWeight: FontWeight.bold,)),
                         ),
                       ),
                     ),
@@ -140,12 +143,13 @@ class _DepositSavingScreenState extends State<DepositSavingScreen> {
               isLoading: controller.isLoading.value,
               loadingText: 'សូមមេត្តារងចាំ',
               glowColors: [
-                themeController.theme.value?.firstControlColor ?? Colors.black,
-                themeController.theme.value?.secondControlColor ?? Colors.black],
+                ApplicationVariable.themeFirstGradientColor,
+                ApplicationVariable.themeSecondGradientColor
+              ],
             )),
           ]
         ),
-      ),
+      )),
     );
   }
 
@@ -235,11 +239,11 @@ class _DepositSavingScreenState extends State<DepositSavingScreen> {
               height: 20,
               decoration: BoxDecoration(
                 color: controller.isSavingMore.value
-                    ? themeController.theme.value?.secondControlColor ?? Colors.black
+                    ? ApplicationVariable.themeSecondGradientColor
                     : Colors.transparent,
                 border: Border.all(
                   color: controller.isSavingMore.value
-                      ? themeController.theme.value?.secondControlColor ?? Colors.black
+                      ? ApplicationVariable.themeSecondGradientColor
                       : Colors.grey.withOpacity(0.4),
                   width: 2,
                 ),

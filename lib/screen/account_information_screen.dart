@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
+import 'package:saving_helper/constants/application_variable.dart';
 import 'package:saving_helper/controllers/goal_management_controller.dart';
 import 'package:saving_helper/controllers/theme_controller.dart';
 import 'package:saving_helper/repository/goal_management_repository.dart';
@@ -24,8 +25,6 @@ class AccountInformationScreen extends StatefulWidget {
 }
 
 class _AccountInformationScreenState extends State<AccountInformationScreen> {
-  // final GoalManagementController controller = Get.put(GoalManagementController(GoalManagementRepository(ApiProvider())));
-  final ThemeController themeController = Get.put(ThemeController());
   final ShareStorage shareStorage = ShareStorage();
   late final LoginResponse.Data? user = LoginResponse.Data();
 
@@ -62,8 +61,8 @@ class _AccountInformationScreenState extends State<AccountInformationScreen> {
                       decoration: BoxDecoration(
                         gradient: LinearGradient(
                           colors: [
-                            themeController.theme.value?.firstControlColor ?? Colors.black,
-                            themeController.theme.value?.secondControlColor?.withOpacity(0.9) ?? Colors.black.withOpacity(0.9),
+                            ApplicationVariable.themeFirstGradientColor,
+                            ApplicationVariable.themeSecondGradientColor
                           ],
                           begin: Alignment.topLeft,
                           end: Alignment.bottomRight,
@@ -75,7 +74,7 @@ class _AccountInformationScreenState extends State<AccountInformationScreen> {
                         borderRadius: BorderRadius.circular(100),
                         boxShadow: [
                           BoxShadow(
-                            color: themeController.theme.value?.secondControlColor?.withOpacity(0.6) ?? Colors.black.withOpacity(0.6),
+                            color: ApplicationVariable.themeSecondGradientColor,
                             blurRadius: 6,
                             offset: Offset(0, 3),
                           ),
@@ -84,7 +83,7 @@ class _AccountInformationScreenState extends State<AccountInformationScreen> {
                       child: Padding(
                         padding: const EdgeInsets.all(16.0),
                         child: Text(
-                          getInitials('សម្បត្តិ រស្មី'), style: TextStyle(color: themeController.theme.value!.textColor ?? Colors.black, fontWeight: FontWeight.bold, fontFamily: 'MyBaseFont', fontSize: 52),
+                          getInitials('សម្បត្តិ រស្មី'), style: TextStyle(color: ApplicationVariable.themeTextColor, fontWeight: FontWeight.bold, fontFamily: 'MyBaseFont', fontSize: 52),
                         ),
                       ),
                     ),
@@ -113,117 +112,65 @@ class _AccountInformationScreenState extends State<AccountInformationScreen> {
                                 opacity: 1.0,
                                 child: CoolTitle('ព័ត៌មានគណនី'),
                               ),
-                              // _buildBoxField(
-                              //   'ឈ្មោះ',
-                              //   'សម្បត្តិ រស្មី',
-                              //   [
-                              //     themeController.theme.value?.firstControlColor ?? Colors.black,
-                              //     themeController.theme.value?.secondControlColor?.withOpacity(0.9) ?? Colors.black.withOpacity(0.9),
-                              //   ],
-                              //   themeController.theme.value?.textColor ?? Colors.white,
-                              //   onEditPressed: () {
-                              //     print('editing');
-                              //   },
-                              // ),
-                              // _buildBoxField(
-                              //   'ឈ្មោះអ្នកប្រើប្រាស់',
-                              //   'sambathreasmey',
-                              //   fontFamily: 'MyBaseEnFont',
-                              //   [
-                              //     themeController.theme.value?.firstControlColor ?? Colors.black,
-                              //     themeController.theme.value?.secondControlColor?.withOpacity(0.9) ?? Colors.black.withOpacity(0.9),
-                              //   ],
-                              //   themeController.theme.value?.textColor ?? Colors.white,
-                              // ),
-                              // _buildBoxField(
-                              //   'អ៊ីមែល',
-                              //   'reasmeysambath@gmail.com',
-                              //   fontFamily: 'MyBaseEnFont',
-                              //   [
-                              //     themeController.theme.value?.firstControlColor ?? Colors.black,
-                              //     themeController.theme.value?.secondControlColor?.withOpacity(0.9) ?? Colors.black.withOpacity(0.9),
-                              //   ],
-                              //   themeController.theme.value?.textColor ?? Colors.white,
-                              // ),
-                              // _buildBoxField(
-                              //   'សិទ្ធិ',
-                              //   'OWNER',
-                              //   fontFamily: 'MyBaseEnFont',
-                              //   [
-                              //     themeController.theme.value?.firstControlColor ?? Colors.black,
-                              //     themeController.theme.value?.secondControlColor?.withOpacity(0.9) ?? Colors.black.withOpacity(0.9),
-                              //   ],
-                              //   themeController.theme.value?.textColor ?? Colors.white,
-                              // ),
-                              // _buildBoxField(
-                              //   'លេខសំងាត់',
-                              //   '**************',
-                              //   fontFamily: 'MyBaseEnFont',
-                              //   [
-                              //     themeController.theme.value?.firstControlColor ?? Colors.black,
-                              //     themeController.theme.value?.secondControlColor?.withOpacity(0.9) ?? Colors.black.withOpacity(0.9),
-                              //   ],
-                              //   themeController.theme.value?.textColor ?? Colors.white,
-                              // ),
                               EditableBoxField(
                                 label: 'ឈ្មោះ',
                                 initialValue: 'សម្បត្តិ រស្មី',
                                 colors: [
-                                  themeController.theme.value?.firstControlColor ?? Colors.black,
-                                  themeController.theme.value?.secondControlColor?.withOpacity(0.9) ?? Colors.black.withOpacity(0.9),
+                                  ApplicationVariable.themeFirstGradientColor,
+                                  ApplicationVariable.themeSecondGradientColor,
                                 ],
-                                labelColor: themeController.theme.value?.textColor ?? Colors.white,
-                                onSave: (val) => print("Updated to: $val"),
+                                labelColor: ApplicationVariable.themeTextColor,
+                                onSave: (val) => {ApplicationVariable.vibrate(), print("Updated to: $val")},
                               ),
                               EditableBoxField(
                                 label: 'ឈ្មោះអ្នកប្រើប្រាស់',
                                 initialValue: 'sambathreasmey',
                                 fontFamily: 'MyBaseEnFont',
                                 colors: [
-                                  themeController.theme.value?.firstControlColor ?? Colors.black,
-                                  themeController.theme.value?.secondControlColor?.withOpacity(0.9) ?? Colors.black.withOpacity(0.9),
+                                  ApplicationVariable.themeFirstGradientColor,
+                                  ApplicationVariable.themeSecondGradientColor
                                 ],
-                                labelColor: themeController.theme.value?.textColor ?? Colors.white,
+                                labelColor: ApplicationVariable.themeTextColor,
                               ),
                               EditableBoxField(
                                 label: 'អ៊ីមែល',
                                 initialValue: 'reasmeysambath@gmail.com',
                                 fontFamily: 'MyBaseEnFont',
                                 colors: [
-                                  themeController.theme.value?.firstControlColor ?? Colors.black,
-                                  themeController.theme.value?.secondControlColor?.withOpacity(0.9) ?? Colors.black.withOpacity(0.9),
+                                  ApplicationVariable.themeFirstGradientColor,
+                                  ApplicationVariable.themeSecondGradientColor
                                 ],
-                                labelColor: themeController.theme.value?.textColor ?? Colors.white,
+                                labelColor: ApplicationVariable.themeTextColor,
                               ),
                               EditableBoxField(
                                 label: 'សិទ្ធិ',
                                 initialValue: 'OWNER',
                                 fontFamily: 'MyBaseEnFont',
                                 colors: [
-                                  themeController.theme.value?.firstControlColor ?? Colors.black,
-                                  themeController.theme.value?.secondControlColor?.withOpacity(0.9) ?? Colors.black.withOpacity(0.9),
+                                  ApplicationVariable.themeFirstGradientColor,
+                                  ApplicationVariable.themeSecondGradientColor
                                 ],
-                                labelColor: themeController.theme.value?.textColor ?? Colors.white,
+                                labelColor: ApplicationVariable.themeTextColor,
                               ),
                               EditableBoxField(
                                 label: 'លេខសំងាត់',
                                 initialValue: '**************',
                                 fontFamily: 'MyBaseEnFont',
                                 colors: [
-                                  themeController.theme.value?.firstControlColor ?? Colors.black,
-                                  themeController.theme.value?.secondControlColor?.withOpacity(0.9) ?? Colors.black.withOpacity(0.9),
+                                  ApplicationVariable.themeFirstGradientColor,
+                                  ApplicationVariable.themeSecondGradientColor
                                 ],
-                                labelColor: themeController.theme.value?.textColor ?? Colors.white,
+                                labelColor: ApplicationVariable.themeTextColor,
                               ),
                               EditableBoxField(
                                 label: 'លេខគណនី',
                                 initialValue: '**************',
                                 fontFamily: 'MyBaseEnFont',
                                 colors: [
-                                  themeController.theme.value?.firstControlColor ?? Colors.black,
-                                  themeController.theme.value?.secondControlColor?.withOpacity(0.9) ?? Colors.black.withOpacity(0.9),
+                                  ApplicationVariable.themeFirstGradientColor,
+                                  ApplicationVariable.themeSecondGradientColor
                                 ],
-                                labelColor: themeController.theme.value?.textColor ?? Colors.white,
+                                labelColor: ApplicationVariable.themeTextColor,
                               ),
                             ],
                           ),

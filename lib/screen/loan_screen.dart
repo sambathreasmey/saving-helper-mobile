@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
+import 'package:saving_helper/constants/application_variable.dart';
 import 'package:saving_helper/controllers/loan_controller.dart';
 import 'package:saving_helper/controllers/theme_controller.dart';
 import 'package:saving_helper/repository/deposit_saving_repository.dart';
@@ -25,14 +26,17 @@ class _LoanScreenState extends State<LoanScreen> {
   final LoanController controller = Get.put(
     LoanController(DepositSavingRepository(ApiProvider())),
   );
-  final ThemeController themeController = Get.put(ThemeController());
 
   @override
   Widget build(BuildContext context) {
     return ThemedScaffold(
       child: Scaffold(
         backgroundColor: Colors.transparent,
-        body: Stack(
+        body: GestureDetector(
+            onTap: () {
+          FocusScope.of(context).unfocus(); // Dismiss the keyboard when tapping outside of text fields
+        },
+        child: Stack(
           children: [
             SafeArea(
               child: Column(
@@ -48,7 +52,7 @@ class _LoanScreenState extends State<LoanScreen> {
                           title: 'គ្រប់គ្រង',
                           subTitle: 'គ្រប់គ្រង',
                           path: 'បញ្ចូលប្រាក់កម្ចី',
-                          textColor: themeController.theme.value?.textColor ?? Colors.white,
+                          textColor: ApplicationVariable.themeTextColor,
                         )
                       ],
                     ),
@@ -79,9 +83,9 @@ class _LoanScreenState extends State<LoanScreen> {
                           const SizedBox(height: 16),
                           DatePickerWidget(
                             selectedDate: controller.selectedDate,
-                            firstControlColor: themeController.theme.value?.firstControlColor ?? Colors.black,
-                            secondControlColor: themeController.theme.value?.secondControlColor ?? Colors.black,
-                            textColor: themeController.theme.value?.textColor ?? Colors.white,
+                            firstControlColor: ApplicationVariable.themeFirstGradientColor,
+                            secondControlColor: ApplicationVariable.themeSecondGradientColor,
+                            textColor: ApplicationVariable.themeTextColor,
                           ),
                           const SizedBox(height: 16),
                           TextFieldWidget(
@@ -105,8 +109,8 @@ class _LoanScreenState extends State<LoanScreen> {
                         decoration: BoxDecoration(
                           gradient: LinearGradient(
                             colors: [
-                              themeController.theme.value?.firstControlColor ?? Colors.black,
-                              themeController.theme.value?.secondControlColor ?? Colors.black,
+                              ApplicationVariable.themeFirstGradientColor,
+                              ApplicationVariable.themeSecondGradientColor
                             ],
                             begin: Alignment.topLeft,
                             end: Alignment.bottomRight,
@@ -114,7 +118,7 @@ class _LoanScreenState extends State<LoanScreen> {
                           borderRadius: BorderRadius.circular(20),
                           boxShadow: [
                             BoxShadow(
-                              color: themeController.theme.value?.secondControlColor?.withOpacity(0.3) ?? Colors.white.withOpacity(0.3),
+                              color: ApplicationVariable.themeSecondGradientColor.withOpacity(0.3),
                               blurRadius: 6,
                               offset: Offset(0, 2),
                             ),
@@ -122,7 +126,7 @@ class _LoanScreenState extends State<LoanScreen> {
                         ),
                         child: TextButton(
                           onPressed: controller.saveLoan,
-                          child: Text('បញ្ចូល', style: TextStyle(color: themeController.theme.value!.textColor ?? Colors.black, fontSize: 16, fontFamily: 'MyBaseFont', fontWeight: FontWeight.bold,)),
+                          child: Text('បញ្ចូល', style: TextStyle(color: ApplicationVariable.themeTextColor, fontSize: 16, fontFamily: 'MyBaseFont', fontWeight: FontWeight.bold,)),
                         ),
                       ),
                     ),
@@ -135,12 +139,13 @@ class _LoanScreenState extends State<LoanScreen> {
               isLoading: controller.isLoading.value,
               loadingText: 'សូមមេត្តារងចាំ',
               glowColors: [
-                themeController.theme.value?.firstControlColor ?? Colors.black,
-                themeController.theme.value?.secondControlColor ?? Colors.black],
+                ApplicationVariable.themeFirstGradientColor,
+                ApplicationVariable.themeSecondGradientColor
+              ]
             )),
           ],
         ),
-      ),
+      )),
     );
   }
 }

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:glass_kit/glass_kit.dart';
 import 'package:saving_helper/controllers/report_controller.dart';
 import 'package:saving_helper/controllers/report_repay_controller.dart';
 import 'package:saving_helper/controllers/theme_controller.dart';
@@ -10,6 +11,7 @@ import 'package:get/get.dart';
 import 'package:saving_helper/theme_screen.dart';
 
 import '../constants/app_color.dart' as app_colors;
+import '../constants/application_variable.dart';
 
 class ReportRepayScreen extends StatefulWidget {
   const ReportRepayScreen({super.key});
@@ -204,26 +206,33 @@ class _ReportRepayScreenState extends State<ReportRepayScreen> {
 }
 
 Widget _buildTransactionTile(BuildContext context, ReportModel txn, ReportRepayController controller, ThemeController themeController) {
-  return Container(
-    margin: EdgeInsets.symmetric(vertical: 4),
-    decoration: BoxDecoration(
-      gradient: LinearGradient(
-        colors: [
-          Colors.black,
-          themeController.theme.value?.secondControlColor?.withOpacity(0.9) ?? Colors.black.withOpacity(0.9),
-        ],
-        begin: Alignment.topLeft,
-        end: Alignment.bottomRight,
-      ),
-      borderRadius: BorderRadius.circular(12),
-      boxShadow: [
-        BoxShadow(
-          color: themeController.theme.value?.secondControlColor?.withOpacity(0.3) ?? Colors.white.withOpacity(0.3),
-          blurRadius: 10,
-          offset: Offset(0, 0),
-        ),
+  return GlassContainer(
+    height: 70,
+    alignment: Alignment.center,
+    gradient: LinearGradient(
+      colors: [
+        ApplicationVariable.themeFirstGradientColor.withOpacity(0.40),
+        ApplicationVariable.themeSecondGradientColor.withOpacity(0.10),
       ],
+      begin: Alignment.topLeft,
+      end: Alignment.bottomRight,
     ),
+    borderGradient: LinearGradient(
+      colors: [
+        ApplicationVariable.themeFirstBorderColor.withOpacity(0.60),
+        ApplicationVariable.themeFirstBorderColor.withOpacity(0.10),
+        ApplicationVariable.themeSecondBorderColor.withOpacity(0.05),
+        ApplicationVariable.themeSecondBorderColor.withOpacity(0.60),
+      ],
+      begin: Alignment.topLeft,
+      end: Alignment.bottomRight,
+      stops: [0.0, 0.39, 0.40, 1.0],
+    ),
+    blur: 20,
+    borderRadius: BorderRadius.circular(24.0),
+    borderWidth: 0.95,
+    elevation: 4.0,
+    shadowColor: ApplicationVariable.themeShadowColor.withOpacity(0.20),
     child: ListTile(
       onTap: () => _showTransactionDetailSheet(context, txn, controller, themeController,),
       contentPadding: EdgeInsets.symmetric(horizontal: 16),
@@ -298,6 +307,7 @@ Widget _buildTransactionTile(BuildContext context, ReportModel txn, ReportRepayC
           ),
           if (txn.remainBalance != 0.0)
             Container(
+              margin: EdgeInsets.only(bottom: 8),
               padding: EdgeInsets.symmetric(horizontal: 8, vertical: 4),
               decoration: BoxDecoration(
                 gradient: LinearGradient(
@@ -351,23 +361,62 @@ void _showTransactionDetailSheet(BuildContext context, ReportModel txn, ReportRe
     context: context,
     backgroundColor: Colors.transparent,
     builder: (_) {
-      return Container(
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(16),
-          gradient: LinearGradient(
-            colors: [
-              Colors.black,
-              themeController.theme.value?.secondControlColor?.withOpacity(0.9) ?? Colors.black.withOpacity(0.9),
-            ],
-          ),
+      return GlassContainer(
+        height: 600,
+        alignment: Alignment.center,
+        gradient: LinearGradient(
+          colors: [
+            ApplicationVariable.themeFirstGradientColor.withOpacity(0.40),
+            ApplicationVariable.themeSecondGradientColor.withOpacity(0.10),
+          ],
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
         ),
+        borderGradient: LinearGradient(
+          colors: [
+            ApplicationVariable.themeFirstBorderColor.withOpacity(0.60),
+            ApplicationVariable.themeFirstBorderColor.withOpacity(0.10),
+            ApplicationVariable.themeSecondBorderColor.withOpacity(0.05),
+            ApplicationVariable.themeSecondBorderColor.withOpacity(0.60),
+          ],
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+          stops: [0.0, 0.39, 0.40, 1.0],
+        ),
+        blur: 20,
+        borderRadius: BorderRadius.circular(24.0),
+        borderWidth: 0.0,
+        elevation: 4.0,
+        shadowColor: ApplicationVariable.themeShadowColor.withOpacity(0.20),
         child: Padding(
           padding: const EdgeInsets.all(16.0),
-          child: Container(
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(16),
-              color: Colors.white,
+          child: GlassContainer(
+            height: 468,
+            alignment: Alignment.center,
+            gradient: LinearGradient(
+              colors: [
+                ApplicationVariable.themeFirstGradientColor.withOpacity(0.40),
+                ApplicationVariable.themeSecondGradientColor.withOpacity(0.10),
+              ],
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
             ),
+            borderGradient: LinearGradient(
+              colors: [
+                ApplicationVariable.themeFirstBorderColor.withOpacity(0.60),
+                ApplicationVariable.themeFirstBorderColor.withOpacity(0.10),
+                ApplicationVariable.themeSecondBorderColor.withOpacity(0.05),
+                ApplicationVariable.themeSecondBorderColor.withOpacity(0.60),
+              ],
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+              stops: [0.0, 0.39, 0.40, 1.0],
+            ),
+            blur: 20,
+            borderRadius: BorderRadius.circular(24.0),
+            borderWidth: 1.0,
+            elevation: 4.0,
+            shadowColor: ApplicationVariable.themeShadowColor.withOpacity(0.20),
             child: SingleChildScrollView(
               child: Padding(
                 padding: const EdgeInsets.all(20),
@@ -390,13 +439,13 @@ void _showTransactionDetailSheet(BuildContext context, ReportModel txn, ReportRe
                                 end: Alignment.bottomRight,
                               ),
                               borderRadius: BorderRadius.all(Radius.circular(100)),
-                              boxShadow: [
-                                BoxShadow(
-                                  color: themeController.theme.value?.secondControlColor?.withOpacity(0.3) ?? Colors.white.withOpacity(0.3),
-                                  blurRadius: 6,
-                                  offset: Offset(0, 3),
-                                ),
-                              ],
+                              // boxShadow: [
+                              //   BoxShadow(
+                              //     color: themeController.theme.value?.secondControlColor?.withOpacity(0.3) ?? Colors.white.withOpacity(0.3),
+                              //     blurRadius: 6,
+                              //     offset: Offset(0, 3),
+                              //   ),
+                              // ],
                               // color: app_colors.menu3Color,
                             ),
                             child: CircleAvatar(
@@ -415,6 +464,7 @@ void _showTransactionDetailSheet(BuildContext context, ReportModel txn, ReportRe
                                 fontSize: 18,
                                 fontWeight: FontWeight.bold,
                                 fontFamily: 'MyBaseFont',
+                                color: Colors.white,
                               ),
                             ),
                           ),
@@ -437,7 +487,7 @@ void _showTransactionDetailSheet(BuildContext context, ReportModel txn, ReportRe
                       style: TextStyle(
                         fontSize: 16,
                         fontWeight: FontWeight.bold,
-                        color: Colors.black,
+                        color: Colors.white,
                         fontFamily: 'MyBaseFont',
                       ),
                     ),
@@ -760,13 +810,13 @@ void _showTransactionDetailSheet(BuildContext context, ReportModel txn, ReportRe
                                   themeController.theme.value?.secondControlColor?.withOpacity(0.9) ?? Colors.black.withOpacity(0.9),
                                 ],
                               ),
-                              boxShadow: [
-                                BoxShadow(
-                                  color: themeController.theme.value?.secondControlColor?.withOpacity(0.3) ?? Colors.white.withOpacity(0.3),
-                                  blurRadius: 6,
-                                  offset: Offset(0, 3),
-                                ),
-                              ],
+                              // boxShadow: [
+                              //   BoxShadow(
+                              //     color: themeController.theme.value?.secondControlColor?.withOpacity(0.3) ?? Colors.white.withOpacity(0.3),
+                              //     blurRadius: 6,
+                              //     offset: Offset(0, 3),
+                              //   ),
+                              // ],
                             ),
                             child: ElevatedButton.icon(
                               onPressed: () {
@@ -800,7 +850,7 @@ void _showTransactionDetailSheet(BuildContext context, ReportModel txn, ReportRe
                           style: TextStyle(
                             fontSize: 16,
                             fontWeight: FontWeight.bold,
-                            color: Colors.black,
+                            color: Colors.white,
                             fontFamily: 'MyBaseFont',
                           ),
                         ),
@@ -814,7 +864,7 @@ void _showTransactionDetailSheet(BuildContext context, ReportModel txn, ReportRe
                           children: [
                             TextButton(
                               onPressed: () => controller.isRepayFormVisible.value = false,
-                              child: Text("បោះបង់", style: TextStyle(color: Colors.black)),
+                              child: Text("បោះបង់", style: TextStyle(color: Colors.white)),
                             ),
                             SizedBox(width: 10),
                             Container(
@@ -822,19 +872,19 @@ void _showTransactionDetailSheet(BuildContext context, ReportModel txn, ReportRe
                                 gradient: LinearGradient(
                                   colors: [
                                     themeController.theme.value?.firstControlColor ?? Colors.black,
-                                    themeController.theme.value?.secondControlColor?.withOpacity(0.9) ?? Colors.black.withOpacity(0.9),
+                                    themeController.theme.value?.secondControlColor ?? Colors.black.withOpacity(0.9),
                                   ],
                                   begin: Alignment.topLeft,
                                   end: Alignment.bottomRight,
                                 ),
                                 borderRadius: BorderRadius.circular(20),
-                                boxShadow: [
-                                  BoxShadow(
-                                    color: themeController.theme.value?.secondControlColor?.withOpacity(0.3) ?? Colors.white.withOpacity(0.3),
-                                    blurRadius: 3,
-                                    offset: Offset(0, 2),
-                                  ),
-                                ],
+                                // boxShadow: [
+                                //   BoxShadow(
+                                //     color: themeController.theme.value?.secondControlColor?.withOpacity(0.3) ?? Colors.white.withOpacity(0.3),
+                                //     blurRadius: 3,
+                                //     offset: Offset(0, 2),
+                                //   ),
+                                // ],
                               ),
                               child: ElevatedButton.icon(
                                 icon: Icon(Icons.save, color: themeController.theme.value?.textColor ?? Colors.white,),
@@ -872,8 +922,8 @@ void _showTransactionDetailSheet(BuildContext context, ReportModel txn, ReportRe
                                 },
                                 style: ElevatedButton.styleFrom(
                                   backgroundColor: Colors.transparent,
-                                  padding: EdgeInsets.symmetric(horizontal: 24, vertical: 12),
-                                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                                  padding: EdgeInsets.symmetric(horizontal: 23, vertical: 14),
+                                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
                                 ),
                               ),
                             ),
@@ -900,13 +950,13 @@ Widget _darkInfo(String label, String value, {Color? color}) {
     child: Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        Text(label, style: TextStyle(fontSize: 14, color: Colors.black87.withOpacity(0.6), fontFamily: 'MyBaseFont', fontWeight: FontWeight.bold,)),
+        Text(label, style: TextStyle(fontSize: 14, color: Colors.white, fontFamily: 'MyBaseFont', fontWeight: FontWeight.normal,)),
         Text(
           value,
           style: TextStyle(
             fontSize: 13,
             fontWeight: FontWeight.w600,
-            color: color ?? Colors.black,
+            color: color ?? Colors.white,
             fontFamily: 'MyBaseFont',
           ),
         ),

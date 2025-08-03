@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:glass_kit/glass_kit.dart';
+import 'package:saving_helper/constants/application_variable.dart';
 import 'package:saving_helper/controllers/summary_report_controller.dart';
 import 'package:saving_helper/controllers/theme_controller.dart';
 import 'package:saving_helper/repository/summary_report_repository.dart';
@@ -19,7 +21,6 @@ class SummaryReportScreen extends StatefulWidget {
 class _SummaryReportScreenState extends State<SummaryReportScreen> {
   final SummaryReportController controller =
   Get.put(SummaryReportController(SummaryReportRepository(ApiProvider())));
-  final ThemeController themeController = Get.put(ThemeController());
   final ScrollController _scrollController = ScrollController();
 
   @override
@@ -58,7 +59,7 @@ class _SummaryReportScreenState extends State<SummaryReportScreen> {
                     Text(
                       'របាយការណ៍សង្ខេបប្រចាំខែ',
                       style: TextStyle(
-                        color: themeController.theme.value?.textColor ?? Colors.white,
+                        color: ApplicationVariable.themeTextColor,
                         fontSize: 16,
                         fontWeight: FontWeight.bold,
                         fontFamily: 'MyBaseFont',
@@ -69,7 +70,7 @@ class _SummaryReportScreenState extends State<SummaryReportScreen> {
                         Text(
                           'របាយការណ៍ / ',
                           style: TextStyle(
-                            color: themeController.theme.value?.textColor ?? Colors.white,
+                            color: ApplicationVariable.themeTextColor,
                             fontSize: 9,
                             fontFamily: 'MyBaseFont',
                           ),
@@ -77,7 +78,7 @@ class _SummaryReportScreenState extends State<SummaryReportScreen> {
                         Text(
                           'របាយការណ៍សង្ខេបប្រចាំខែ',
                           style: TextStyle(
-                            color: themeController.theme.value?.textColor ?? Colors.white,
+                            color: ApplicationVariable.themeTextColor,
                             fontSize: 9,
                             fontWeight: FontWeight.bold,
                             fontFamily: 'MyBaseFont',
@@ -133,20 +134,35 @@ class _SummaryReportScreenState extends State<SummaryReportScreen> {
                       final transactions = groupedTransactions[date]!;
                       final totalAmount = transactions.fold<double>(0, (sum, txn) => sum + (txn.totalAmount ?? 0));
 
-                      return Container(
+                      return GlassContainer(
                         margin: const EdgeInsets.only(bottom: 12),
                         padding: const EdgeInsets.all(14),
-                        decoration: BoxDecoration(
-                          gradient: LinearGradient(
-                            colors: [
-                              Colors.black,
-                              themeController.theme.value?.secondControlColor ?? Colors.black,
-                            ],
-                            begin: Alignment.topLeft,
-                            end: Alignment.bottomRight,
-                          ),
-                          borderRadius: BorderRadius.circular(16),
+                        height: 120,
+                        alignment: Alignment.center,
+                        gradient: LinearGradient(
+                          colors: [
+                            ApplicationVariable.themeFirstGradientColor.withOpacity(0.40),
+                            ApplicationVariable.themeSecondGradientColor.withOpacity(0.10),
+                          ],
+                          begin: Alignment.topLeft,
+                          end: Alignment.bottomRight,
                         ),
+                        borderGradient: LinearGradient(
+                          colors: [
+                            ApplicationVariable.themeFirstBorderColor.withOpacity(0.60),
+                            ApplicationVariable.themeFirstBorderColor.withOpacity(0.10),
+                            ApplicationVariable.themeSecondBorderColor.withOpacity(0.05),
+                            ApplicationVariable.themeSecondBorderColor.withOpacity(0.60),
+                          ],
+                          begin: Alignment.topLeft,
+                          end: Alignment.bottomRight,
+                          stops: [0.0, 0.39, 0.40, 1.0],
+                        ),
+                        blur: 20,
+                        borderRadius: BorderRadius.circular(24.0),
+                        borderWidth: 1.0,
+                        elevation: 4.0,
+                        shadowColor: ApplicationVariable.themeShadowColor.withOpacity(0.20),
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
@@ -155,7 +171,7 @@ class _SummaryReportScreenState extends State<SummaryReportScreen> {
                               style: TextStyle(
                                 fontSize: 18,
                                 fontWeight: FontWeight.bold,
-                                color: themeController.theme.value?.textColor ?? Colors.white,
+                                color: ApplicationVariable.themeTextColor,
                                 fontFamily: 'MyBaseEnFont',
                               ),
                             ),
@@ -178,7 +194,7 @@ class _SummaryReportScreenState extends State<SummaryReportScreen> {
                                         txn.currencyType ?? '',
                                         style: TextStyle(
                                           fontSize: 13,
-                                          color: themeController.theme.value?.textColor ?? Colors.white,
+                                          color: ApplicationVariable.themeTextColor,
                                           fontFamily: 'MyBaseEnFont',
                                         ),
                                       ),

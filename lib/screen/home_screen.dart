@@ -1,6 +1,5 @@
 
 import 'dart:math';
-import 'dart:ui';
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -9,7 +8,6 @@ import 'package:intl/intl.dart';
 import 'package:saving_helper/constants/application_variable.dart';
 import 'package:saving_helper/controllers/header_controller.dart';
 import 'package:saving_helper/controllers/home_screen_controller.dart';
-import 'package:saving_helper/controllers/theme_controller.dart';
 import 'package:saving_helper/repository/header_repository.dart';
 import 'package:saving_helper/repository/home_repository.dart';
 import 'package:saving_helper/screen/account_information_screen.dart';
@@ -40,7 +38,6 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
 
   final HomeController controller = Get.put(HomeController(HomeRepository(ApiProvider())));
-  // final ThemeController themeController = Get.put(ThemeController());
 
   @override
   void initState() {
@@ -123,6 +120,7 @@ class _HomeScreenState extends State<HomeScreen> {
                               icon: Icons.shopify,
                               label: 'ទិញទំនិញ',
                               onTap: () {
+                                ApplicationVariable.vibrate();
                                 // Handle navigation to Home Screen
                                 Get.to(() => ProductFeedScreen());
                               },
@@ -135,6 +133,7 @@ class _HomeScreenState extends State<HomeScreen> {
                               label: 'គ្រប់គ្រង',
                               isRotate: true,
                               onTap: () {
+                                ApplicationVariable.vibrate();
                                 _showModalBottomSheet(context, headerController, shareStorage);
                               },
                               firstControlColor: ApplicationVariable.themeFirstGradientColor,
@@ -145,6 +144,7 @@ class _HomeScreenState extends State<HomeScreen> {
                               icon: Icons.balance,
                               label: 'កម្ចី',
                               onTap: () {
+                                ApplicationVariable.vibrate();
                                 Get.to(() => ReportRepayScreen());
                               },
                               firstControlColor: ApplicationVariable.themeFirstGradientColor,
@@ -156,6 +156,7 @@ class _HomeScreenState extends State<HomeScreen> {
                               label: 'ដៃគូសន្សំ',
                               isRotate: true,
                               onTap: () {
+                                ApplicationVariable.vibrate();
                                 // Handle navigation to Home Screen
                                 Get.to(() => MemberScreen());
                               },
@@ -165,6 +166,7 @@ class _HomeScreenState extends State<HomeScreen> {
                             ),
                             MenuItem(
                               onTap: () {
+                                ApplicationVariable.vibrate();
                                 // Handle navigation to Home Screen
                                 Get.to(() => ProductManagementScreen());
                               },
@@ -303,12 +305,12 @@ Widget _buildSavingComponent(HomeController controller) {
                                       color: ApplicationVariable.themeTextColor,
                                       fontSize: 28,
                                       fontWeight: FontWeight.bold,
-                                      shadows: [
-                                        Shadow(
-                                          color: ApplicationVariable.themeShadowColor,
-                                          blurRadius: 8,
-                                        ),
-                                      ],
+                                      // shadows: [
+                                      //   Shadow(
+                                      //     color: ApplicationVariable.themeShadowColor,
+                                      //     blurRadius: 8,
+                                      //   ),
+                                      // ],
                                       fontFamily: 'MyBaseEnFont',
                                     ),);
                                 });
@@ -491,6 +493,7 @@ Widget _buildLoanComponent(HomeController controller) {
       Center(
         child: InkWell(
           onTap: () {
+ApplicationVariable.vibrate();
             Get.to(() => ReportRepayScreen());
           },
           child: GlassContainer(
@@ -974,24 +977,34 @@ void _showModalBottomSheet(BuildContext context, HeaderController controller, Sh
           return "N/A";
         }();
 
-        return Container(
-          padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 16.0),
-          decoration: BoxDecoration(
-            gradient: LinearGradient(
-              colors: [Colors.black, ApplicationVariable.themeSecondGradientColor.withOpacity(0.9),],
-              begin: Alignment.topLeft,
-              end: Alignment.bottomRight,
-            ),
-            borderRadius: BorderRadius.all(Radius.circular(20)),
-            boxShadow: [
-              BoxShadow(
-                color: ApplicationVariable.themeShadowColor.withOpacity(0.3),
-                blurRadius: 6,
-                offset: Offset(0, 3),
-              ),
+        return GlassContainer(
+          height: 800,
+          alignment: Alignment.center,
+          gradient: LinearGradient(
+            colors: [
+              ApplicationVariable.themeFirstGradientColor.withOpacity(0.40),
+              ApplicationVariable.themeSecondGradientColor.withOpacity(0.10),
             ],
-            // color: app_colors.menu3Color,
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
           ),
+          borderGradient: LinearGradient(
+            colors: [
+              ApplicationVariable.themeFirstBorderColor.withOpacity(0.60),
+              ApplicationVariable.themeFirstBorderColor.withOpacity(0.10),
+              ApplicationVariable.themeSecondBorderColor.withOpacity(0.05),
+              ApplicationVariable.themeSecondBorderColor.withOpacity(0.60),
+            ],
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+            stops: [0.0, 0.39, 0.40, 1.0],
+          ),
+          blur: 20,
+          borderRadius: BorderRadius.circular(24.0),
+          borderWidth: 0.0,
+          elevation: 4.0,
+          shadowColor: ApplicationVariable.themeShadowColor.withOpacity(0.20),
+          padding: EdgeInsets.all(16),
           child: ListView(
             children: [
               SizedBox(height: 4),
@@ -1024,6 +1037,7 @@ void _showModalBottomSheet(BuildContext context, HeaderController controller, Sh
                   children: [
                     InkWell(
                       onTap: () {
+ApplicationVariable.vibrate();
                         Get.off(AccountInformationScreen());
                       },
                       child: Container(
@@ -1112,6 +1126,7 @@ void _showModalBottomSheet(BuildContext context, HeaderController controller, Sh
                             ),
                             child: TextButton(
                               onPressed: () {
+ApplicationVariable.vibrate();
                                 showDialog(
                                   context: context,
                                   builder: (BuildContext dialogContext) {
@@ -1162,6 +1177,7 @@ void _showModalBottomSheet(BuildContext context, HeaderController controller, Sh
                 ),
                 title: Text('Dashboard', style: TextStyle(color: ApplicationVariable.themeTextColor, fontWeight: FontWeight.bold, fontFamily: 'MyBaseEnFont')),
                 onTap: () {
+ApplicationVariable.vibrate();
                   Get.delete<HeaderController>();
                   Get.to(() => HomeScreen());
                 },
@@ -1200,6 +1216,7 @@ void _showModalBottomSheet(BuildContext context, HeaderController controller, Sh
                   ),
                 ),
                 onTap: () {
+ApplicationVariable.vibrate();
                   shareStorage.removeUserCredential();
                   shareStorage.removeToken();
                   shareStorage.removeGroupId();
@@ -1221,29 +1238,29 @@ Widget _switchGroup(BuildContext context, HeaderController controller) {
     final groups = controller.groups.value?.groups ?? [];
     return AlertDialog(
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-      backgroundColor: Colors.white,
+      backgroundColor: Colors.transparent,
       titlePadding: EdgeInsets.all(0),
       title: Container(
         decoration: BoxDecoration(
-          gradient: LinearGradient(
-            colors: [
-              ApplicationVariable.themeFirstGradientColor,
-              ApplicationVariable.themeSecondGradientColor.withOpacity(0.9),
-            ],
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
-          ),
-          borderRadius: BorderRadius.only(
-            topRight: Radius.circular(20),
-            topLeft: Radius.circular(20),
-          ),
-          boxShadow: [
-            BoxShadow(
-              color: ApplicationVariable.themeShadowColor.withOpacity(0.3),
-              blurRadius: 6,
-              offset: Offset(0, 3),
-            ),
-          ],
+          // gradient: LinearGradient(
+          //   colors: [
+          //     ApplicationVariable.themeFirstGradientColor,
+          //     ApplicationVariable.themeSecondGradientColor.withOpacity(0.9),
+          //   ],
+          //   begin: Alignment.topLeft,
+          //   end: Alignment.bottomRight,
+          // ),
+          // borderRadius: BorderRadius.only(
+          //   topRight: Radius.circular(20),
+          //   topLeft: Radius.circular(20),
+          // ),
+          // boxShadow: [
+          //   BoxShadow(
+          //     color: ApplicationVariable.themeShadowColor.withOpacity(0.3),
+          //     blurRadius: 6,
+          //     offset: Offset(0, 3),
+          //   ),
+          // ],
           // color: app_colors.menu3Color,
         ),
         child: Padding(
@@ -1284,6 +1301,7 @@ Widget _switchGroup(BuildContext context, HeaderController controller) {
 
             return InkWell(
               onTap: () {
+ApplicationVariable.vibrate();
                 controller.switchGroup(group.groupId!, group.groupName!);
                 Get.to(() => SplashScreen());
               },
@@ -1341,45 +1359,46 @@ Widget _switchGroup(BuildContext context, HeaderController controller) {
         ),
       ),
       actionsPadding: EdgeInsets.all(12),
-      actions: <Widget>[
-        // Button to close the dialog
-        SizedBox(
-          height: 40,
-          width: double.infinity,
-          child: Container(
-            decoration: BoxDecoration(
-              gradient: LinearGradient(
-                colors: [
-                  ApplicationVariable.themeFirstGradientColor,
-                  ApplicationVariable.themeSecondGradientColor,
-                ],
-                begin: Alignment.topLeft,
-                end: Alignment.bottomRight,
-              ),
-              borderRadius: BorderRadius.circular(8),
-              boxShadow: [
-                BoxShadow(
-                  color: ApplicationVariable.themeShadowColor.withOpacity(0.1),
-                  blurRadius: 6,
-                  offset: Offset(0, 2),
-                ),
-              ],
-            ),
-            child: TextButton(
-              onPressed: () {
-                Navigator.of(context).pop(); // Close the dialog
-              },
-              child: Text(
-                'បោះបង់',
-                style: TextStyle(fontSize: 16,
-                  color: ApplicationVariable.themeTextColor,
-                  fontFamily: 'MyBaseFont',
-                  fontWeight: FontWeight.bold,),
-              ),
-            ),
-          ),
-        ),
-      ],
+//       actions: <Widget>[
+//         // Button to close the dialog
+//         SizedBox(
+//           height: 40,
+//           width: double.infinity,
+//           child: Container(
+//             decoration: BoxDecoration(
+//               gradient: LinearGradient(
+//                 colors: [
+//                   ApplicationVariable.themeFirstGradientColor,
+//                   ApplicationVariable.themeSecondGradientColor,
+//                 ],
+//                 begin: Alignment.topLeft,
+//                 end: Alignment.bottomRight,
+//               ),
+//               borderRadius: BorderRadius.circular(8),
+//               boxShadow: [
+//                 BoxShadow(
+//                   color: ApplicationVariable.themeShadowColor.withOpacity(0.1),
+//                   blurRadius: 6,
+//                   offset: Offset(0, 2),
+//                 ),
+//               ],
+//             ),
+//             child: TextButton(
+//               onPressed: () {
+// ApplicationVariable.vibrate();
+//                 Navigator.of(context).pop(); // Close the dialog
+//               },
+//               child: Text(
+//                 'បោះបង់',
+//                 style: TextStyle(fontSize: 16,
+//                   color: ApplicationVariable.themeTextColor,
+//                   fontFamily: 'MyBaseFont',
+//                   fontWeight: FontWeight.bold,),
+//               ),
+//             ),
+//           ),
+//         ),
+//       ],
     );
   });
 }

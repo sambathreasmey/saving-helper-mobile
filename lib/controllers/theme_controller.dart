@@ -70,6 +70,7 @@ class ThemeController extends GetxController {
     ApplicationVariable.themeSecondBorderColor = newTheme.secondControlColor!;
     ApplicationVariable.themeFirstGradientColor = newTheme.firstControlColor!;
     ApplicationVariable.themeSecondGradientColor = newTheme.secondControlColor!;
+    ApplicationVariable.themeImage = newTheme.themePath!;
 
     Get.off(() => SplashScreen());
   }
@@ -91,6 +92,7 @@ class ThemeController extends GetxController {
       ApplicationVariable.themeSecondBorderColor = savedTheme.secondControlColor!;
       ApplicationVariable.themeFirstGradientColor = savedTheme.firstControlColor!;
       ApplicationVariable.themeSecondGradientColor = savedTheme.secondControlColor!;
+      ApplicationVariable.themeImage = savedTheme.themePath!;
 
       _currentIndex = themes.indexOf(savedTheme);
     }

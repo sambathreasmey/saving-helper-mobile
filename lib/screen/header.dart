@@ -40,7 +40,8 @@ class _CustomHeaderState extends State<CustomHeader> {
     return Container(
       padding: EdgeInsets.all(2.0),
       child: InkWell(
-        onTap: () {_showModalBottomSheet(context, controller, shareStorage, themeController);},
+        onTap: () {
+ApplicationVariable.vibrate();_showModalBottomSheet(context, controller, shareStorage);},
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
@@ -53,8 +54,8 @@ class _CustomHeaderState extends State<CustomHeader> {
                   decoration: BoxDecoration(
                     gradient: LinearGradient(
                       colors: [
-                        themeController.theme.value?.firstControlColor ?? Colors.black,
-                        themeController.theme.value?.secondControlColor?.withOpacity(0.9) ?? Colors.blueAccent.withOpacity(0.9),
+                        ApplicationVariable.themeFirstGradientColor,
+                        ApplicationVariable.themeSecondGradientColor
                       ],
                       begin: Alignment.topLeft,
                       end: Alignment.bottomRight,
@@ -62,7 +63,7 @@ class _CustomHeaderState extends State<CustomHeader> {
                     borderRadius: BorderRadius.all(Radius.circular(8)),
                     boxShadow: [
                       BoxShadow(
-                        color: themeController.theme.value?.secondControlColor?.withOpacity(0.3) ?? Colors.blueAccent.withOpacity(0.3),
+                        color: ApplicationVariable.themeSecondGradientColor.withOpacity(0.3),
                         blurRadius: 6,
                         offset: Offset(0, 3),
                       ),
@@ -71,9 +72,10 @@ class _CustomHeaderState extends State<CustomHeader> {
                   ),
                   child: IconButton(
                     padding: EdgeInsets.all(0),
-                    icon: Icon(Icons.savings_outlined, color: themeController.theme.value?.textColor ?? Colors.white, size: 20,),
+                    icon: Icon(Icons.savings_outlined, color: ApplicationVariable.themeTextColor, size: 20,),
                     onPressed: () {
-                      _showModalBottomSheet(context, controller, shareStorage, themeController);
+ApplicationVariable.vibrate();
+                      _showModalBottomSheet(context, controller, shareStorage);
                     }
                   ),
                 ),
@@ -92,7 +94,7 @@ class _CustomHeaderState extends State<CustomHeader> {
                         return Text(
                           displayName!,
                           style: TextStyle(
-                            color: themeController.theme.value?.textColor ?? Colors.white,
+                            color: ApplicationVariable.themeTextColor,
                             fontSize: 10,
                             fontWeight: FontWeight.bold,
                             fontFamily: 'MyBaseFont',
@@ -109,7 +111,7 @@ class _CustomHeaderState extends State<CustomHeader> {
                         return Text(
                           role,
                           style: TextStyle(
-                            color: themeController.theme.value!.textColor,
+                            color: ApplicationVariable.themeTextColor,
                             fontSize: 9,
                             fontWeight: FontWeight.w500,
                             fontFamily: 'MyBaseEnFont',
@@ -127,6 +129,7 @@ class _CustomHeaderState extends State<CustomHeader> {
                 Obx(() {
                   return _buildMoneyBox(themeController, Icons.mode_night_outlined, themeController.theme.value!.firstControlColor!, themeController.theme.value!.secondControlColor!, height: 30,
                     onTap: () {
+ApplicationVariable.vibrate();
                       themeController.changeBackground();
                     },);
                 }),
@@ -140,18 +143,19 @@ class _CustomHeaderState extends State<CustomHeader> {
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.all(Radius.circular(100)),
                         // ignore: deprecated_member_use
-                        color: themeController.theme.value?.firstControlColor?.withOpacity(0.1) ?? Colors.blue.withOpacity(0.2),
+                        color: ApplicationVariable.themeFirstGradientColor.withOpacity(0.1),
                         boxShadow: [
                           BoxShadow(
-                            color: themeController.theme.value?.secondControlColor?.withOpacity(0.1) ?? Colors.blueAccent.withOpacity(0.1),
+                            color: ApplicationVariable.themeFirstGradientColor.withOpacity(0.1),
                             blurRadius: 3,
                             offset: Offset(0, 2),
                           ),
                         ],
                       ),
                       child: IconButton(
-                          icon: Icon(Icons.notifications_active, color: themeController.theme.value?.textColor ?? Colors.white, size: 16,),
+                          icon: Icon(Icons.notifications_active, color: ApplicationVariable.themeTextColor, size: 16,),
                           onPressed: () {
+ApplicationVariable.vibrate();
                             controller.getNotification();
                             _showNotificationDialog(context, controller, themeController);
                           }
@@ -170,6 +174,7 @@ class _CustomHeaderState extends State<CustomHeader> {
                 //   child: IconButton(
                 //     icon: Icon(Icons.settings, color: themeController.theme.value?.textColor ?? Colors.white, size: 16,),
                 //     onPressed: () {
+//ApplicationVariable.vibrate();
                 //       _showModalBottomSheet(context, controller, shareStorage, themeController);
                 //     }
                 //   ),
@@ -178,8 +183,8 @@ class _CustomHeaderState extends State<CustomHeader> {
                   decoration: BoxDecoration(
                     gradient: LinearGradient(
                       colors: [
-                        themeController.theme.value?.firstControlColor ?? Colors.black,
-                        themeController.theme.value?.secondControlColor?.withOpacity(0.9) ?? Colors.blueAccent.withOpacity(0.9),
+                        ApplicationVariable.themeFirstGradientColor,
+                        ApplicationVariable.themeSecondGradientColor
                       ],
                       begin: Alignment.topLeft,
                       end: Alignment.bottomRight,
@@ -187,7 +192,7 @@ class _CustomHeaderState extends State<CustomHeader> {
                     borderRadius: BorderRadius.all(Radius.circular(8)),
                     boxShadow: [
                       BoxShadow(
-                        color: themeController.theme.value?.secondControlColor?.withOpacity(0.3) ?? Colors.blueAccent.withOpacity(0.3),
+                        color: ApplicationVariable.themeSecondGradientColor.withOpacity(0.3),
                         blurRadius: 6,
                         offset: Offset(0, 3),
                       ),
@@ -196,9 +201,10 @@ class _CustomHeaderState extends State<CustomHeader> {
                   ),
                   child: InkWell(
                     onTap: () {
+ApplicationVariable.vibrate();
                       showDialog(
                         context: context,
-                        builder: (context) => _switchGroup(context, controller, themeController),
+                        builder: (context) => _switchGroup(context, controller),
                       );
                     },
                     child: Padding(
@@ -322,6 +328,7 @@ void _showNotificationDialog(BuildContext context, HeaderController controller, 
               ),
               child: TextButton(
                 onPressed: () {
+ApplicationVariable.vibrate();
                   Navigator.of(context).pop(); // Close the dialog
                 },
                 child: Text(
@@ -337,7 +344,7 @@ void _showNotificationDialog(BuildContext context, HeaderController controller, 
   );
 }
 
-void _showModalBottomSheet(BuildContext context, HeaderController controller, ShareStorage shareStorage, ThemeController themeController) {
+void _showModalBottomSheet(BuildContext context, HeaderController controller, ShareStorage shareStorage) {
   showModalBottomSheet(
     context: context,
     shape: RoundedRectangleBorder(
@@ -366,14 +373,14 @@ void _showModalBottomSheet(BuildContext context, HeaderController controller, Sh
           padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 16.0),
           decoration: BoxDecoration(
             gradient: LinearGradient(
-              colors: [Colors.black, themeController.theme.value?.secondControlColor?.withOpacity(0.9) ?? Colors.black.withOpacity(0.9),],
+              colors: [Colors.black, ApplicationVariable.themeSecondGradientColor,],
               begin: Alignment.topLeft,
               end: Alignment.bottomRight,
             ),
             borderRadius: BorderRadius.all(Radius.circular(20)),
             boxShadow: [
               BoxShadow(
-                color: themeController.theme.value?.secondControlColor?.withOpacity(0.3) ?? Colors.blueAccent.withOpacity(0.3),
+                color: ApplicationVariable.themeSecondGradientColor,
                 blurRadius: 6,
                 offset: Offset(0, 3),
               ),
@@ -392,8 +399,8 @@ void _showModalBottomSheet(BuildContext context, HeaderController controller, Sh
                 decoration: BoxDecoration(
                   gradient: LinearGradient(
                     colors: [
-                      themeController.theme.value?.firstControlColor ?? Colors.black,
-                      themeController.theme.value?.secondControlColor?.withOpacity(0.9) ?? Colors.black.withOpacity(0.9),
+                      ApplicationVariable.themeFirstGradientColor,
+                      ApplicationVariable.themeSecondGradientColor
                     ],
                     begin: Alignment.topLeft,
                     end: Alignment.bottomRight,
@@ -401,7 +408,7 @@ void _showModalBottomSheet(BuildContext context, HeaderController controller, Sh
                   borderRadius: BorderRadius.circular(16),
                   boxShadow: [
                     BoxShadow(
-                      color: Colors.blueAccent.withOpacity(0.3),
+                      color: ApplicationVariable.themeSecondGradientColor.withOpacity(0.3),
                       blurRadius: 2,
                       offset: Offset(0, 1),
                     ),
@@ -412,20 +419,21 @@ void _showModalBottomSheet(BuildContext context, HeaderController controller, Sh
                   children: [
                     InkWell(
                       onTap: () {
+ApplicationVariable.vibrate();
                         Get.off(AccountInformationScreen());
                       },
                       child: Container(
                         decoration: BoxDecoration(
                           gradient: LinearGradient(
                             colors: [
-                              themeController.theme.value?.firstControlColor ?? Colors.black,
-                              themeController.theme.value?.secondControlColor?.withOpacity(0.9) ?? Colors.black.withOpacity(0.9),
+                              ApplicationVariable.themeFirstGradientColor,
+                              ApplicationVariable.themeSecondGradientColor
                             ],
                             begin: Alignment.topLeft,
                             end: Alignment.bottomRight,
                           ),
                           border: Border.all(
-                            color: themeController.theme.value?.textColor ?? Colors.white, // Border color
+                            color: ApplicationVariable.themeTextColor,
                             width: 5.0,         // Border width
                           ),
                           borderRadius: BorderRadius.circular(100),
@@ -440,7 +448,7 @@ void _showModalBottomSheet(BuildContext context, HeaderController controller, Sh
                         child: Padding(
                           padding: const EdgeInsets.all(16.0),
                           child: Text(
-                            getInitials(displayName), style: TextStyle(color: themeController.theme.value!.textColor ?? Colors.black, fontWeight: FontWeight.bold, fontSize: 20),
+                            getInitials(displayName), style: TextStyle(color: ApplicationVariable.themeTextColor, fontWeight: FontWeight.bold, fontSize: 20),
                           ),
                         ),
                       ),
@@ -459,7 +467,7 @@ void _showModalBottomSheet(BuildContext context, HeaderController controller, Sh
                                   style: TextStyle(
                                     fontSize: 16,
                                     fontWeight: FontWeight.bold,
-                                    color: themeController.theme.value?.textColor ?? Colors.white,
+                                    color: ApplicationVariable.themeTextColor,
                                     fontFamily: 'MyBaseFont',
                                   ),
                                 ),
@@ -467,7 +475,7 @@ void _showModalBottomSheet(BuildContext context, HeaderController controller, Sh
                                   user?.emailAddress ?? 'N/A',
                                   style: TextStyle(
                                     fontSize: 13,
-                                    color: themeController.theme.value?.textColor ?? Colors.white,
+                                    color: ApplicationVariable.themeTextColor,
                                     fontFamily: 'MyBaseEnFont',
                                   ),
                                 ),
@@ -479,8 +487,8 @@ void _showModalBottomSheet(BuildContext context, HeaderController controller, Sh
                             decoration: BoxDecoration(
                               gradient: LinearGradient(
                                 colors: [
-                                  themeController.theme.value?.firstControlColor ?? Colors.black,
-                                  themeController.theme.value?.secondControlColor ?? Colors.black,
+                                  ApplicationVariable.themeFirstGradientColor,
+                                  ApplicationVariable.themeSecondGradientColor
                                 ],
                                 begin: Alignment.topLeft,
                                 end: Alignment.bottomRight,
@@ -496,10 +504,11 @@ void _showModalBottomSheet(BuildContext context, HeaderController controller, Sh
                             ),
                             child: TextButton(
                               onPressed: () {
+ApplicationVariable.vibrate();
                                 showDialog(
                                   context: context,
                                   builder: (BuildContext dialogContext) {
-                                    return _switchGroup(context, controller, themeController);
+                                    return _switchGroup(context, controller);
                                   },
                                 );
                               },
@@ -509,7 +518,7 @@ void _showModalBottomSheet(BuildContext context, HeaderController controller, Sh
                               ),
                               child: Icon(
                                 Icons.autorenew,
-                                color: themeController.theme.value?.textColor ?? Colors.white,
+                                color: ApplicationVariable.themeTextColor,
                                 size: 26,
                               ),
                             ),
@@ -524,15 +533,15 @@ void _showModalBottomSheet(BuildContext context, HeaderController controller, Sh
               SizedBox(height: 24),
 
               // Navigation Menu
-              Text("Navigation", style: TextStyle(fontSize: 14, color: themeController.theme.value?.textColor ?? Colors.white, fontWeight: FontWeight.bold, fontFamily: 'MyBaseEnFont')),
+              Text("Navigation", style: TextStyle(fontSize: 14, color: ApplicationVariable.themeTextColor, fontWeight: FontWeight.bold, fontFamily: 'MyBaseEnFont')),
               SizedBox(height: 8),
               ListTile(
                 leading: ShaderMask(
                   shaderCallback: (Rect bounds) {
                     return LinearGradient(
                       colors: [
-                        themeController.theme.value?.firstControlColor ?? Colors.black,
-                        themeController.theme.value?.secondControlColor ?? Colors.black,
+                        ApplicationVariable.themeFirstGradientColor,
+                        ApplicationVariable.themeSecondGradientColor
                       ],
                       begin: Alignment.topLeft,
                       end: Alignment.bottomRight,
@@ -544,8 +553,9 @@ void _showModalBottomSheet(BuildContext context, HeaderController controller, Sh
                     size: 24,
                   ),
                 ),
-                title: Text('Dashboard', style: TextStyle(color:themeController.theme.value?.textColor ?? Colors.white, fontWeight: FontWeight.bold, fontFamily: 'MyBaseEnFont')),
+                title: Text('Dashboard', style: TextStyle(color: ApplicationVariable.themeTextColor, fontWeight: FontWeight.bold, fontFamily: 'MyBaseEnFont')),
                 onTap: () {
+ApplicationVariable.vibrate();
                   Get.delete<HeaderController>();
                   Get.to(() => HomeScreen());
                 },
@@ -562,8 +572,8 @@ void _showModalBottomSheet(BuildContext context, HeaderController controller, Sh
                   shaderCallback: (Rect bounds) {
                     return LinearGradient(
                       colors: [
-                        themeController.theme.value?.firstControlColor ?? Colors.black,
-                        themeController.theme.value?.secondControlColor ?? Colors.black,
+                        ApplicationVariable.themeFirstGradientColor,
+                        ApplicationVariable.themeSecondGradientColor
                       ],
                       begin: Alignment.topLeft,
                       end: Alignment.bottomRight,
@@ -578,12 +588,13 @@ void _showModalBottomSheet(BuildContext context, HeaderController controller, Sh
                 title: Text(
                   'Logout',
                   style: TextStyle(
-                    color: themeController.theme.value?.textColor ?? Colors.white,
+                    color: ApplicationVariable.themeTextColor,
                     fontWeight: FontWeight.bold,
                     fontFamily: 'MyBaseEnFont',
                   ),
                 ),
                 onTap: () {
+ApplicationVariable.vibrate();
                   shareStorage.removeUserCredential();
                   shareStorage.removeToken();
                   shareStorage.removeGroupId();
@@ -647,6 +658,7 @@ class _ManagementSubMenuState extends State<ManagementSubMenu> {
             color: ApplicationVariable.themeTextColor,
           ),
           onTap: () {
+ApplicationVariable.vibrate();
             setState(() {
               _isExpanded = !_isExpanded;
             });
@@ -688,6 +700,7 @@ class _ManagementSubMenuState extends State<ManagementSubMenu> {
                         ),
                       ),
                       onTap: () {
+ApplicationVariable.vibrate();
                         Get.delete<HeaderController>();
                         Get.to(() => DepositSavingScreen());
                       },
@@ -719,6 +732,7 @@ class _ManagementSubMenuState extends State<ManagementSubMenu> {
                         ),
                       ),
                       onTap: () {
+ApplicationVariable.vibrate();
                         Get.delete<HeaderController>();
                         Get.to(() => LoanScreen());
                       },
@@ -750,6 +764,7 @@ class _ManagementSubMenuState extends State<ManagementSubMenu> {
                         ),
                       ),
                       onTap: () {
+ApplicationVariable.vibrate();
                         Get.delete<HeaderController>();
                         Get.to(() => MemberScreen());
                       },
@@ -781,6 +796,7 @@ class _ManagementSubMenuState extends State<ManagementSubMenu> {
                         ),
                       ),
                       onTap: () {
+ApplicationVariable.vibrate();
                         Get.delete<HeaderController>();
                         Get.to(() => GoalManagementScreen());
                       },
@@ -837,6 +853,7 @@ class _ReportSubMenuState extends State<ReportSubMenu> {
             color: ApplicationVariable.themeTextColor,
           ),
           onTap: () {
+ApplicationVariable.vibrate();
             setState(() {
               _isExpanded = !_isExpanded; // Toggle the submenu
             });
@@ -872,6 +889,7 @@ class _ReportSubMenuState extends State<ReportSubMenu> {
                       ),
                       title: Text('របាយការណ៍ទូទៅ', style: TextStyle(color: ApplicationVariable.themeTextColor, fontWeight: FontWeight.bold, fontFamily: 'MyBaseFont',)),
                       onTap: () {
+ApplicationVariable.vibrate();
                         Get.delete<HeaderController>();
                         Get.to(() => ReportScreen());
                       },
@@ -897,6 +915,7 @@ class _ReportSubMenuState extends State<ReportSubMenu> {
                       ),
                       title: Text('របាយការណ៍សង្ខេបប្រចាំខែ', style: TextStyle(color: ApplicationVariable.themeTextColor, fontWeight: FontWeight.bold, fontFamily: 'MyBaseFont',)),
                       onTap: () {
+ApplicationVariable.vibrate();
                         Get.delete<HeaderController>();
                         Get.to(() => SummaryReportScreen());
                       },
@@ -954,36 +973,34 @@ Widget _buildMoneyBox(
   );
 }
 
-Widget _switchGroup(BuildContext context, HeaderController controller, ThemeController themeController) {
+Widget _switchGroup(BuildContext context, HeaderController controller) {
   return Obx(() {
     final groups = controller.groups.value?.groups ?? [];
     return AlertDialog(
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-      backgroundColor: Colors.white,
+      backgroundColor: Colors.transparent,
       titlePadding: EdgeInsets.all(0),
       title: Container(
         decoration: BoxDecoration(
-          gradient: LinearGradient(
-            colors: [
-              themeController.theme.value?.firstControlColor ?? Colors.black,
-              themeController.theme.value?.secondControlColor?.withOpacity(
-                  0.9) ?? Colors.black.withOpacity(0.9),
-            ],
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
-          ),
-          borderRadius: BorderRadius.only(
-            topRight: Radius.circular(20),
-            topLeft: Radius.circular(20),
-          ),
-          boxShadow: [
-            BoxShadow(
-              color: themeController.theme.value?.secondControlColor
-                  ?.withOpacity(0.3) ?? Colors.black.withOpacity(0.9),
-              blurRadius: 6,
-              offset: Offset(0, 3),
-            ),
-          ],
+          // gradient: LinearGradient(
+          //   colors: [
+          //     ApplicationVariable.themeFirstGradientColor,
+          //     ApplicationVariable.themeSecondGradientColor.withOpacity(0.9),
+          //   ],
+          //   begin: Alignment.topLeft,
+          //   end: Alignment.bottomRight,
+          // ),
+          // borderRadius: BorderRadius.only(
+          //   topRight: Radius.circular(20),
+          //   topLeft: Radius.circular(20),
+          // ),
+          // boxShadow: [
+          //   BoxShadow(
+          //     color: ApplicationVariable.themeShadowColor.withOpacity(0.3),
+          //     blurRadius: 6,
+          //     offset: Offset(0, 3),
+          //   ),
+          // ],
           // color: app_colors.menu3Color,
         ),
         child: Padding(
@@ -991,13 +1008,13 @@ Widget _switchGroup(BuildContext context, HeaderController controller, ThemeCont
           child: Row(
             children: [
               Icon(Icons.groups,
-                  color: themeController.theme.value?.textColor ?? Colors.white,
+                  color: ApplicationVariable.themeTextColor,
                   size: 26), // Add an icon for the notification
               SizedBox(width: 10), // Space between the icon and text
               Text(
                 'សូមជ្រើសរើសក្រុម',
                 style: TextStyle(
-                  color: themeController.theme.value?.textColor ?? Colors.white,
+                  color: ApplicationVariable.themeTextColor,
                   fontSize: 18,
                   fontWeight: FontWeight.bold,
                   fontFamily: 'MyBaseFont',
@@ -1024,6 +1041,8 @@ Widget _switchGroup(BuildContext context, HeaderController controller, ThemeCont
 
             return InkWell(
               onTap: () {
+ApplicationVariable.vibrate();
+                ApplicationVariable.vibrate();
                 controller.switchGroup(group.groupId!, group.groupName!);
                 Get.to(() => SplashScreen());
               },
@@ -1034,36 +1053,29 @@ Widget _switchGroup(BuildContext context, HeaderController controller, ThemeCont
                   borderRadius: BorderRadius.circular(16),
                   gradient: LinearGradient(
                     colors: [
-                      themeController.theme.value?.firstControlColor ??
-                          Colors.black,
-                      themeController.theme.value?.secondControlColor ??
-                          Colors.black,
+                      ApplicationVariable.themeFirstGradientColor,
+                      ApplicationVariable.themeSecondGradientColor,
                     ],
                     begin: Alignment.topLeft,
                     end: Alignment.bottomRight,
                   ),
                   boxShadow: [
                     BoxShadow(
-                      color: themeController.theme.value?.secondControlColor
-                          ?.withOpacity(0.3) ?? Colors.black.withOpacity(0.3),
+                      color: ApplicationVariable.themeShadowColor.withOpacity(0.3),
                       blurRadius: 6,
                       offset: Offset(0, 4),
                     ),
                   ],
-                  color: isSelected ? themeController.theme.value?.textColor
-                      ?.withOpacity(0.5) ?? Colors.white : themeController.theme
-                      .value?.textColor ?? Colors.white,
+                  color: isSelected ? ApplicationVariable.themeTextColor.withOpacity(0.5) : ApplicationVariable.themeTextColor,
                   border: isSelected
-                      ? Border.all(color: themeController.theme.value
-                      ?.textColor ?? Colors.white, width: 2)
+                      ? Border.all(color: ApplicationVariable.themeTextColor, width: 2)
                       : Border.all(color: Colors.grey[300]!),
                 ),
                 child: Row(
                   children: [
                     Icon(
                       Icons.group,
-                      color: themeController.theme.value?.textColor ??
-                          Colors.white,
+                      color: ApplicationVariable.themeTextColor,
                     ),
                     SizedBox(width: 12),
                     Expanded(
@@ -1074,14 +1086,12 @@ Widget _switchGroup(BuildContext context, HeaderController controller, ThemeCont
                           fontSize: 14,
                           fontWeight: isSelected ? FontWeight.bold : FontWeight
                               .normal,
-                          color: themeController.theme.value?.textColor ??
-                              Colors.white,
+                          color: ApplicationVariable.themeTextColor,
                         ),
                       ),
                     ),
                     if (isSelected)
-                      Icon(Icons.check_circle, color: themeController.theme
-                          .value?.textColor ?? Colors.white, size: 20),
+                      Icon(Icons.check_circle, color: ApplicationVariable.themeTextColor, size: 20),
                   ],
                 ),
               ),
@@ -1090,48 +1100,47 @@ Widget _switchGroup(BuildContext context, HeaderController controller, ThemeCont
         ),
       ),
       actionsPadding: EdgeInsets.all(12),
-      actions: <Widget>[
-        // Button to close the dialog
-        SizedBox(
-          height: 40,
-          width: double.infinity,
-          child: Container(
-            decoration: BoxDecoration(
-              gradient: LinearGradient(
-                colors: [
-                  themeController.theme.value?.firstControlColor ??
-                      Colors.black,
-                  themeController.theme.value?.secondControlColor ??
-                      Colors.black,
-                ],
-                begin: Alignment.topLeft,
-                end: Alignment.bottomRight,
-              ),
-              borderRadius: BorderRadius.circular(8),
-              boxShadow: [
-                BoxShadow(
-                  color: themeController.theme.value?.secondControlColor
-                      ?.withOpacity(0.1) ?? Colors.black.withOpacity(0.1),
-                  blurRadius: 6,
-                  offset: Offset(0, 2),
-                ),
-              ],
-            ),
-            child: TextButton(
-              onPressed: () {
-                Navigator.of(context).pop(); // Close the dialog
-              },
-              child: Text(
-                'បោះបង់',
-                style: TextStyle(fontSize: 16,
-                  color: themeController.theme.value?.textColor ?? Colors.white,
-                  fontFamily: 'MyBaseFont',
-                  fontWeight: FontWeight.bold,),
-              ),
-            ),
-          ),
-        ),
-      ],
+//       actions: <Widget>[
+//         // Button to close the dialog
+//         SizedBox(
+//           height: 40,
+//           width: double.infinity,
+//           child: Container(
+//             decoration: BoxDecoration(
+//               gradient: LinearGradient(
+//                 colors: [
+//                   ApplicationVariable.themeFirstGradientColor,
+//                   ApplicationVariable.themeSecondGradientColor,
+//                 ],
+//                 begin: Alignment.topLeft,
+//                 end: Alignment.bottomRight,
+//               ),
+//               borderRadius: BorderRadius.circular(8),
+//               boxShadow: [
+//                 BoxShadow(
+//                   color: ApplicationVariable.themeShadowColor.withOpacity(0.1),
+//                   blurRadius: 6,
+//                   offset: Offset(0, 2),
+//                 ),
+//               ],
+//             ),
+//             child: TextButton(
+//               onPressed: () {
+//ApplicationVariable.vibrate();
+// ApplicationVariable.vibrate();
+//                 Navigator.of(context).pop(); // Close the dialog
+//               },
+//               child: Text(
+//                 'បោះបង់',
+//                 style: TextStyle(fontSize: 16,
+//                   color: ApplicationVariable.themeTextColor,
+//                   fontFamily: 'MyBaseFont',
+//                   fontWeight: FontWeight.bold,),
+//               ),
+//             ),
+//           ),
+//         ),
+//       ],
     );
   });
 }
