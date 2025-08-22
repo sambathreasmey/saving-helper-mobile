@@ -68,12 +68,13 @@ jobs:
       - run: pod repo update
         working-directory: ios
 
-      # Build for real device in Release mode with specified iOS version
-      - run: flutter build ios --release --no-codesign --ios-deployment-target=16.0
-
-      # If needed, build for simulator with a compatible iOS version (e.g., 16.0)
-      # Uncomment if you need a simulator build
-      # - run: flutter build ios --debug --no-codesign --simulator --ios-deployment-target=16.0
+      # Set the iOS deployment target in the Podfile before building
+      - run: |
+          echo "platform :ios, '16.0'" >> ios/Podfile
+          flutter pub get
+          
+      # Build for real device in Release mode
+      - run: flutter build ios --release --no-codesign
 
       - run: mkdir Payload
         working-directory: build/ios/iphoneos
