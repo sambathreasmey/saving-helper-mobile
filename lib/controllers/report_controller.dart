@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import 'package:saving_helper/models/report_model.dart';
 import 'package:saving_helper/models/requests/get_report_request.dart';
 import 'package:saving_helper/repository/report_repository.dart';
+
 import '../constants/app_color.dart' as app_color;
 import '../constants/app_global.dart' as app_global;
 import '../models/requests/DeleteTransactionRequest.dart';
@@ -12,36 +13,43 @@ class ReportController extends GetxController {
   final ReportRepository reportRepository;
   ReportController(this.reportRepository);
 
-  RxList<ReportModel?> reports = RxList<ReportModel?>([]);
-  RxString selectedTransactionType = "".obs;
-  var isLoading = false.obs;
-  RxBool hasMore = true.obs;
+  // State
+  final reports = <ReportModel?>[].obs;
+  final selectedTransactionType = "".obs;
+  final isLoading = false.obs;
+  final hasMore = true.obs;
+
   int pageNum = 1;
   final int pageSize = 10;
 
+  // Important: let the SCREEN trigger the first fetch with refresh:true.
+  // Avoid double-fetch by not auto-calling here.
   @override
   void onInit() {
     super.onInit();
-    fetchTransactions();
+    // do not call fetchTransactions() here if your screen already does it
   }
 
   Future<void> fetchTransactions({bool refresh = false}) async {
-    if (isLoading.value) return; // prevent duplicate calls
-    if (!hasMore.value && !refresh) return; // no more data unless refreshing
+    // Prevent duplicate calls
+    if (isLoading.value) return;
 
+    // If we're not refreshing and there's no more data, stop
+    if (!hasMore.value && !refresh) return;
+
+    if (refresh) {
+      pageNum = 1;
+      hasMore.value = true;
+      reports.clear();
+    }
+
+    isLoading.value = true;
     try {
-      isLoading.value = true;
-      if (refresh) {
-        pageNum = 1;
-        hasMore.value = true;
-        reports.clear();
-      }
-
-      final ShareStorage shareStorage = ShareStorage();
+      final shareStorage = ShareStorage();
       final userId = await shareStorage.getUserCredential();
       final groupId = await shareStorage.getGroupId();
 
-      var request = GetReportRequest(
+      final request = GetReportRequest(
         channelId: app_global.channelId,
         userId: userId!,
         groupId: groupId!,
@@ -52,25 +60,37 @@ class ReportController extends GetxController {
 
       final response = await reportRepository.getReport(request);
 
-      if (response.resultMessage!.status == 0) {
-        final newReports = response.reports ?? [];
+      if ((response.resultMessage?.status ?? -1) == 0) {
+        final newReports = response.reports ?? <ReportModel>[];
+
+        // Append / replace
         if (refresh) {
           reports.value = newReports;
         } else {
           reports.addAll(newReports);
         }
+
+        // Paging decision:
+        // - Short or empty page => no more
+        // - Exactly pageSize => likely more
         if (newReports.length < pageSize) {
-          hasMore.value = false; // no more pages
+          hasMore.value = false;
         } else {
+          hasMore.value = true;
           pageNum++;
         }
       } else {
+        // Backend error message
         Get.snackbar(
           "បរាជ័យ",
-          response.resultMessage!.message ?? "Get report failed",
+          response.resultMessage?.message ?? "Get report failed",
           colorText: app_color.background,
           icon: Icon(Icons.sentiment_dissatisfied_outlined, color: app_color.baseWhiteColor),
         );
+
+        // If this happened while paginating (not refreshing),
+        // stop the spinner loop by marking no more.
+        if (!refresh) hasMore.value = false;
       }
     } catch (e) {
       Get.snackbar(
@@ -79,28 +99,60 @@ class ReportController extends GetxController {
         colorText: app_color.background,
         icon: Icon(Icons.warning_amber_sharp, color: app_color.baseWhiteColor),
       );
+
+      // On paging error (not refresh), prevent endless retries at bottom
+      if (!refresh) hasMore.value = false;
     } finally {
       isLoading.value = false;
     }
   }
 
   Future<void> deleteTransaction(String transactionId) async {
+    // Optimistic remove from list so UI matches Dismissible
+    final index = reports.indexWhere((e) => e?.transactionId == transactionId);
+    ReportModel? removed;
+    if (index != -1) {
+      removed = reports[index];
+      reports.removeAt(index);
+    }
+
     try {
-      var request = DeleteTransactionRequest(
+      final request = DeleteTransactionRequest(
         channelId: app_global.channelId,
         transactionId: transactionId,
       );
-      print(request.transactionId);
-      final response = await reportRepository.deleteTransaction(request);
 
-      if (response.status == 0) {
-        Get.snackbar("ទទួលបានជោគជ័យ", response.message ?? "Login successful", colorText: app_color.background, icon: Icon(Icons.sentiment_satisfied_outlined, color: app_color.baseWhiteColor));
+      final response = await reportRepository.deleteTransaction(request);
+      if ((response.status ?? -1) == 0) {
+        Get.snackbar(
+          "ទទួលបានជោគជ័យ",
+          response.message ?? "Deleted",
+          colorText: app_color.background,
+          icon: Icon(Icons.sentiment_satisfied_outlined, color: app_color.baseWhiteColor),
+        );
       } else {
-        Get.snackbar("បរាជ័យ", response.message ?? "Login failed", colorText: app_color.background, icon: Icon(Icons.sentiment_dissatisfied_outlined, color: app_color.baseWhiteColor));
+        // Revert if backend failed
+        if (removed != null) {
+          reports.insert(index.clamp(0, reports.length), removed);
+        }
+        Get.snackbar(
+          "បរាជ័យ",
+          response.message ?? "Delete failed",
+          colorText: app_color.background,
+          icon: Icon(Icons.sentiment_dissatisfied_outlined, color: app_color.baseWhiteColor),
+        );
       }
     } catch (e) {
-      Get.snackbar("ប្រព័ន្ធមានបញ្ហា", e.toString(), colorText: app_color.background, icon: Icon(Icons.warning_amber_sharp, color: app_color.baseWhiteColor));
+      // Revert on error
+      if (removed != null) {
+        reports.insert(index.clamp(0, reports.length), removed);
+      }
+      Get.snackbar(
+        "ប្រព័ន្ធមានបញ្ហា",
+        e.toString(),
+        colorText: app_color.background,
+        icon: Icon(Icons.warning_amber_sharp, color: app_color.baseWhiteColor),
+      );
     }
   }
-
 }

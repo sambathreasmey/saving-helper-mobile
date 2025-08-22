@@ -19,7 +19,7 @@ class EditableBoxField extends StatefulWidget {
     this.height = 65,
     this.fontFamily = 'MyBaseFont',
     this.labelFontFamily = 'MyBaseFont',
-    this.onSave,
+    this.onSave, required bool readOnly,
   });
 
   @override

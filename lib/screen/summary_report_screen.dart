@@ -132,7 +132,6 @@ class _SummaryReportScreenState extends State<SummaryReportScreen> {
 
                       final date = dateKeys[index];
                       final transactions = groupedTransactions[date]!;
-                      final totalAmount = transactions.fold<double>(0, (sum, txn) => sum + (txn.totalAmount ?? 0));
 
                       return GlassContainer(
                         margin: const EdgeInsets.only(bottom: 12),
@@ -187,13 +186,13 @@ class _SummaryReportScreenState extends State<SummaryReportScreen> {
                                 ),
                                 child: Row(
                                   children: [
-                                    const Icon(Icons.monetization_on, color: Colors.amber, size: 20),
+                                    const Icon(Icons.monetization_on, color: Colors.amber, size: 26),
                                     const SizedBox(width: 10),
                                     Expanded(
                                       child: Text(
                                         txn.currencyType ?? '',
                                         style: TextStyle(
-                                          fontSize: 13,
+                                          fontSize: 18,
                                           color: ApplicationVariable.themeTextColor,
                                           fontFamily: 'MyBaseEnFont',
                                         ),
@@ -202,15 +201,16 @@ class _SummaryReportScreenState extends State<SummaryReportScreen> {
                                     Text(
                                       "+${txn.totalAmount?.toStringAsFixed(2)}",
                                       style: const TextStyle(
-                                        fontSize: 13,
+                                        fontSize: 18,
                                         color: Colors.lightGreenAccent,
                                         fontFamily: 'MyBaseEnFont',
+                                        fontWeight: FontWeight.bold,
                                       ),
                                     ),
                                   ],
                                 ),
                               );
-                            }).toList(),
+                            }),
                           ],
                         ),
                       );
