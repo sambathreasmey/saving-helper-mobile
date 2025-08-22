@@ -37,6 +37,6 @@ jobs:
         with:
           repo_token: ${{ secrets.GITHUB_TOKEN }}
           file: build/ios/iphoneos/FlutterIpaExport.ipa
-          tag: v2.0.3+7
+          tag: v2.0.3+8
           overwrite: true
           body: "What's new : glass theme and total repay option."
