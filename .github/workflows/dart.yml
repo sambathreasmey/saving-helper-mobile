@@ -68,8 +68,11 @@ jobs:
       - run: pod repo update
         working-directory: ios
 
-      # Set the destination to a device, or try a simulator if device is not available
-      - run: flutter build ios --release --no-codesign --simulator
+      # Build for real device in Release mode
+      - run: flutter build ios --release --no-codesign
+
+      # For Simulator, use Debug mode (optional, for testing)
+      # - run: flutter build ios --debug --no-codesign --simulator
 
       - run: mkdir Payload
         working-directory: build/ios/iphoneos
@@ -89,3 +92,4 @@ jobs:
           tag: v2.0.3+8
           overwrite: true
           body: "What's new: glass theme and total repay option."
+
