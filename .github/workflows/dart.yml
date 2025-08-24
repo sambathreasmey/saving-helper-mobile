@@ -1,85 +1,174 @@
-name: iOS-ipa-build
+name: iOS IPA (Flutter)
 
 on:
+  push:
+    branches: [ main, master ]
+    tags: [ 'v*' ]   # release when pushing a tag like v1.0.0
+  pull_request:
   workflow_dispatch:
 
+concurrency:
+  group: ios-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
-  build-ios:
-    name: 🎉 iOS Build
-    runs-on: macos-latest
+  ios:
+    name: Build IPA (unsigned or signed)
+    runs-on: macos-14
+
+    env:
+      # ----- iOS / signing config -----
+      IOS_BUNDLE_ID: com.example.app
+      P12_BASE64: ${{ secrets.P12_BASE64 }}
+      P12_PASSWORD: ${{ secrets.P12_PASSWORD }}
+      MOBILEPROVISION_BASE64: ${{ secrets.MOBILEPROVISION_BASE64 }}
+      APPLE_TEAM_ID: ${{ secrets.APPLE_TEAM_ID }}
+      IOS_PROFILE_NAME: ${{ secrets.IOS_PROFILE_NAME }}
+
     steps:
-      - uses: actions/checkout@v3
+      - name: Checkout
+        uses: actions/checkout@v4
 
-      - uses: subosito/flutter-action@v2
+      - name: Setup Java
+        uses: actions/setup-java@v4
         with:
-          channel: 'stable'
-          architecture: x64
-      - run: flutter pub get
-      
+          distribution: temurin
+          java-version: 17
 
-      - run: pod repo update
-        working-directory: ios
-
-      - run: flutter build ios --release --no-codesign
-
-      - run: mkdir Payload
-        working-directory: build/ios/iphoneos
-
-      - run: mv Runner.app/ Payload
-        working-directory: build/ios/iphoneos
-
-      - name: Zip output
-        run: zip -qq -r -9 FlutterIpaExport.ipa Payload
-        working-directory: build/ios/iphoneos
-
-      - name: Upload binaries to release
-        uses: svenstaro/upload-release-action@v2
+      - name: Setup Flutter
+        uses: subosito/flutter-action@v2
         with:
-          repo_token: ${{ secrets.GITHUB_TOKEN }}
-          file: build/ios/iphoneos/FlutterIpaExport.ipa
-          tag: v2.0.4+1
-          overwrite: true
-          body: "This is first release"
+          channel: stable
+          cache: true
 
-# name: iOS-ipa-build
+      - name: Flutter Doctor (diagnostics)
+        run: |
+          flutter --version
+          flutter doctor -v
+          xcodebuild -version || true
+          sw_vers || true
 
-# on:
-#   workflow_dispatch:
+      - name: Pub get
+        run: flutter pub get
 
-# jobs:
-#   build-ios:
-#     name: 🎉 iOS Build
-#     runs-on: macos-latest
-#     steps:
-#       - uses: actions/checkout@v3
+      # Create iOS platform files if missing (common when developing on Windows)
+      - name: Ensure iOS platform exists
+        run: |
+          if [ ! -d "ios" ] || { [ ! -f "ios/Runner.xcworkspace/contents.xcworkspacedata" ] && [ ! -f "ios/Runner.xcodeproj/project.pbxproj" ]; }; then
+            echo "No iOS project found – creating iOS platform..."
+            flutter create --platforms=ios .
+          fi
 
-#       - uses: subosito/flutter-action@v2
-#         with:
-#           channel: 'stable'
-#           architecture: x64
-#       - run: flutter pub get
-      
+      # Optional: auto-bump iOS build number to keep archives unique
+      - name: Set iOS build number (CFBundleVersion)
+        run: |
+          /usr/libexec/PlistBuddy -c "Set :CFBundleVersion $GITHUB_RUN_NUMBER" ios/Runner/Info.plist || true
 
-#       - run: pod repo update
-#         working-directory: ios
+      # Only run CocoaPods if a Podfile exists
+      - name: Install CocoaPods (only if Podfile exists)
+        if: ${{ hashFiles('ios/Podfile') != '' }}
+        run: |
+          pod --version || sudo gem install cocoapods -N
+          cd ios
+          pod repo update
+          pod install
 
-#       - run: flutter build ios --release --no-codesign
+      # ---------- OPTION A: Unsigned IPA (no signing secrets) ----------
+      - name: Build iOS (unsigned, no codesign)
+        if: ${{ env.P12_BASE64 == '' || env.MOBILEPROVISION_BASE64 == '' }}
+        run: |
+          # Build an unsigned .app
+          flutter build ios --release --no-codesign
 
-#       - run: mkdir Payload
-#         working-directory: build/ios/iphoneos
+          # Manually package into an unsigned .ipa
+          mkdir -p build/ios/ipa/Payload
+          cp -R build/ios/iphoneos/Runner.app build/ios/ipa/Payload/Runner.app
+          (cd build/ios/ipa && /usr/bin/zip -qry Runner-unsigned.ipa Payload)
 
-#       - run: mv Runner.app/ Payload
-#         working-directory: build/ios/iphoneos
+      - name: Upload Unsigned IPA
+        if: ${{ env.P12_BASE64 == '' || env.MOBILEPROVISION_BASE64 == '' }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: ios-ipa-unsigned
+          path: build/ios/ipa/Runner-unsigned.ipa
 
-#       - name: Zip output
-#         run: zip -qq -r -9 FlutterIpaExport.ipa Payload
-#         working-directory: build/ios/iphoneos
+      # ---------- OPTION B: Signed IPA (requires secrets) ----------
+      - name: Import signing certs & profiles
+        if: ${{ env.P12_BASE64 != '' && env.MOBILEPROVISION_BASE64 != '' }}
+        uses: apple-actions/import-codesign-certs@v3
+        with:
+          p12-file-base64: ${{ env.P12_BASE64 }}
+          p12-password: ${{ env.P12_PASSWORD }}
+          mobileprovision-file-base64: ${{ env.MOBILEPROVISION_BASE64 }}
 
-#       - name: Upload binaries to release
-#         uses: svenstaro/upload-release-action@v2
-#         with:
-#           repo_token: ${{ secrets.GITHUB_TOKEN }}
-#           file: build/ios/iphoneos/FlutterIpaExport.ipa
-#           tag: v2.0.4+0
-#           overwrite: true
-#           body: "What's new : glass theme and total repay option."
+      - name: Create ExportOptions.plist (App Store)
+        if: ${{ env.P12_BASE64 != '' && env.MOBILEPROVISION_BASE64 != '' }}
+        run: |
+          cat > ExportOptions.plist <<'PLIST'
+          <?xml version="1.0" encoding="UTF-8"?>
+          <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+          <plist version="1.0">
+          <dict>
+            <key>method</key><string>app-store</string>
+            <key>compileBitcode</key><false/>
+            <key>destination</key><string>export</string>
+            <key>signingStyle</key><string>manual</string>
+            <key>stripSwiftSymbols</key><true/>
+            <key>uploadSymbols</key><true/>
+            <key>teamID</key><string>${TEAM_ID}</string>
+            <key>provisioningProfiles</key>
+            <dict>
+              <key>${BUNDLE_ID}</key><string>${PROFILE_NAME}</string>
+            </dict>
+          </dict>
+          </plist>
+          PLIST
+        env:
+          TEAM_ID: ${{ env.APPLE_TEAM_ID }}
+          BUNDLE_ID: ${{ env.IOS_BUNDLE_ID }}
+          PROFILE_NAME: ${{ env.IOS_PROFILE_NAME || 'AppStoreProfile' }}
+
+      - name: Build IPA (signed)
+        if: ${{ env.P12_BASE64 != '' && env.MOBILEPROVISION_BASE64 != '' }}
+        run: flutter build ipa --export-options-plist=ExportOptions.plist --verbose
+
+      - name: Upload Signed IPA
+        if: ${{ env.P12_BASE64 != '' && env.MOBILEPROVISION_BASE64 != '' }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: ios-ipa-signed
+          path: build/ios/ipa/*.ipa
+
+  release:
+    name: Publish GitHub Release (attach IPA)
+    needs: ios
+    runs-on: ubuntu-latest
+    if: startsWith(github.ref, 'refs/tags/')
+
+    steps:
+      - name: Download signed IPA (if present)
+        uses: actions/download-artifact@v4
+        with:
+          name: ios-ipa-signed
+          path: dist
+        continue-on-error: true
+
+      - name: Download unsigned IPA (if present)
+        uses: actions/download-artifact@v4
+        with:
+          name: ios-ipa-unsigned
+          path: dist
+        continue-on-error: true
+
+      - name: List files (debug)
+        run: ls -R dist || true
+
+      - name: Create/Update Release and upload IPA(s)
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ github.ref_name }}
+          files: dist/**/*.ipa
+          draft: false
+          prerelease: false
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
